@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useNavigate } from 'react-router-dom'
 
 // This is a simplified list of states and districts. In a real application, you'd fetch this data from an API.
 const indianStates = [
@@ -50,7 +51,7 @@ const indianStates = [
 ];
 
 
-export function ContactDetails({ onNext, onDoLater }: { onNext: (data: any) => void, onDoLater: () => void }) {
+export function ContactDetails() {
   const [formData, setFormData] = useState({
     state: '',
     district: '',
@@ -60,6 +61,8 @@ export function ContactDetails({ onNext, onDoLater }: { onNext: (data: any) => v
     whatsappNumber: ''
   })
   const [availableDistricts, setAvailableDistricts] = useState<string[]>([])
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (formData.state) {
@@ -75,7 +78,8 @@ export function ContactDetails({ onNext, onDoLater }: { onNext: (data: any) => v
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onNext({ contactDetails: formData })
+    navigate('/apply/exam-center')
+    // onNext({ contactDetails: formData })
   }
 
   const isFormValid = () => {
@@ -84,6 +88,9 @@ export function ContactDetails({ onNext, onDoLater }: { onNext: (data: any) => v
   }
 
   return (
+    <div className="container mx-auto p-4 max-w-2xl">
+    <h1 className="text-2xl font-bold mb-4">Admission Application</h1>
+
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Contact Details</CardTitle>
@@ -163,11 +170,12 @@ export function ContactDetails({ onNext, onDoLater }: { onNext: (data: any) => v
             />
           </div>
           <div className="flex justify-between">
-            <Button type="button" variant="outline" onClick={onDoLater}>Do Later</Button>
+            {/* <Button type="button" variant="outline" onClick={onDoLater}>Do Later</Button> */}
             <Button type="submit" disabled={!isFormValid()}>Next</Button>
           </div>
         </form>
       </CardContent>
     </Card>
+  </div>
   )
 }
