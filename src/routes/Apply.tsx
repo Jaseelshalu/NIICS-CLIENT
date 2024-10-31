@@ -1,11 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { PersonalInfo } from '../components/PersonalInfo'
-import { ContactDetails } from '../components/ContactDetails'
-import { ExamCenter } from '../components/ExamCenter'
-import { LoadingAnimation } from '../components/ApplicationLoading'
 import { SuccessMessage } from '@/components/ApplicationSuccess'
+import { useState } from 'react'
+import { LoadingAnimation } from '../components/ApplicationLoading'
 
 export default function Apply() {
   const [step, setStep] = useState(1)
@@ -37,9 +34,9 @@ export default function Apply() {
   return (
     <div className="container mx-auto p-4 max-w-2xl">
       <h1 className="text-2xl font-bold mb-4">Admission Application</h1>
-      {step === 1 && <PersonalInfo onNext={handleNext} />}
-      {step === 2 && <ContactDetails onNext={handleNext} onDoLater={handleDoLater} />}
-      {step === 3 && <ExamCenter onNext={handleNext} onDoLater={handleDoLater} />}
+      {/* {step === 1 && <PersonalInfo onNext={handleNext} />} */}
+      {/* {step === 2 && <ContactDetails onNext={handleNext} onDoLater={handleDoLater} />} */}
+      {/* {step === 3 && <ExamCenter onNext={handleNext} onDoLater={handleDoLater} />} */}
       {step > 3 && <SuccessMessage />}
     </div>
   )
