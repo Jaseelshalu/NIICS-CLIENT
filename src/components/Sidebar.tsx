@@ -3,12 +3,13 @@ import { useLocation } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Building2, Settings, LayoutDashboard, CheckCircle, FileText, Menu } from "lucide-react"
+import { Building2, Settings, LayoutDashboard, CheckCircle, FileText, Menu, BuildingIcon } from "lucide-react"
 import { Link } from 'react-router-dom'
 
 const sidebarItems = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-  { name: 'Institutions', href: '/admin/institutions', icon: Building2 },
+  { name: 'Institutions', href: '/admin/institution-lists', icon: Building2 },
+  { name: 'Exam Centres', href: '/admin/exam-centers', icon: BuildingIcon },
   { name: 'Verification', href: '/admin/verification', icon: CheckCircle },
   { name: 'Result Generation', href: '/admin/result-generation', icon: FileText },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
@@ -19,7 +20,7 @@ export function Sidebar() {
   const { pathname } = useLocation()  // Using useLocation from react-router-dom
 
   return (
-    <>
+    <div>
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="md:hidden fixed top-4 left-4 z-40">
@@ -32,10 +33,10 @@ export function Sidebar() {
         </SheetContent>
       </Sheet>
 
-      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+      <div className="hidden md:flex md:w-44  lg:w-48 xl:w-56 h-full">
         <SidebarContent pathname={pathname} setOpen={setOpen} />
       </div>
-    </>
+    </div>
   )
 }
 
