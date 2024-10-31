@@ -79,7 +79,7 @@ const router = createBrowserRouter([
         errorElement: <Error />,
       },
       {
-        path: "/marks-list",
+        path: "marks-list",
         element: <MarkListPage />,
         errorElement: <Error />,
       },
