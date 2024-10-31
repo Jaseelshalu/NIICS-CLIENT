@@ -17,6 +17,7 @@ import AdminSettings from './routes/Settings.tsx';
 import ExamCentersPage from './routes/ExamCenters.tsx';
 import InstitutionListsPage from './routes/InstitutionLists.tsx';
 import MarksEntryPage from './routes/MarkEntry.tsx';
+import MarkListPage from './routes/MarkLists.tsx';
 
 const router = createBrowserRouter([
   {
@@ -79,6 +80,11 @@ const router = createBrowserRouter([
   {
     path: "/institution-lists",
     element: <InstitutionListsPage />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/marks-list",
+    element: <MarkListPage />,
     errorElement: <Error />,
   },
   {
