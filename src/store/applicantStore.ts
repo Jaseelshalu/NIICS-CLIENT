@@ -6,7 +6,9 @@ import axios from "axios";
 interface ApplicantStoreState {
   applicants: Applicant[];
   newApplicant: Applicant | null;
+  setNewApplicant: (applicant: Applicant) => void;
   setApplicants: (applicants: [Applicant]) => void;
+  getNewApplicant: () => void;
   applicant: Applicant | null;
   setApplicant: (applicant: Applicant) => void;
   createApplicant: (applicant: Partial<Applicant>) => void;
@@ -21,11 +23,24 @@ interface ApplicantStoreState {
 const useApplicantStore = create<ApplicantStoreState>((set) => ({
   applicants: [],
   newApplicant: null,
+  setNewApplicant: (applicant) => {
+    // set new applicant to the store and to the local storage
+    set({ newApplicant: applicant });
+    localStorage.setItem("newApplicant", JSON.stringify(applicant));
+  },
+  getNewApplicant: () => {
+    // get new applicant from the local storage
+    const newApplicant = localStorage.getItem("newApplicant");
+    if (newApplicant) {
+      set({ newApplicant: JSON.parse(newApplicant) });
+    }
+  },
   setApplicants: (applicants) => set({ applicants }),
   applicant: null,
   setApplicant: (applicant) => set({ applicant }),
   createApplicant: async (applicant) => {
     const loadingToast = toast.loading("Creating applicant...");
+
     try {
       await axios
         .post(`${import.meta.env.API_URL}/applicant`, applicant)

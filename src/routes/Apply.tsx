@@ -1,9 +1,10 @@
 'use client'
 
 import { SuccessMessage } from '@/components/ApplicationSuccess'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { LoadingAnimation } from '../components/ApplicationLoading'
 import { Navigate, Outlet } from 'react-router-dom'
+import useApplicantStore from '@/store/applicantStore'
 
 export default function Apply() {
   const [step, setStep] = useState(1)
@@ -14,6 +15,8 @@ export default function Apply() {
     examCenter: {}
   })
 
+  const {getNewApplicant} = useApplicantStore()
+
 
   const handleNext = async (data: any) => {
     setLoading(true)
@@ -23,6 +26,10 @@ export default function Apply() {
     setLoading(false)
     setStep(prev => prev + 1)
   }
+
+  useEffect(() => {
+    getNewApplicant()
+  }, [])
 
   const handleDoLater = () => {
     // Logic for saving progress and exiting

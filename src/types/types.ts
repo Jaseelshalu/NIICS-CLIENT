@@ -87,6 +87,7 @@ export interface Applicant {
   _id: string;
   name: string;
   dob: Date;
+  imageURL: string;
   fathersName: string;
   guardiansName: string;
   aadharNumber: string;
