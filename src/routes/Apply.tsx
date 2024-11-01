@@ -3,6 +3,7 @@
 import { SuccessMessage } from '@/components/ApplicationSuccess'
 import { useState } from 'react'
 import { LoadingAnimation } from '../components/ApplicationLoading'
+import { Navigate, Outlet } from 'react-router-dom'
 
 export default function Apply() {
   const [step, setStep] = useState(1)
@@ -12,6 +13,7 @@ export default function Apply() {
     contactDetails: {},
     examCenter: {}
   })
+
 
   const handleNext = async (data: any) => {
     setLoading(true)
@@ -33,11 +35,14 @@ export default function Apply() {
 
   return (
     <div className="container mx-auto p-4 max-w-2xl">
+      <Navigate to="/apply/personal-details" />
       <h1 className="text-2xl font-bold mb-4">Admission Application</h1>
+
       {/* {step === 1 && <PersonalInfo onNext={handleNext} />} */}
       {/* {step === 2 && <ContactDetails onNext={handleNext} onDoLater={handleDoLater} />} */}
       {/* {step === 3 && <ExamCenter onNext={handleNext} onDoLater={handleDoLater} />} */}
-      {step > 3 && <SuccessMessage />}
+      {/* {step > 3 && <SuccessMessage />} */}
+      <Outlet />
     </div>
   )
 }

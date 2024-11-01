@@ -5,6 +5,7 @@ import axios from "axios";
 
 interface ApplicantStoreState {
   applicants: Applicant[];
+  newApplicant: Applicant | null;
   setApplicants: (applicants: [Applicant]) => void;
   applicant: Applicant | null;
   setApplicant: (applicant: Applicant) => void;
@@ -19,6 +20,7 @@ interface ApplicantStoreState {
 
 const useApplicantStore = create<ApplicantStoreState>((set) => ({
   applicants: [],
+  newApplicant: null,
   setApplicants: (applicants) => set({ applicants }),
   applicant: null,
   setApplicant: (applicant) => set({ applicant }),
