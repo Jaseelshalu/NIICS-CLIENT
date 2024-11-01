@@ -101,77 +101,84 @@ export function ExamCenter() {
 
   return (
     <>
-      <div className="container mx-auto p-4 max-w-2xl">
-        <h1 className="text-2xl font-bold mb-4">Admission Application</h1>
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Exam Centers</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="examCenter">Exam Center</Label>
-                <Select onValueChange={(value) => handleChange('examCenter', value)}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Exam Center" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="center1">Exam Center 1</SelectItem>
-                    <SelectItem value="center2">Exam Center 2</SelectItem>
-                    <SelectItem value="center3">Exam Center 3</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="admissionInstitution">Admission Institutions (in order of preference)</Label>
-                <Select onValueChange={handleInstitutionChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Admission Institution" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {admissionInstitutions.map((institution) => (
-                      <SelectItem key={institution} value={institution}>{institution}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <div className="mt-2 space-y-2">
-                  {formData.admissionInstitutions.map((institution, index) => (
-                    <div key={institution} className="flex items-center justify-between bg-gray-100 p-2 rounded">
-                      <Badge variant="secondary" className="mr-2">{index + 1}</Badge>
-                      <span className="flex-grow">{institution}</span>
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => moveInstitution(index, 'up')}
-                          disabled={index === 0}
-                        >
-                          <ChevronUp className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => moveInstitution(index, 'down')}
-                          disabled={index === formData.admissionInstitutions.length - 1}
-                        >
-                          <ChevronDown className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeInstitution(institution)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
+      {applicationSubmitted ? (<>
+        <SuccessMessage />
+      </>)
+        :
+        (<div className="container mx-auto p-4 max-w-2xl">
+
+          <Card className="w-full">
+            <CardHeader>
+              <CardTitle>Exam Centers</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={(e) => {
+                handleSubmit(e)
+                setApplicationSubmitted(true)
+              }} className="space-y-4">
+                <div>
+                  <Label htmlFor="examCenter">Exam Center</Label>
+                  <Select onValueChange={(value) => handleChange('examCenter', value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Exam Center" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="center1">Exam Center 1</SelectItem>
+                      <SelectItem value="center2">Exam Center 2</SelectItem>
+                      <SelectItem value="center3">Exam Center 3</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-              </div>
-              <div className="flex justify-between">
+                <div>
+                  <Label htmlFor="admissionInstitution">Admission Institutions (in order of preference)</Label>
+                  <Select onValueChange={handleInstitutionChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Admission Institution" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {admissionInstitutions.map((institution) => (
+                        <SelectItem key={institution} value={institution}>{institution}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <div className="mt-2 space-y-2">
+                    {formData.admissionInstitutions.map((institution, index) => (
+                      <div key={institution} className="flex items-center justify-between bg-gray-100 p-2 rounded">
+                        <Badge variant="secondary" className="mr-2">{index + 1}</Badge>
+                        <span className="flex-grow">{institution}</span>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => moveInstitution(index, 'up')}
+                            disabled={index === 0}
+                          >
+                            <ChevronUp className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => moveInstitution(index, 'down')}
+                            disabled={index === formData.admissionInstitutions.length - 1}
+                          >
+                            <ChevronDown className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeInstitution(institution)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex justify-between">
 
                 <Button type="submit" disabled={!isFormValid()}>Next</Button>
               </div>

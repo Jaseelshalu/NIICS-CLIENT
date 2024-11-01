@@ -20,23 +20,23 @@ export function Sidebar() {
   const { pathname } = useLocation()  // Using useLocation from react-router-dom
 
   return (
-    <div>
+    <>
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger asChild>
+        <SheetTrigger asChild className='w-full bg-red-900'>
           <Button variant="outline" size="icon" className="md:hidden fixed top-4 left-4 z-40">
             <Menu className="h-6 w-6" />
             <span className="sr-only">Toggle sidebar</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="p-0 w-64">
+        {/* <SheetContent side="left" className="p-0 w-64">
           <SidebarContent pathname={pathname} setOpen={setOpen} />
-        </SheetContent>
+        </SheetContent> */}
       </Sheet>
 
       <div className="hidden md:flex md:w-44  lg:w-48 xl:w-56 h-full">
         <SidebarContent pathname={pathname} setOpen={setOpen} />
       </div>
-    </div>
+    </>
   )
 }
 

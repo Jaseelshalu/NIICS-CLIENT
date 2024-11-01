@@ -77,7 +77,6 @@ export function PersonalInfo() {
 
     return (
         <div className="container mx-auto p-4 max-w-2xl">
-            <h1 className="text-2xl font-bold mb-4">Admission Application</h1>
             <Card className="w-full">
                 <CardHeader>
                     <CardTitle>Personal Information</CardTitle>
