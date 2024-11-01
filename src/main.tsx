@@ -17,6 +17,8 @@ import AdminSettings from './routes/Settings.tsx';
 import ExamCentersPage from './routes/ExamCenters.tsx';
 import InstitutionListsPage from './routes/InstitutionLists.tsx';
 import MarksEntryPage from './routes/MarkEntry.tsx';
+import Admin from './components/Admin.tsx';
+import MarkListPage from './routes/MarkLists.tsx';
 
 const router = createBrowserRouter([
   {
@@ -41,7 +43,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/apply",
-    element: <Outlet />,
+    // element: <Outlet />,
     errorElement: <Error />,
     children: [
       {
@@ -67,25 +69,38 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: "/settings",
-    element: <AdminSettings />,
+    path: "/admin",
+    element: <Admin />,
     errorElement: <Error />,
+    children: [
+      {
+        path: "settings",
+        element: <AdminSettings />,
+        errorElement: <Error />,
+      },
+      {
+        path: "marks-list",
+        element: <MarkListPage />,
+        errorElement: <Error />,
+      },
+      {
+        path: "exam-centers",
+        element: <ExamCentersPage />,
+        errorElement: <Error />,
+      },
+      {
+        path: "institution-lists",
+        element: <InstitutionListsPage />,
+        errorElement: <Error />,
+      },
+      {
+        path: "marks-entry",
+        element: <MarksEntryPage />,
+        errorElement: <Error />,
+      },
+    ]
   },
-  {
-    path: "/exam-centers",
-    element: <ExamCentersPage />,
-    errorElement: <Error />,
-  },
-  {
-    path: "/institution-lists",
-    element: <InstitutionListsPage />,
-    errorElement: <Error />,
-  },
-  {
-    path: "/marks-entry",
-    element: <MarksEntryPage />,
-    errorElement: <Error />,
-  },
+  
 ]);
 
 createRoot(document.getElementById('root')!).render(
