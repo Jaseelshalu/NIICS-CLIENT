@@ -84,109 +84,110 @@ export function ContactDetails() {
   }
 
   const isFormValid = () => {
-    return formData.state && formData.district && formData.village && 
-           formData.postOffice && formData.pinCode && formData.whatsappNumber
+    return formData.state && formData.district && formData.village &&
+      formData.postOffice && formData.pinCode && formData.whatsappNumber
   }
 
   return (
     <div className="container mx-auto p-4 max-w-2xl">
 
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Contact Details</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label htmlFor="state">State</Label>
-            <Select onValueChange={(value) => handleChange('state', value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select State" />
-              </SelectTrigger>
-              <SelectContent>
-                {indianStates.map((state) => (
-                  <SelectItem key={state.name} value={state.name}>{state.name}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="district">District</Label>
-            <Select onValueChange={(value) => handleChange('district', value)} disabled={!formData.state}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select District" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableDistricts.map((district) => (
-                  <SelectItem key={district} value={district}>{district}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Label htmlFor="village">Village</Label>
-            <Input 
-              id="village" 
-              name="village" 
-              value={formData.village} 
-              onChange={(e) => handleChange('village', e.target.value)} 
-              required 
-            />
-          </div>
-          <div>
-            <Label htmlFor="postOffice">Post Office (PO)</Label>
-            <Input 
-              id="postOffice" 
-              name="postOffice" 
-              value={formData.postOffice} 
-              onChange={(e) => handleChange('postOffice', e.target.value)} 
-              required 
-            />
-          </div>
-          {/* police station */}
-          <div>
-            <Label htmlFor="policeStation">Police Station</Label>
-            <Input 
-              id="policeStation" 
-              name="policeStation" 
-              value={formData.policeStation} 
-              onChange={(e) => handleChange('policeStation', e.target.value)} 
-              required 
-            />
-          </div>
-          <div>
-            <Label htmlFor="pinCode">PIN Code</Label>
-            <Input 
-              id="pinCode" 
-              name="pinCode" 
-              value={formData.pinCode} 
-              onChange={(e) => handleChange('pinCode', e.target.value)} 
-              required 
-              maxLength={6}
-              pattern="\d{6}"
-              title="PIN Code must be 6 digits"
-            />
-          </div>
-          <div>
-            <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
-            <Input 
-              id="whatsappNumber" 
-              name="whatsappNumber" 
-              value={formData.whatsappNumber} 
-              onChange={(e) => handleChange('whatsappNumber', e.target.value)} 
-              required 
-              maxLength={10}
-              pattern="\d{10}"
-              title="WhatsApp number must be 10 digits"
-            />
-          </div>
-          <div className="flex justify-between">
-            {/* <Button type="button" variant="outline" onClick={onDoLater}>Do Later</Button> */}
-            <Button type="submit" disabled={!isFormValid()}>Next</Button>
-          </div>
-        </form>
-      </CardContent>
-    </Card>
-  </div>
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Contact Details</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="state">State</Label>
+              <Select onValueChange={(value) => handleChange('state', value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select State" />
+                </SelectTrigger>
+                <SelectContent>
+                  {indianStates.map((state) => (
+                    <SelectItem key={state.name} value={state.name}>{state.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="district">District</Label>
+              <Select onValueChange={(value) => handleChange('district', value)} disabled={!formData.state}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select District" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableDistricts.map((district) => (
+                    <SelectItem key={district} value={district}>{district}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="village">Village</Label>
+              <Input
+                id="village"
+                name="village"
+                value={formData.village}
+                onChange={(e) => handleChange('village', e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="postOffice">Post Office (PO)</Label>
+              <Input
+                id="postOffice"
+                name="postOffice"
+                value={formData.postOffice}
+                onChange={(e) => handleChange('postOffice', e.target.value)}
+                required
+              />
+            </div>
+            {/* police station */}
+            <div>
+              <Label htmlFor="policeStation">Police Station</Label>
+              <Input
+                id="policeStation"
+                name="policeStation"
+                value={formData.policeStation}
+                onChange={(e) => handleChange('policeStation', e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="pinCode">PIN Code</Label>
+              <Input
+                id="pinCode"
+                name="pinCode"
+                value={formData.pinCode}
+                onChange={(e) => handleChange('pinCode', e.target.value)}
+                required
+                maxLength={6}
+                pattern="\d{6}"
+                title="PIN Code must be 6 digits"
+              />
+            </div>
+            <div>
+              <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
+              <Input
+                id="whatsappNumber"
+                name="whatsappNumber"
+                value={formData.whatsappNumber}
+                onChange={(e) => handleChange('whatsappNumber', e.target.value)}
+                required
+                maxLength={10}
+                pattern="\d{10}"
+                title="WhatsApp number must be 10 digits"
+              />
+            </div>
+            <div className="flex justify-between">
+              <Button type="button" onClick={()=>{navigate('/apply/personal-details')}}>Previous</Button>
+              <Button type="submit" disabled={!isFormValid()}>Next</Button>
+            </div>
+
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

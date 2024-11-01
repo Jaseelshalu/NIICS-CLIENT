@@ -22,6 +22,8 @@ export function UploadDocuments() {
   })
   const [applicationSubmitted, setApplicationSubmitted] = useState(false)
 
+  const navigate = useNavigate()
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, fieldName: string) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -117,9 +119,10 @@ export function UploadDocuments() {
                 )}
               </div>
               <div className="flex justify-between">
+              <Button type="button" onClick={()=>{navigate('/apply/exam-center')}}>Previous</Button>
                 {/* <Button type="button" variant="outline" onClick={onDoLater}>Do Later</Button> */}
                 <Button type="submit" disabled={!isFormValid()}>Submit Application</Button>
-                <Button type="button" variant="outline" disabled>Preview</Button>
+                {/* <Button type="button" variant="outline" disabled>Preview</Button> */}
               </div>
               </form>
             </CardContent>

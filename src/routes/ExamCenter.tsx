@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Search, SortAsc, SortDesc, Filter, CheckCircle, XCircle } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog"
+import { Search, SortAsc, SortDesc, Filter, CheckCircle, XCircle, LayoutDashboard, ClipboardCheck, PenTool } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 type Application = {
@@ -28,22 +29,34 @@ const initialApplications: Application[] = [
   { id: '3', applicationNumber: 'APP003', name: 'Alice Johnson', verified: false, paid: false },
 ]
 
-export default function ExamCenterDashboard() {
+export default function ApplicationVerificationPage() {
   const [applications, setApplications] = useState<Application[]>(initialApplications)
   const [searchTerm, setSearchTerm] = useState('')
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'applicationNumber', direction: 'asc' })
   const [filters, setFilters] = useState<Partial<Record<keyof Application, string>>>({})
+  const [confirmAction, setConfirmAction] = useState<{ id: string, type: 'verify' | 'pay' } | null>(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-  const handleVerify = (id: string) => {
-    setApplications(applications.map(app => 
-      app.id === id ? { ...app, verified: !app.verified } : app
-    ))
+  const handleActionClick = (id: string, type: 'verify' | 'pay') => {
+    setConfirmAction({ id, type })
+    setIsDialogOpen(true)
   }
 
-  const handlePayment = (id: string) => {
-    setApplications(applications.map(app => 
-      app.id === id ? { ...app, paid: !app.paid } : app
-    ))
+  const confirmActionHandler = () => {
+    if (confirmAction) {
+      setApplications(applications.map(app => 
+        app.id === confirmAction.id
+          ? { ...app, [confirmAction.type === 'verify' ? 'verified' : 'paid']: !app[confirmAction.type === 'verify' ? 'verified' : 'paid'] }
+          : app
+      ))
+      setConfirmAction(null)
+    }
+    setIsDialogOpen(false)
+  }
+
+  const cancelActionHandler = () => {
+    setConfirmAction(null)
+    setIsDialogOpen(false)
   }
 
   const handleSort = (key: keyof Application) => {
@@ -82,9 +95,8 @@ export default function ExamCenterDashboard() {
 
   return (
     <div className="container mx-auto p-4 space-y-8">
-      <h1 className="text-3xl font-bold text-primary">Application Verification</h1>
-      
       <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-primary">Application Verification</h1>
         <div className="relative w-64">
           <Input
             placeholder="Search applications..."
@@ -94,6 +106,18 @@ export default function ExamCenterDashboard() {
           />
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60" size={18} />
         </div>
+      </div>
+      
+      <div className="flex justify-center space-x-4">
+        <Button className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300">
+          <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+        </Button>
+        <Button className="bg-secondary text-secondary-foreground hover:bg-secondary/90 transition-colors duration-300">
+          <ClipboardCheck className="mr-2 h-4 w-4" /> Verification
+        </Button>
+        <Button className="bg-accent text-accent-foreground hover:bg-accent/90 transition-colors duration-300">
+          <PenTool className="mr-2 h-4 w-4" /> Mark Entry
+        </Button>
       </div>
 
       <Card className="bg-gradient-to-br from-background to-secondary overflow-hidden">
@@ -141,15 +165,16 @@ export default function ExamCenterDashboard() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <AnimatePresence>
-                  {filteredAndSortedApplications.map((app) => (
+                <AnimatePresence initial={false}>
+                  {filteredAndSortedApplications.map((app, index) => (
                     <motion.tr
                       key={app.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
                       className="hover:bg-primary/5 transition-colors duration-300"
+                      layout
                     >
                       <TableCell className="font-medium">{app.applicationNumber}</TableCell>
                       <TableCell>{app.name}</TableCell>
@@ -157,7 +182,7 @@ export default function ExamCenterDashboard() {
                         <div className="flex items-center space-x-2">
                           <Button
                             size="sm"
-                            onClick={() => handleVerify(app.id)}
+                            onClick={() => handleActionClick(app.id, 'verify')}
                             className={`transition-colors duration-300 ${
                               app.verified
                                 ? 'bg-green-500 hover:bg-green-600'
@@ -167,8 +192,10 @@ export default function ExamCenterDashboard() {
                             {app.verified ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
                           </Button>
                           <motion.span
-                            initial={false}
+                            key={`verified-${app.id}`}
+                            initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                             transition={{ duration: 0.3 }}
                           >
                             {app.verified ? 'Verified' : 'Not Verified'}
@@ -179,7 +206,7 @@ export default function ExamCenterDashboard() {
                         <div className="flex items-center space-x-2">
                           <Button
                             size="sm"
-                            onClick={() => handlePayment(app.id)}
+                            onClick={() => handleActionClick(app.id, 'pay')}
                             className={`transition-colors duration-300 ${
                               app.paid
                                 ? 'bg-green-500 hover:bg-green-600'
@@ -189,8 +216,10 @@ export default function ExamCenterDashboard() {
                             {app.paid ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
                           </Button>
                           <motion.span
-                            initial={false}
+                            key={`paid-${app.id}`}
+                            initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
                             transition={{ duration: 0.3 }}
                           >
                             {app.paid ? 'Paid' : 'Not Paid'}
@@ -205,6 +234,21 @@ export default function ExamCenterDashboard() {
           </div>
         </CardContent>
       </Card>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Action</DialogTitle>
+          </DialogHeader>
+          <p>
+            Are you sure you want to {confirmAction?.type === 'verify' ? 'change the verification status' : 'change the payment status'} for this application?
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={cancelActionHandler}>Cancel</Button>
+            <Button onClick={confirmActionHandler}>Confirm</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
