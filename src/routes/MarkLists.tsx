@@ -25,14 +25,14 @@ type SortConfig = {
     direction: 'asc' | 'desc'
 }
 
-const sampleCenters: MarksList[] = [
+const sampleMarks: MarksList[] = [
     { id: '1', name: 'City Central', maxMarks: 100, type: 'oral' },
     { id: '2', name: 'Suburban Institute', maxMarks: 100, type: 'written' },
     { id: '3', name: 'Rural College', maxMarks: 100, type: 'oral' }
 ]
 
 export default function MarkListPage() {
-    const [marks, setCenters] = useState<MarksList[]>(sampleCenters)
+    const [marks, setCenters] = useState<MarksList[]>(sampleMarks)
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
     const [isEditModalOpen, setIsEditModalOpen] = useState(false)
     const [currentCenter, setCurrentCenter] = useState<MarksList | null>(null)
