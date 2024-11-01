@@ -93,7 +93,7 @@ export default function CandidateProfile() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
-                  <span className="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -left-4 ring-4 ring-background z-30">
+                  <span className="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -left-10 ring-4 ring-background z-30">
                     {step.completed ? (
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
                     ) : (
