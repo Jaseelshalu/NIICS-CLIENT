@@ -43,7 +43,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/apply",
-    // element: <Outlet />,
+    element: <Apply />,
     errorElement: <Error />,
     children: [
       {

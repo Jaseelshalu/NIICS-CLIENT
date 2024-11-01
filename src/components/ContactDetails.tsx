@@ -58,7 +58,8 @@ export function ContactDetails() {
     village: '',
     postOffice: '',
     pinCode: '',
-    whatsappNumber: ''
+    whatsappNumber: '',
+    policeStation: ''
   })
   const [availableDistricts, setAvailableDistricts] = useState<string[]>([])
 
@@ -89,7 +90,6 @@ export function ContactDetails() {
 
   return (
     <div className="container mx-auto p-4 max-w-2xl">
-    <h1 className="text-2xl font-bold mb-4">Admission Application</h1>
 
     <Card className="w-full">
       <CardHeader>
@@ -140,6 +140,17 @@ export function ContactDetails() {
               name="postOffice" 
               value={formData.postOffice} 
               onChange={(e) => handleChange('postOffice', e.target.value)} 
+              required 
+            />
+          </div>
+          {/* police station */}
+          <div>
+            <Label htmlFor="policeStation">Police Station</Label>
+            <Input 
+              id="policeStation" 
+              name="policeStation" 
+              value={formData.policeStation} 
+              onChange={(e) => handleChange('policeStation', e.target.value)} 
               required 
             />
           </div>
