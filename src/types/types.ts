@@ -1,6 +1,7 @@
 // src/types/Settings.ts
 
 export interface Settings {
+  _id: string;
   academicYear: string;
   admissionStartsAt: Date;
   admissionEndsAt: Date;
@@ -17,6 +18,7 @@ export interface Settings {
 // src/types/MarkColumn.ts
 
 export interface MarkColumn {
+  _id: string;
   name: string;
   maxMark: number;
   description: string;
@@ -28,6 +30,7 @@ export interface MarkColumn {
 // src/types/Mark.ts
 
 export interface Mark {
+  _id: string;
   applicant: Applicant; // ObjectId as a string reference
   markColumn: MarkColumn; // ObjectId as a string reference
   mark: number;
@@ -38,6 +41,7 @@ export interface Mark {
 // src/types/Institution.ts
 
 export interface Institution {
+  _id: string;
   code: string;
   name: string;
   address: string;
@@ -50,6 +54,7 @@ export interface Institution {
 // src/types/ExamCenter.ts
 
 export interface ExamCenter {
+  _id: string;
   code: string;
   name: string;
   address: string;
@@ -67,6 +72,7 @@ export enum Role {
 }
 
 export interface Credential {
+  _id: string;
   userName: string;
   password: string;
   role: Role;
@@ -78,6 +84,7 @@ export interface Credential {
 // src/types/Applicant.ts
 
 export interface Applicant {
+  _id: string;
   name: string;
   dob: Date;
   fathersName: string;
