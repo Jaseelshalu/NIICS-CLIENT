@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useNavigate } from 'react-router-dom'
+import useApplicantStore from '@/store/applicantStore'
+import { Applicant } from '@/types/types'
 
 // This is a simplified list of states and districts. In a real application, you'd fetch this data from an API.
 const indianStates = [
@@ -52,40 +54,39 @@ const indianStates = [
 
 
 export function ContactDetails() {
-  const [formData, setFormData] = useState({
-    state: '',
-    district: '',
-    village: '',
-    postOffice: '',
-    pinCode: '',
-    whatsappNumber: '',
-    policeStation: ''
-  })
   const [availableDistricts, setAvailableDistricts] = useState<string[]>([])
 
   const navigate = useNavigate()
 
-  useEffect(() => {
-    if (formData.state) {
-      const selectedState = indianStates.find(s => s.name === formData.state)
-      setAvailableDistricts(selectedState ? selectedState.districts : [])
-      setFormData(prev => ({ ...prev, district: '' }))
-    }
-  }, [formData.state])
+  const {newApplicant , setNewApplicant} = useApplicantStore()
 
-  const handleChange = (name: string, value: string) => {
-    setFormData(prev => ({ ...prev, [name]: value }))
+  useEffect(() => {
+    if (newApplicant?.state) {
+      const selectedState = indianStates.find(s => s.name === newApplicant?.state)
+      setAvailableDistricts(selectedState ? selectedState.districts : [])
+      // setNewApplicant({ ...newApplicant, district: '' } as Applicant)
+    }
+  }, [newApplicant?.state])
+
+  // Separate handlers for input and select changes
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewApplicant({ ...newApplicant, [e.target.name]: e.target.value } as Applicant)
+    console.log(newApplicant)
+  }
+
+  const handleSelectChange = (name: string) => (value: string) => {
+    setNewApplicant({ ...newApplicant, [name]: value } as Applicant)
+    console.log(newApplicant)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     navigate('/apply/exam-center')
-    // onNext({ contactDetails: formData })
   }
 
   const isFormValid = () => {
-    return formData.state && formData.district && formData.village &&
-      formData.postOffice && formData.pinCode && formData.whatsappNumber
+    return newApplicant?.state && newApplicant?.district && newApplicant?.village &&
+      newApplicant?.postOffice && newApplicant?.pinCode && newApplicant?.whatsapp
   }
 
   return (
@@ -99,7 +100,7 @@ export function ContactDetails() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="state">State</Label>
-              <Select onValueChange={(value) => handleChange('state', value)}>
+              <Select defaultValue={newApplicant?.state} onValueChange={handleSelectChange('state')}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select State" />
                 </SelectTrigger>
@@ -112,7 +113,7 @@ export function ContactDetails() {
             </div>
             <div>
               <Label htmlFor="district">District</Label>
-              <Select onValueChange={(value) => handleChange('district', value)} disabled={!formData.state}>
+              <Select defaultValue={newApplicant?.district} onValueChange={handleSelectChange('district')} disabled={!newApplicant?.state}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select District" />
                 </SelectTrigger>
@@ -128,8 +129,8 @@ export function ContactDetails() {
               <Input
                 id="village"
                 name="village"
-                value={formData.village}
-                onChange={(e) => handleChange('village', e.target.value)}
+                value={newApplicant?.village}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -138,8 +139,8 @@ export function ContactDetails() {
               <Input
                 id="postOffice"
                 name="postOffice"
-                value={formData.postOffice}
-                onChange={(e) => handleChange('postOffice', e.target.value)}
+                value={newApplicant?.postOffice}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -149,8 +150,8 @@ export function ContactDetails() {
               <Input
                 id="policeStation"
                 name="policeStation"
-                value={formData.policeStation}
-                onChange={(e) => handleChange('policeStation', e.target.value)}
+                value={newApplicant?.policeStation}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -159,8 +160,8 @@ export function ContactDetails() {
               <Input
                 id="pinCode"
                 name="pinCode"
-                value={formData.pinCode}
-                onChange={(e) => handleChange('pinCode', e.target.value)}
+                value={newApplicant?.pinCode}
+                onChange={handleChange}
                 required
                 maxLength={6}
                 pattern="\d{6}"
@@ -168,12 +169,12 @@ export function ContactDetails() {
               />
             </div>
             <div>
-              <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
+              <Label htmlFor="whatsapp">WhatsApp Number</Label>
               <Input
-                id="whatsappNumber"
-                name="whatsappNumber"
-                value={formData.whatsappNumber}
-                onChange={(e) => handleChange('whatsappNumber', e.target.value)}
+                id="whatsapp"
+                name="whatsapp"
+                value={newApplicant?.whatsapp}
+                onChange={handleChange}
                 required
                 maxLength={10}
                 pattern="\d{10}"
