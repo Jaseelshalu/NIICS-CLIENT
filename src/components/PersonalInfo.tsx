@@ -9,10 +9,12 @@ import { SuccessMessage } from '@/components/ApplicationSuccess'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AlertCircle } from 'lucide-react'
 import { Navigate, useNavigate } from 'react-router-dom'
+import useApplicantStore from '@/store/applicantStore'
+import { Applicant } from '@/types/types'
 
 export function PersonalInfo() {
 
-  // const navigate = useNavigate()
+    // const navigate = useNavigate()
     const [formData, setFormData] = useState({
         image: '',
         name: '',
@@ -23,6 +25,10 @@ export function PersonalInfo() {
         fatherName: '',
         email: ''
     })
+    const {
+        newApplicant,
+        setNewApplicant
+    } = useApplicantStore()
     const [imageError, setImageError] = useState('')
     const [step, setStep] = useState(1)
     const [loading, setLoading] = useState(false)
@@ -35,7 +41,10 @@ export function PersonalInfo() {
     const navigate = useNavigate()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
+        // setFormData({ ...formData, [e.target.name]: e.target.value })
+        setNewApplicant({ ...newApplicant, [e.target.name]: e.target.value } as Applicant)
+        console.log(newApplicant);
+
     }
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +61,7 @@ export function PersonalInfo() {
             const reader = new FileReader()
             reader.onload = (e) => {
                 if (e.target) {
-                    setFormData(prev => ({ ...prev, image: e.target!.result as string }))
+                    setNewApplicant({ ...newApplicant, imageURL: e.target.result as string } as Applicant)
                     setImageError('')
                 }
             }
@@ -63,12 +72,12 @@ export function PersonalInfo() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         navigate('/apply/contact-details')
-        
+
     }
 
     const isFormValid = () => {
-        return formData.image && formData.name && formData.phone && formData.aadhar &&
-            formData.dob && formData.guardianName && formData.fatherName
+        return newApplicant?.imageURL && newApplicant?.name && newApplicant?.alternativeNumber && newApplicant?.aadharNumber &&
+            newApplicant?.dob && newApplicant?.guardiansName && newApplicant?.fathersName
     }
 
     if (loading) {
@@ -87,15 +96,15 @@ export function PersonalInfo() {
                             <Label htmlFor="image">Candidate's Image</Label>
                             <div className="mt-2 flex items-center space-x-4">
                                 <div className="relative w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
-                                    {formData.image ? (
-                                        <img src={formData.image} alt="Candidate" className="w-full h-full object-cover" />
+                                    {newApplicant?.imageURL ? (
+                                        <img src={newApplicant?.imageURL} alt="Candidate" className="w-full h-full object-cover" />
                                     ) : (
                                         <div className="flex items-center justify-center w-full h-full text-gray-400">
                                             <span>No image</span>
                                         </div>
                                     )}
                                     <Input
-                                        id="image"
+                                        id="imageURL"
                                         type="file"
                                         onChange={handleImageUpload}
                                         accept=".jpg,.jpeg"
@@ -116,33 +125,35 @@ export function PersonalInfo() {
                         </div>
                         <div>
                             <Label htmlFor="name">Name</Label>
-                            <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
+                            <Input id="name" name="name" value={newApplicant?.name} onChange={handleChange} required />
                         </div>
                         <div>
-                            <Label htmlFor="phone">Phone Number</Label>
-                            <Input id="phone" name="phone" value={formData.phone} onChange={handleChange} required />
+                            <Label htmlFor="alternativeNumber">Phone Number</Label>
+                            <Input id="alternativeNumber" name="alternativeNumber" value={newApplicant?.alternativeNumber} onChange={handleChange} required />
                         </div>
                         <div>
-                            <Label htmlFor="aadhar">Aadhar Number</Label>
-                            <Input id="aadhar" name="aadhar" value={formData.aadhar} onChange={handleChange} required />
+                            <Label htmlFor="aadharNumber">Aadhar Number</Label>
+                            <Input id="aadharNumber" name="aadharNumber" value={newApplicant?.aadharNumber} onChange={handleChange} required />
                         </div>
                         <div>
                             <Label htmlFor="dob">Date of Birth</Label>
-                            <Input id="dob" name="dob" type="date" value={formData.dob} onChange={handleChange} required />
+                            <Input id="dob" name="dob" type="date" value={newApplicant?.dob as unknown as string} onChange={handleChange} required />
                         </div>
                         <div>
-                            <Label htmlFor="guardianName">Guardian Name</Label>
-                            <Input id="guardianName" name="guardianName" value={formData.guardianName} onChange={handleChange} required />
+                            <Label htmlFor="guardiansName">Guardian Name</Label>
+                            <Input id="guardiansName" name="guardiansName" value={newApplicant?.guardiansName} onChange={handleChange} required />
                         </div>
                         <div>
-                            <Label htmlFor="fatherName">Father Name</Label>
-                            <Input id="fatherName" name="fatherName" value={formData.fatherName} onChange={handleChange} required />
+                            <Label htmlFor="fathersName">Father Name</Label>
+                            <Input id="fathersName" name="fathersName" value={newApplicant?.fathersName} onChange={handleChange} required />
                         </div>
                         <div>
                             <Label htmlFor="email">Email (Optional)</Label>
-                            <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} />
+                            <Input id="email" name="email" type="email" value={newApplicant?.email} onChange={handleChange} />
                         </div>
+
                         <Button type="submit" disabled={!isFormValid()}>Next</Button>
+
                     </form>
                 </CardContent>
             </Card>
