@@ -142,7 +142,9 @@ export function PersonalInfo() {
                             <Label htmlFor="email">Email (Optional)</Label>
                             <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} />
                         </div>
+                        <div className="flex justify-between">
                         <Button type="submit" disabled={!isFormValid()}>Next</Button>
+                        </div>
                     </form>
                 </CardContent>
             </Card>
