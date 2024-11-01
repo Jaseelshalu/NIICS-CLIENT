@@ -21,6 +21,10 @@ interface ApplicantStoreState {
 }
 
 const useApplicantStore = create<ApplicantStoreState>((set) => ({
+  isNull: false,
+  setIsNull: (isNull) => set({ isNull }),
+  errorMessage: "",
+  setErrorMessage: (errorMessage) => set({ errorMessage }),
   applicants: [],
   newApplicant: null,
   setApplicants: (applicants) => set({ applicants }),
@@ -207,10 +211,6 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
       });
     }
   },
-  isNull: false,
-  setIsNull: (isNull) => set({ isNull }),
-  errorMessage: "",
-  setErrorMessage: (errorMessage) => set({ errorMessage }),
 }));
 
 export default useApplicantStore;
