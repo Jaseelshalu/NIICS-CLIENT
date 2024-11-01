@@ -14,7 +14,7 @@ import { Applicant } from '@/types/types'
 
 export function PersonalInfo() {
 
-  // const navigate = useNavigate()
+    // const navigate = useNavigate()
     const [formData, setFormData] = useState({
         image: '',
         name: '',
@@ -25,7 +25,7 @@ export function PersonalInfo() {
         fatherName: '',
         email: ''
     })
-    const { 
+    const {
         newApplicant,
         setNewApplicant
     } = useApplicantStore()
@@ -44,7 +44,7 @@ export function PersonalInfo() {
         // setFormData({ ...formData, [e.target.name]: e.target.value })
         setNewApplicant({ ...newApplicant, [e.target.name]: e.target.value } as Applicant)
         console.log(newApplicant);
-        
+
     }
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +72,7 @@ export function PersonalInfo() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         navigate('/apply/contact-details')
-        
+
     }
 
     const isFormValid = () => {
@@ -151,9 +151,9 @@ export function PersonalInfo() {
                             <Label htmlFor="email">Email (Optional)</Label>
                             <Input id="email" name="email" type="email" value={newApplicant?.email} onChange={handleChange} />
                         </div>
-                        <div className="flex justify-between">
+
                         <Button type="submit" disabled={!isFormValid()}>Next</Button>
-                        </div>
+
                     </form>
                 </CardContent>
             </Card>

@@ -170,9 +170,9 @@ export function ExamCenter() {
                   </div>
                 </div>
                 <div className="flex justify-between">
-
-                <Button type="submit" disabled={!isFormValid()}>Next</Button>
-              </div>
+              <Button type="button" onClick={()=>{navigate('/apply/contact-details')}}>Previous</Button>
+              <Button type="submit" disabled={!isFormValid()}>Next</Button>
+            </div>
             </form>
           </CardContent>
         </Card>
