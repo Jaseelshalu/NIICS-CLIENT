@@ -13,14 +13,20 @@ interface ApplicantStoreState {
   setApplicant: (applicant: Applicant) => void;
   createApplicant: (applicant: Partial<Applicant>) => void;
   getApplicants: () => void;
-  getApplicant: (id: string) => void;
+  getApplicant: (_id: string) => void;
   updateApplicant: (applicant: Partial<Applicant>) => void;
   deleteApplicant: (_id: string) => void;
   isNull: boolean;
   setIsNull: (isNull: boolean) => void;
+  errorMessage: string;
+  setErrorMessage: (errorMessage: string) => void;
 }
 
 const useApplicantStore = create<ApplicantStoreState>((set) => ({
+  isNull: false,
+  setIsNull: (isNull) => set({ isNull }),
+  errorMessage: "",
+  setErrorMessage: (errorMessage) => set({ errorMessage }),
   applicants: [],
   newApplicant: null,
   setNewApplicant: (applicant) => {
@@ -80,9 +86,72 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     }
   },
   getApplicants: async () => {
-    
+    set({ applicants: [] });
+    set({ isNull: true });
+    set({ errorMessage: "" });
+    try {
+      await axios
+        .get(`${import.meta.env.API_URL}/applicant`)
+        .then((response) => {
+          console.log(response.data);
+          if (response.status === 201) {
+            set({ applicants: response.data });
+            set({ isNull: false });
+          } else if (response.status === 200) {
+            set({
+              errorMessage:
+                response?.data?.message || `Failed to fetch applicants`,
+            });
+          } else {
+            set({
+              errorMessage: `Failed to fetch applicants`,
+            });
+          }
+        })
+        .catch((error) => {
+          set({
+            errorMessage: `Failed to fetch applicants`,
+          });
+        });
+    } catch (error) {
+      set({
+        errorMessage: `Failed to fetch applicants`,
+      });
+    }
   },
-  getApplicant: async (id) => {},
+  getApplicant: async (_id) => {
+    set({ applicant: null });
+    set({ isNull: true });
+    set({ errorMessage: "" });
+    try {
+      await axios
+        .get(`${import.meta.env.API_URL}/applicant/${_id}`)
+        .then((response) => {
+          console.log(response.data);
+          if (response.status === 201) {
+            set({ applicant: response.data });
+            set({ isNull: false });
+          } else if (response.status === 200) {
+            set({
+              errorMessage: response?.data?.message || `Applicant not found`,
+            });
+          } else {
+            set({
+              errorMessage: `Failed to fetch applicant`,
+            });
+          }
+        })
+        .catch((error) => {
+          set({
+            errorMessage: `Failed to fetch applicant`,
+          });
+        });
+    } catch (error) {
+      set({
+        errorMessage: `Failed to fetch applicant`,
+      });
+    }
+  },
   updateApplicant: async (applicant) => {
     const loadingToast = toast.loading("Updating applicant...");
     try {
@@ -157,8 +226,6 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
       });
     }
   },
-  isNull: false,
-  setIsNull: (isNull) => set({ isNull }),
 }));
 
 export default useApplicantStore;

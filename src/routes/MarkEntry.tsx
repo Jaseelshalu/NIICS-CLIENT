@@ -19,13 +19,26 @@ type Student = {
   }
 }
 
+type MarksList = {
+  id: string
+  name: string
+  maxMarks: number
+  type: 'oral' | 'written'
+}
+
+const sampleMarks: MarksList[] = [
+  { id: '1', name: 'City Central', maxMarks: 100, type: 'oral' },
+  { id: '2', name: 'Suburban Institute', maxMarks: 100, type: 'written' },
+  { id: '3', name: 'Rural College', maxMarks: 100, type: 'oral' }
+]
+
 export default function MarksEntryPage() {
   const [students, setStudents] = useState<Student[]>([
     { id: '1', name: 'John Doe', applicationNumber: 'APP001', marks: { oral: {}, written: {} } },
     { id: '2', name: 'Jane Smith', applicationNumber: 'APP002', marks: { oral: {}, written: {} } },
   ])
-  const [oralColumns, setOralColumns] = useState<string[]>(['Oral 1'])
-  const [writtenColumns, setWrittenColumns] = useState<string[]>(['Written 1'])
+  const [oralColumns, setOralColumns] = useState<string[]>(['Oral'])
+  const [writtenColumns, setWrittenColumns] = useState<string[]>(['Written'])
 
   const addColumn = (type: 'oral' | 'written') => {
     if (type === 'oral') {
@@ -132,14 +145,14 @@ export default function MarksEntryPage() {
         </CardContent>
       </Card>
 
-      <div className="flex justify-end space-x-4">
-        <Button onClick={() => addColumn('oral')} className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300">
+      {/* <div className="flex justify-end space-x-4">
+        <Button onClick={() => {}} className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300">
           <Plus className="mr-2 h-4 w-4" /> Add Oral Column
         </Button>
-        <Button onClick={() => addColumn('written')} className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300">
+        <Button onClick={() => {}} className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300">
           <Plus className="mr-2 h-4 w-4" /> Add Written Column
         </Button>
-      </div>
+      </div> */}
     </div>
   )
 }
