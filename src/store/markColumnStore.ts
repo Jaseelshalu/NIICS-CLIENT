@@ -32,7 +32,11 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
     const loadingToast = toast.loading("Creating markColumn...");
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/markColumn`, markColumn)
+        .post(`${import.meta.env.API_URL}/markColumn`, markColumn,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -74,7 +78,11 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/markColumn`)
+        .get(`${import.meta.env.API_URL}/markColumn`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -108,7 +116,11 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/markColumn/${_id}`)
+        .get(`${import.meta.env.API_URL}/markColumn/${_id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -139,7 +151,11 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
     const loadingToast = toast.loading("Updating markColumn...");
     try {
       await axios
-        .put(`${import.meta.env.API_URL}/markColumn/${markColumn._id}`, markColumn)
+        .put(`${import.meta.env.API_URL}/markColumn/${markColumn._id}`, markColumn,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {
@@ -176,7 +192,11 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting markColumn...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/markColumn/${_id}`)
+        .delete(`${import.meta.env.API_URL}/markColumn/${_id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {
