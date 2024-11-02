@@ -32,7 +32,11 @@ const useMarkStore = create<MarkStoreState>((set) => ({
     const loadingToast = toast.loading("Creating mark...");
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/mark`, mark)
+        .post(`${import.meta.env.API_URL}/mark`, mark,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -74,7 +78,11 @@ const useMarkStore = create<MarkStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/mark`)
+        .get(`${import.meta.env.API_URL}/mark`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -108,7 +116,11 @@ const useMarkStore = create<MarkStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/mark/${_id}`)
+        .get(`${import.meta.env.API_URL}/mark/${_id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -139,7 +151,11 @@ const useMarkStore = create<MarkStoreState>((set) => ({
     const loadingToast = toast.loading("Updating mark...");
     try {
       await axios
-        .put(`${import.meta.env.API_URL}/mark/${mark._id}`, mark)
+        .put(`${import.meta.env.API_URL}/mark/${mark._id}`, mark,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {
@@ -176,7 +192,11 @@ const useMarkStore = create<MarkStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting mark...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/mark/${_id}`)
+        .delete(`${import.meta.env.API_URL}/mark/${_id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {

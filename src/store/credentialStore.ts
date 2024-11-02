@@ -36,10 +36,15 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
         .post(`${import.meta.env.API_URL}/credential/auth`, {
           username,
           password,
+        },{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {
+            localStorage.setItem("token", response.data.token);
             toast.success("Credential authenticated successfully", {
               id: loadingToast,
               duration: 3000,
@@ -76,7 +81,11 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     const loadingToast = toast.loading("Creating credential...");
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/credential`, credential)
+        .post(`${import.meta.env.API_URL}/credential`, credential,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -118,7 +127,11 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/credential`)
+        .get(`${import.meta.env.API_URL}/credential`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -152,7 +165,11 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/credential/${_id}`)
+        .get(`${import.meta.env.API_URL}/credential/${_id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -186,7 +203,11 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
         .put(
           `${import.meta.env.API_URL}/credential/${credential._id}`,
           credential
-        )
+        ,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {
@@ -223,7 +244,11 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting credential...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/credential/${_id}`)
+        .delete(`${import.meta.env.API_URL}/credential/${_id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {
