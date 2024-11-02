@@ -48,6 +48,7 @@ export function UploadDocuments() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    navigate('/apply/preview')
     // onNext({ examCenter: formData })
   }
 
@@ -63,7 +64,6 @@ export function UploadDocuments() {
       </>)
         :
         (<div className="container mx-auto p-4 max-w-2xl">
-          <h1 className="text-2xl font-bold mb-4">Admission Application</h1>
 
           <Card className="w-full">
             <CardHeader>
@@ -120,9 +120,8 @@ export function UploadDocuments() {
               </div>
               <div className="flex justify-between">
               <Button type="button" onClick={()=>{navigate('/apply/exam-center')}}>Previous</Button>
-                {/* <Button type="button" variant="outline" onClick={onDoLater}>Do Later</Button> */}
-                <Button type="submit" disabled={!isFormValid()}>Submit Application</Button>
-                {/* <Button type="button" variant="outline" disabled>Preview</Button> */}
+                {/* <Button type="submit" disabled={!isFormValid()}>Submit Application</Button> */}
+                <Button type="submit" variant="outline" disabled={!isFormValid()}>Preview</Button>
               </div>
               </form>
             </CardContent>

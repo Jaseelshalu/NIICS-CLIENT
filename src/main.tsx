@@ -68,6 +68,11 @@ const router = createBrowserRouter([
         element: <UploadDocuments />,
         errorElement: <Error />,
       },
+      {
+        path: "preview",
+        element: <PreviewApplicationDetails />,
+        errorElement: <Error />,
+      }
 
     ]
   },
@@ -101,11 +106,6 @@ const router = createBrowserRouter([
         element: <MarksEntryPage />,
         errorElement: <Error />,
       },
-      {
-        path: "preview",
-        element: <PreviewApplicationDetails />,
-        errorElement: <Error />,
-      }
     ]
   },
   {
