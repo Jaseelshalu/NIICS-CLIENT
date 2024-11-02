@@ -109,7 +109,6 @@ export function PersonalInfo() {
                                         onChange={handleImageUpload}
                                         accept=".jpg,.jpeg"
                                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                        required
                                     />
                                 </div>
                                 <div className="flex-1">

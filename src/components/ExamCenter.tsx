@@ -1,13 +1,15 @@
 'use client'
 
-import { Badge } from "@/components/ui/badge"
+import { useState } from 'react'
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ChevronDown, ChevronUp, X } from 'lucide-react'
-import { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { AlertCircle, X, ChevronUp, ChevronDown } from 'lucide-react'
+import { Badge } from "@/components/ui/badge"
 import { useNavigate } from 'react-router-dom'
+import { SuccessMessage } from './ApplicationSuccess'
 
 const admissionInstitutions = [
   "Institution A",
@@ -87,7 +89,7 @@ export function ExamCenter() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    navigate('/apply/upload-documents')
+    // onNext({ examCenter: formData })
   }
 
   const isFormValid = () => {
@@ -97,16 +99,22 @@ export function ExamCenter() {
 
   return (
     <>
-  
-<div className="container mx-auto p-4 max-w-2xl">
+      {applicationSubmitted ? (<>
+        <SuccessMessage />
+      </>)
+        :
+        (<div className="container mx-auto p-4 max-w-2xl">
+          <h1 className="text-2xl font-bold mb-4">Admission Application</h1>
 
           <Card className="w-full">
             <CardHeader>
               <CardTitle>Exam Centers</CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={
-                handleSubmit} className="space-y-4">
+              <form onSubmit={(e) => {
+                handleSubmit(e)
+                setApplicationSubmitted(true)
+              }} className="space-y-4">
                 <div>
                   <Label htmlFor="examCenter">Exam Center</Label>
                   <Select onValueChange={(value) => handleChange('examCenter', value)}>
@@ -170,13 +178,13 @@ export function ExamCenter() {
                   </div>
                 </div>
                 <div className="flex justify-between">
-              <Button type="button" onClick={()=>{navigate('/apply/contact-details')}}>Previous</Button>
-              <Button type="submit" disabled={!isFormValid()}>Next</Button>
-            </div>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
+
+                  <Button type="submit" disabled={!isFormValid()}>Next</Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>)}
     </>
   )
 }
