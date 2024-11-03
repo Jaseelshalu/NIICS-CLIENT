@@ -49,7 +49,11 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
 
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/applicant`, applicant)
+        .post(`${import.meta.env.API_URL}/applicant`, applicant, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -91,7 +95,11 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/applicant`)
+        .get(`${import.meta.env.API_URL}/applicant`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -125,7 +133,11 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/applicant/${_id}`)
+        .get(`${import.meta.env.API_URL}/applicant/${_id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -156,7 +168,15 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     const loadingToast = toast.loading("Updating applicant...");
     try {
       await axios
-        .put(`${import.meta.env.API_URL}/applicant/${applicant._id}`, applicant)
+        .put(
+          `${import.meta.env.API_URL}/applicant/${applicant._id}`,
+          applicant,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        )
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {
@@ -193,7 +213,11 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting applicant...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/applicant/${_id}`)
+        .delete(`${import.meta.env.API_URL}/applicant/${_id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {

@@ -32,7 +32,11 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     const loadingToast = toast.loading("Creating examCenter...");
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/examCenter`, examCenter)
+        .post(`${import.meta.env.API_URL}/examCenter`, examCenter,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -74,7 +78,11 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/examCenter`)
+        .get(`${import.meta.env.API_URL}/examCenter`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -108,7 +116,11 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/examCenter/${_id}`)
+        .get(`${import.meta.env.API_URL}/examCenter/${_id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -139,7 +151,11 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     const loadingToast = toast.loading("Updating examCenter...");
     try {
       await axios
-        .put(`${import.meta.env.API_URL}/examCenter/${examCenter._id}`, examCenter)
+        .put(`${import.meta.env.API_URL}/examCenter/${examCenter._id}`, examCenter,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {
@@ -176,7 +192,11 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting examCenter...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/examCenter/${_id}`)
+        .delete(`${import.meta.env.API_URL}/examCenter/${_id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {

@@ -20,6 +20,7 @@ import MarksEntryPage from './routes/MarkEntry.tsx';
 import Admin from './components/Admin.tsx';
 import MarkListPage from './routes/MarkLists.tsx';
 import ExamCenterDashboard from './routes/ExamCenter.tsx';
+import PreviewApplicationDetails from './components/apply/Preview.tsx';
 
 const router = createBrowserRouter([
   {
@@ -66,7 +67,13 @@ const router = createBrowserRouter([
         path: "upload-documents",
         element: <UploadDocuments />,
         errorElement: <Error />,
+      },
+      {
+        path: "preview",
+        element: <PreviewApplicationDetails />,
+        errorElement: <Error />,
       }
+
     ]
   },
   {

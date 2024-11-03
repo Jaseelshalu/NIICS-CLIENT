@@ -89,6 +89,7 @@ export function ExamCenter() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    navigate('/apply/upload-documents')
     // onNext({ examCenter: formData })
   }
 
@@ -99,12 +100,7 @@ export function ExamCenter() {
 
   return (
     <>
-      {applicationSubmitted ? (<>
-        <SuccessMessage />
-      </>)
-        :
-        (<div className="container mx-auto p-4 max-w-2xl">
-          <h1 className="text-2xl font-bold mb-4">Admission Application</h1>
+     <div className="container mx-auto p-4 max-w-2xl">
 
           <Card className="w-full">
             <CardHeader>
@@ -178,13 +174,14 @@ export function ExamCenter() {
                   </div>
                 </div>
                 <div className="flex justify-between">
+                <Button type="button" onClick={()=>{navigate('/apply/contact-details')}}>Previous</Button>
 
                   <Button type="submit" disabled={!isFormValid()}>Next</Button>
                 </div>
               </form>
             </CardContent>
           </Card>
-        </div>)}
+        </div>
     </>
   )
 }

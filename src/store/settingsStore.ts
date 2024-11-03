@@ -32,7 +32,11 @@ const useSettingsStore = create<SettingsStoreState>((set) => ({
     const loadingToast = toast.loading("Creating settings...");
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/settings`, settings)
+        .post(`${import.meta.env.API_URL}/settings`, settings,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -74,7 +78,11 @@ const useSettingsStore = create<SettingsStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/settings`)
+        .get(`${import.meta.env.API_URL}/settings`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -108,7 +116,11 @@ const useSettingsStore = create<SettingsStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/settings/${_id}`)
+        .get(`${import.meta.env.API_URL}/settings/${_id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -139,7 +151,11 @@ const useSettingsStore = create<SettingsStoreState>((set) => ({
     const loadingToast = toast.loading("Updating settings...");
     try {
       await axios
-        .put(`${import.meta.env.API_URL}/settings/${settings._id}`, settings)
+        .put(`${import.meta.env.API_URL}/settings/${settings._id}`, settings,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {
@@ -176,7 +192,11 @@ const useSettingsStore = create<SettingsStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting settings...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/settings/${_id}`)
+        .delete(`${import.meta.env.API_URL}/settings/${_id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {

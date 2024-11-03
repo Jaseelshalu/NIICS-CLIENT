@@ -32,7 +32,11 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
     const loadingToast = toast.loading("Creating institution...");
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/institution`, institution)
+        .post(`${import.meta.env.API_URL}/institution`, institution,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -74,7 +78,11 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/institution`)
+        .get(`${import.meta.env.API_URL}/institution`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -108,7 +116,11 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/institution/${_id}`)
+        .get(`${import.meta.env.API_URL}/institution/${_id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -139,7 +151,11 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
     const loadingToast = toast.loading("Updating institution...");
     try {
       await axios
-        .put(`${import.meta.env.API_URL}/institution/${institution._id}`, institution)
+        .put(`${import.meta.env.API_URL}/institution/${institution._id}`, institution,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {
@@ -176,7 +192,11 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting institution...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/institution/${_id}`)
+        .delete(`${import.meta.env.API_URL}/institution/${_id}`,{
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {
