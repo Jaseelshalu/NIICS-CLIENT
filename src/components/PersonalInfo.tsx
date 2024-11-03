@@ -77,7 +77,7 @@ export function PersonalInfo() {
 
     const isFormValid = () => {
         return newApplicant?.imageURL && newApplicant?.name && newApplicant?.alternativeNumber && newApplicant?.aadharNumber &&
-            newApplicant?.dob && newApplicant?.guardiansName && newApplicant?.fathersName
+            newApplicant?.dob && newApplicant?.guardiansName && newApplicant?.fathersName && newApplicant?.email
     }
 
     if (loading) {
@@ -147,8 +147,8 @@ export function PersonalInfo() {
                             <Input id="fathersName" name="fathersName" value={newApplicant?.fathersName} onChange={handleChange} required />
                         </div>
                         <div>
-                            <Label htmlFor="email">Email (Optional)</Label>
-                            <Input id="email" name="email" type="email" value={newApplicant?.email} onChange={handleChange} />
+                            <Label htmlFor="email">Email</Label>
+                            <Input id="email" name="email" type="email" value={newApplicant?.email} onChange={handleChange} required/>
                         </div>
 
                         <Button type="submit" disabled={!isFormValid()}>Next</Button>
