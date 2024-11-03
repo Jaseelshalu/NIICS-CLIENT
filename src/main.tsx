@@ -21,6 +21,7 @@ import Admin from './components/Admin.tsx';
 import MarkListPage from './routes/MarkLists.tsx';
 import ExamCenterDashboard from './routes/ExamCenter.tsx';
 import PreviewApplicationDetails from './components/apply/Preview.tsx';
+import CredentialManagementPage from './routes/CreateCredentials.tsx';
 
 const router = createBrowserRouter([
   {
@@ -106,6 +107,11 @@ const router = createBrowserRouter([
         element: <MarksEntryPage />,
         errorElement: <Error />,
       },
+      {
+        path: "credentials",
+        element: <CredentialManagementPage />,
+        errorElement: <Error />,  
+      }
     ]
   },
   {
