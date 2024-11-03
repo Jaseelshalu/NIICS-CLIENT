@@ -18,13 +18,15 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const token = localStorage.getItem("token");
-  const decodedToken: any = jwtDecode(token as string);
+  const decodedToken: any = token && jwtDecode(token as string);
 
   useEffect(() => {
     if (token && decodedToken?.role === "admin") {
       window.location.href = "/admin";
-    } else {
+    } else if (token && decodedToken?.role === "examCenter") {
       window.location.href = "/exam-center";
+    } else {
+      null;
     }
   }, []);
 
