@@ -44,7 +44,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     const loadingToast = toast.loading("Creating examCenter...");
     try {
       await axios
-        .post(`http://localhost:3000/api/examCenter`, examCenter, {
+        .post(`https://niics-server.vercel.app/api/examCenter`, examCenter, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -97,7 +97,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`http://localhost:3000/api/examCenter`, {
+        .get(`https://niics-server.vercel.app/api/examCenter`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -135,7 +135,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`http://localhost:3000/api/examCenter/${_id}`, {
+        .get(`https://niics-server.vercel.app/api/examCenter/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -171,7 +171,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     try {
       await axios
         .put(
-          `http://localhost:3000/api/examCenter/${examCenter._id}`,
+          `https://niics-server.vercel.app/api/examCenter/${examCenter._id}`,
           examCenter,
           {
             headers: {
@@ -226,7 +226,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting examCenter...");
     try {
       await axios
-        .delete(`http://localhost:3000/api/examCenter/${_id}`, {
+        .delete(`https://niics-server.vercel.app/api/examCenter/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

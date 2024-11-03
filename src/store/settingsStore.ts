@@ -43,7 +43,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Creating settings...");
     try {
       await axios
-        .post(`http://localhost:3000/api/settings`, settings,{
+        .post(`https://niics-server.vercel.app/api/settings`, settings,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -89,7 +89,7 @@ setIsNull: (isNull) => set({ isNull }),
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`http://localhost:3000/api/settings`,{
+        .get(`https://niics-server.vercel.app/api/settings`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -127,7 +127,7 @@ setIsNull: (isNull) => set({ isNull }),
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`http://localhost:3000/api/settings/${_id}`,{
+        .get(`https://niics-server.vercel.app/api/settings/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -162,7 +162,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Updating settings...");
     try {
       await axios
-        .put(`http://localhost:3000/api/settings/${settings._id}`, settings,{
+        .put(`https://niics-server.vercel.app/api/settings/${settings._id}`, settings,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -203,7 +203,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Deleting settings...");
     try {
       await axios
-        .delete(`http://localhost:3000/api/settings/${_id}`,{
+        .delete(`https://niics-server.vercel.app/api/settings/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

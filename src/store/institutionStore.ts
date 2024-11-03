@@ -43,7 +43,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Creating institution...");
     try {
       await axios
-        .post(`http://localhost:3000/api/institution`, institution,{
+        .post(`https://niics-server.vercel.app/api/institution`, institution,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -89,7 +89,7 @@ setIsNull: (isNull) => set({ isNull }),
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`http://localhost:3000/api/institution`,{
+        .get(`https://niics-server.vercel.app/api/institution`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -127,7 +127,7 @@ setIsNull: (isNull) => set({ isNull }),
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`http://localhost:3000/api/institution/${_id}`,{
+        .get(`https://niics-server.vercel.app/api/institution/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -162,7 +162,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Updating institution...");
     try {
       await axios
-        .put(`http://localhost:3000/api/institution/${institution._id}`, institution,{
+        .put(`https://niics-server.vercel.app/api/institution/${institution._id}`, institution,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -203,7 +203,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Deleting institution...");
     try {
       await axios
-        .delete(`http://localhost:3000/api/institution/${_id}`,{
+        .delete(`https://niics-server.vercel.app/api/institution/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

@@ -44,7 +44,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Authenticating credential...");
     try {
       await axios
-        .post(`http://localhost:3000/api/credential/login`, {
+        .post(`https://niics-server.vercel.app/api/credential/login`, {
           username,
           password,
         },{
@@ -92,7 +92,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Creating credential...");
     try {
       await axios
-        .post(`http://localhost:3000/api/credential`, credential,{
+        .post(`https://niics-server.vercel.app/api/credential`, credential,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -138,7 +138,7 @@ setIsNull: (isNull) => set({ isNull }),
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`http://localhost:3000/api/credential`,{
+        .get(`https://niics-server.vercel.app/api/credential`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -176,7 +176,7 @@ setIsNull: (isNull) => set({ isNull }),
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`http://localhost:3000/api/credential/${_id}`,{
+        .get(`https://niics-server.vercel.app/api/credential/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -212,7 +212,7 @@ setIsNull: (isNull) => set({ isNull }),
     try {
       await axios
         .put(
-          `http://localhost:3000/api/credential/${credential._id}`,
+          `https://niics-server.vercel.app/api/credential/${credential._id}`,
           credential
         ,{
           headers: {
@@ -255,7 +255,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Deleting credential...");
     try {
       await axios
-        .delete(`http://localhost:3000/api/credential/${_id}`,{
+        .delete(`https://niics-server.vercel.app/api/credential/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

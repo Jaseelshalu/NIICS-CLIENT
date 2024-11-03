@@ -43,7 +43,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Creating mark...");
     try {
       await axios
-        .post(`http://localhost:3000/api/mark`, mark,{
+        .post(`https://niics-server.vercel.app/api/mark`, mark,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -89,7 +89,7 @@ setIsNull: (isNull) => set({ isNull }),
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`http://localhost:3000/api/mark`,{
+        .get(`https://niics-server.vercel.app/api/mark`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -127,7 +127,7 @@ setIsNull: (isNull) => set({ isNull }),
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`http://localhost:3000/api/mark/${_id}`,{
+        .get(`https://niics-server.vercel.app/api/mark/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -162,7 +162,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Updating mark...");
     try {
       await axios
-        .put(`http://localhost:3000/api/mark/${mark._id}`, mark,{
+        .put(`https://niics-server.vercel.app/api/mark/${mark._id}`, mark,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -203,7 +203,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Deleting mark...");
     try {
       await axios
-        .delete(`http://localhost:3000/api/mark/${_id}`,{
+        .delete(`https://niics-server.vercel.app/api/mark/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

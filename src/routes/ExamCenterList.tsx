@@ -298,20 +298,19 @@ export default function ExamCentersPage() {
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             </DialogTrigger>
-
-                            <DialogContent className="w-11/12 lg:w-full rounded-lg">
-                              <DialogHeader>
+                            <DialogContent className="w-full lg:w-full rounded-lg">
+                              <DialogHeader className="sm:text-center">
                                 <DialogTitle>
                                   Delete {examCenter?.name}
                                 </DialogTitle>
                               </DialogHeader>
                               {examCenter && (
-                                <div className="pb-4">
-                                  <Label className="block text-sm font-medium text-primary mb-4">
+                                <div >
+                                  <Label className="block text-sm font-medium text-primary mb-4 sm:text-center">
                                     Are you sure you want to delete{" "}
                                     {examCenter?.name}?
                                   </Label>
-                                  <DialogFooter className="flex flex-row justify-end gap-2">
+                                  <DialogFooter className="flex flex-row sm:justify-center gap-2">
                                     <Button
                                       type="button"
                                       variant="outline"

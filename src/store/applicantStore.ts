@@ -60,7 +60,7 @@ setIsNull: (isNull) => set({ isNull }),
 
     try {
       await axios
-        .post(`http://localhost:3000/api/applicant`, applicant, {
+        .post(`https://niics-server.vercel.app/api/applicant`, applicant, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -106,7 +106,7 @@ setIsNull: (isNull) => set({ isNull }),
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`http://localhost:3000/api/applicant`, {
+        .get(`https://niics-server.vercel.app/api/applicant`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -144,7 +144,7 @@ setIsNull: (isNull) => set({ isNull }),
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`http://localhost:3000/api/applicant/${_id}`, {
+        .get(`https://niics-server.vercel.app/api/applicant/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -180,7 +180,7 @@ setIsNull: (isNull) => set({ isNull }),
     try {
       await axios
         .put(
-          `http://localhost:3000/api/applicant/${applicant._id}`,
+          `https://niics-server.vercel.app/api/applicant/${applicant._id}`,
           applicant,
           {
             headers: {
@@ -224,7 +224,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Deleting applicant...");
     try {
       await axios
-        .delete(`http://localhost:3000/api/applicant/${_id}`, {
+        .delete(`https://niics-server.vercel.app/api/applicant/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
