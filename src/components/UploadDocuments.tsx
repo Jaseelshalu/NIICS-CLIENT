@@ -8,14 +8,12 @@ import { AlertCircle } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { SuccessMessage } from './ApplicationSuccess'
+import useApplicantStore from "@/store/applicantStore"
 
 
 
 export function UploadDocuments() {
-  const [formData, setFormData] = useState({
-    aadharDocument: '',
-    birthCertificate: ''
-  })
+  const {newApplicant , setNewApplicant} = useApplicantStore()
   const [fileErrors, setFileErrors] = useState({
     aadharDocument: '',
     birthCertificate: ''
@@ -38,7 +36,8 @@ export function UploadDocuments() {
       const reader = new FileReader()
       reader.onload = (e) => {
         if (e.target) {
-          setFormData(prev => ({ ...prev, [fieldName]: e.target!.result as string }))
+          // setnewApplicant?(prev => ({ ...prev, [fieldName]: e.target!.result as string }))
+          setNewApplicant({ ...newApplicant, [fieldName]: e.target!.result as string } as any)
           setFileErrors(prev => ({ ...prev, [fieldName]: '' }))
         }
       }
@@ -49,12 +48,11 @@ export function UploadDocuments() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     navigate('/apply/preview')
-    // onNext({ examCenter: formData })
+    // onNext({ examCenter: newApplicant? })
   }
 
   const isFormValid = () => {
-    return formData.aadharDocument &&
-      formData.birthCertificate
+    return newApplicant?.aadharDocument && newApplicant?.birthCertificate
   }
 
   return (
@@ -81,7 +79,7 @@ export function UploadDocuments() {
                   type="file"
                   onChange={(e) => handleFileUpload(e, 'aadharDocument')}
                   accept=".jpg,.jpeg"
-                  required
+                  
                 />
                 {fileErrors.aadharDocument && (
                   <p className="text-sm text-red-500 mt-1 flex items-center">
@@ -90,9 +88,9 @@ export function UploadDocuments() {
                   </p>
                 )}
                 <p className="text-sm text-gray-500 mt-1">Upload a JPG or JPEG image, max 1MB</p>
-                {formData.aadharDocument && (
+                {newApplicant?.aadharDocument && (
                   <div className="mt-2">
-                    <img src={formData.aadharDocument} alt="Aadhar Document" className="max-w-[100px] h-auto" />
+                    <img src={newApplicant?.aadharDocument} alt="Aadhar Document" className="max-w-[100px] h-auto" />
                   </div>
                 )}
               </div>
@@ -103,7 +101,6 @@ export function UploadDocuments() {
                   type="file"
                   onChange={(e) => handleFileUpload(e, 'birthCertificate')}
                   accept=".jpg,.jpeg"
-                  required
                 />
                 {fileErrors.birthCertificate && (
                   <p className="text-sm text-red-500 mt-1 flex items-center">
@@ -112,9 +109,9 @@ export function UploadDocuments() {
                   </p>
                 )}
                 <p className="text-sm text-gray-500 mt-1">Upload a JPG or JPEG image, max 1MB</p>
-                {formData.birthCertificate && (
+                {newApplicant?.birthCertificate && (
                   <div className="mt-2">
-                    <img src={formData.birthCertificate} alt="Birth Certificate" className="max-w-[100px] h-auto" />
+                    <img src={newApplicant?.birthCertificate} alt="Birth Certificate" className="max-w-[100px] h-auto" />
                   </div>
                 )}
               </div>
