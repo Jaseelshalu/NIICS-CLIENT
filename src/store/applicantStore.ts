@@ -18,14 +18,25 @@ interface ApplicantStoreState {
   deleteApplicant: (_id: string) => void;
   isNull: boolean;
   setIsNull: (isNull: boolean) => void;
+  isCreateOpen: boolean;
+  setIsCreateOpen: (isCreateOpen: boolean) => void;
+  isUpdateOpen: boolean;
+  setIsUpdateOpen: (isUpdateOpen: boolean) => void;
+  isDeleteOpen: boolean;
+  setIsDeleteOpen: (isDeleteOpen: boolean) => void;
   errorMessage: string;
   setErrorMessage: (errorMessage: string) => void;
 }
 
 const useApplicantStore = create<ApplicantStoreState>((set) => ({
   isNull: false,
-  setIsNull: (isNull) => set({ isNull }),
-  errorMessage: "",
+setIsNull: (isNull) => set({ isNull }),
+  isCreateOpen: false,
+  setIsCreateOpen: (isCreateOpen) => set({ isCreateOpen }),
+  isUpdateOpen: false,
+  setIsUpdateOpen: (isUpdateOpen) => set({ isUpdateOpen }),
+  isDeleteOpen: false,
+  setIsDeleteOpen: (isDeleteOpen) => set({ isDeleteOpen }),  errorMessage: "",
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   applicants: [],
   newApplicant: null,
@@ -49,7 +60,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
 
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/applicant`, applicant, {
+        .post(`http://localhost:3000/api/applicant`, applicant, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -95,7 +106,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/applicant`, {
+        .get(`http://localhost:3000/api/applicant`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -133,7 +144,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/applicant/${_id}`, {
+        .get(`http://localhost:3000/api/applicant/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -169,7 +180,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     try {
       await axios
         .put(
-          `${import.meta.env.API_URL}/applicant/${applicant._id}`,
+          `http://localhost:3000/api/applicant/${applicant._id}`,
           applicant,
           {
             headers: {
@@ -213,7 +224,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting applicant...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/applicant/${_id}`, {
+        .delete(`http://localhost:3000/api/applicant/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

@@ -15,14 +15,25 @@ interface SettingsStoreState {
   deleteSettings: (_id: string) => void;
   isNull: boolean;
   setIsNull: (isNull: boolean) => void;
+  isCreateOpen: boolean;
+  setIsCreateOpen: (isCreateOpen: boolean) => void;
+  isUpdateOpen: boolean;
+  setIsUpdateOpen: (isUpdateOpen: boolean) => void;
+  isDeleteOpen: boolean;
+  setIsDeleteOpen: (isDeleteOpen: boolean) => void;
   errorMessage: string;
   setErrorMessage: (errorMessage: string) => void;
 }
 
 const useSettingsStore = create<SettingsStoreState>((set) => ({
   isNull: false,
-  setIsNull: (isNull) => set({ isNull }),
-  errorMessage: "",
+setIsNull: (isNull) => set({ isNull }),
+  isCreateOpen: false,
+  setIsCreateOpen: (isCreateOpen) => set({ isCreateOpen }),
+  isUpdateOpen: false,
+  setIsUpdateOpen: (isUpdateOpen) => set({ isUpdateOpen }),
+  isDeleteOpen: false,
+  setIsDeleteOpen: (isDeleteOpen) => set({ isDeleteOpen }),  errorMessage: "",
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   settingss: [],
   setSettingss: (settingss) => set({ settingss }),
@@ -32,7 +43,7 @@ const useSettingsStore = create<SettingsStoreState>((set) => ({
     const loadingToast = toast.loading("Creating settings...");
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/settings`, settings,{
+        .post(`http://localhost:3000/api/settings`, settings,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -78,7 +89,7 @@ const useSettingsStore = create<SettingsStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/settings`,{
+        .get(`http://localhost:3000/api/settings`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -116,7 +127,7 @@ const useSettingsStore = create<SettingsStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/settings/${_id}`,{
+        .get(`http://localhost:3000/api/settings/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -151,7 +162,7 @@ const useSettingsStore = create<SettingsStoreState>((set) => ({
     const loadingToast = toast.loading("Updating settings...");
     try {
       await axios
-        .put(`${import.meta.env.API_URL}/settings/${settings._id}`, settings,{
+        .put(`http://localhost:3000/api/settings/${settings._id}`, settings,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -192,7 +203,7 @@ const useSettingsStore = create<SettingsStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting settings...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/settings/${_id}`,{
+        .delete(`http://localhost:3000/api/settings/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

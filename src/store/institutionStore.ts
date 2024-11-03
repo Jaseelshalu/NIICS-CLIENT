@@ -15,14 +15,25 @@ interface InstitutionStoreState {
   deleteInstitution: (_id: string) => void;
   isNull: boolean;
   setIsNull: (isNull: boolean) => void;
+  isCreateOpen: boolean;
+  setIsCreateOpen: (isCreateOpen: boolean) => void;
+  isUpdateOpen: boolean;
+  setIsUpdateOpen: (isUpdateOpen: boolean) => void;
+  isDeleteOpen: boolean;
+  setIsDeleteOpen: (isDeleteOpen: boolean) => void;
   errorMessage: string;
   setErrorMessage: (errorMessage: string) => void;
 }
 
 const useInstitutionStore = create<InstitutionStoreState>((set) => ({
   isNull: false,
-  setIsNull: (isNull) => set({ isNull }),
-  errorMessage: "",
+setIsNull: (isNull) => set({ isNull }),
+  isCreateOpen: false,
+  setIsCreateOpen: (isCreateOpen) => set({ isCreateOpen }),
+  isUpdateOpen: false,
+  setIsUpdateOpen: (isUpdateOpen) => set({ isUpdateOpen }),
+  isDeleteOpen: false,
+  setIsDeleteOpen: (isDeleteOpen) => set({ isDeleteOpen }),  errorMessage: "",
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   institutions: [],
   setInstitutions: (institutions) => set({ institutions }),
@@ -32,7 +43,7 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
     const loadingToast = toast.loading("Creating institution...");
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/institution`, institution,{
+        .post(`http://localhost:3000/api/institution`, institution,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -78,7 +89,7 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/institution`,{
+        .get(`http://localhost:3000/api/institution`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -116,7 +127,7 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/institution/${_id}`,{
+        .get(`http://localhost:3000/api/institution/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -151,7 +162,7 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
     const loadingToast = toast.loading("Updating institution...");
     try {
       await axios
-        .put(`${import.meta.env.API_URL}/institution/${institution._id}`, institution,{
+        .put(`http://localhost:3000/api/institution/${institution._id}`, institution,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -192,7 +203,7 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting institution...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/institution/${_id}`,{
+        .delete(`http://localhost:3000/api/institution/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

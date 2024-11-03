@@ -1,93 +1,118 @@
-'use client'
+"use client";
 
-import { useState, useMemo } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useState, useMemo, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 // import { toast, Toaster } from "@/components/ui/use-toast"
-import { Plus, Edit, Trash2, ChevronDown, Search, SortAsc, SortDesc, Filter } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
-
-type ExamCenter = {
-  id: string
-  code: string
-  name: string
-  address: string
-  contact: string
-  status: 'active' | 'inactive'
-}
+import {
+  Plus,
+  Edit,
+  Trash2,
+  ChevronDown,
+  Search,
+  SortAsc,
+  SortDesc,
+  Filter,
+  CircleX,
+  Trash,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ExamCenter } from "@/types/types";
+import useExamCenterStore from "@/store/examCenterStore";
 
 type SortConfig = {
-  key: keyof ExamCenter
-  direction: 'asc' | 'desc'
-}
-
-const sampleCenters: ExamCenter[] = [
-  { id: '1', code: 'EC001', name: 'City Central', address: '123 Main St, Cityville', contact: '+1 234-567-8901', status: 'active' },
-  { id: '2', code: 'EC002', name: 'Suburban Institute', address: '456 Oak Rd, Suburbtown', contact: '+1 234-567-8902', status: 'active' },
-  { id: '3', code: 'EC003', name: 'Rural College', address: '789 Farm Lane, Countryside', contact: '+1 234-567-8903', status: 'inactive' },
-]
+  key: keyof ExamCenter;
+  direction: "asc" | "desc";
+};
 
 export default function ExamCentersPage() {
-  const [centers, setCenters] = useState<ExamCenter[]>(sampleCenters)
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [currentCenter, setCurrentCenter] = useState<ExamCenter | null>(null)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'code', direction: 'asc' })
-  const [filters, setFilters] = useState<Partial<Record<keyof ExamCenter, string>>>({})
+  const {
+    examCenters,
+    examCenter,
+    setExamCenter,
+    createExamCenter,
+    getExamCenters,
+    updateExamCenter,
+    deleteExamCenter,
+    isCreateOpen,
+    isUpdateOpen,
+    isDeleteOpen,
+    setIsCreateOpen,
+    setIsUpdateOpen,
+    setIsDeleteOpen,
+    isNull,
+    errorMessage,
+  } = useExamCenterStore();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    key: "code",
+    direction: "asc",
+  });
+  const [filters, setFilters] = useState<
+    Partial<Record<keyof ExamCenter, string>>
+  >({});
 
-  const handleCreateCenter = (center: Omit<ExamCenter, 'id'>) => {
-    const newCenter = { ...center, id: Date.now().toString() }
-    setCenters([...centers, newCenter])
-    setIsCreateModalOpen(false)
-    // toast({ title: "Exam Center Created", description: "The new exam center has been added successfully." })
-  }
+  useEffect(() => {
+    getExamCenters();
+  }, []);
 
-  const handleEditCenter = (center: ExamCenter) => {
-    setCenters(centers.map(c => c.id === center.id ? center : c))
-    setIsEditModalOpen(false)
-    setCurrentCenter(null)
-    // toast({ title: "Exam Center Updated", description: "The exam center has been updated successfully." })
-  }
-
-  const handleDeleteCenter = (id: string) => {
-    setCenters(centers.filter(c => c.id !== id))
-    // toast({ title: "Exam Center Deleted", description: "The exam center has been removed successfully." })
-  }
-
-  const handleSort = (key: keyof ExamCenter, direction: 'asc' | 'desc') => {
-    setSortConfig({ key, direction })
-  }
+  const handleSort = (key: keyof ExamCenter, direction: "asc" | "desc") => {
+    setSortConfig({ key, direction });
+  };
 
   const handleFilter = (key: keyof ExamCenter, value: string) => {
-    setFilters(prevFilters => ({
+    setFilters((prevFilters) => ({
       ...prevFilters,
-      [key]: value
-    }))
-  }
+      [key]: value,
+    }));
+  };
 
   const filteredAndSortedCenters = useMemo(() => {
-    return centers
-      .filter(center => 
-        Object.entries(filters).every(([key, value]) => 
-          center[key as keyof ExamCenter].toString().toLowerCase().includes(value.toLowerCase())
-        ) &&
-        Object.values(center).some(val => 
-          val.toString().toLowerCase().includes(searchTerm.toLowerCase())
-        )
+    return examCenters
+      ?.filter(
+        (center) =>
+          Object.entries(filters).every(
+            ([key, value]) =>
+              center[key as keyof ExamCenter] ??
+              "".toString().toLowerCase().includes(value.toLowerCase())
+          ) &&
+          Object.values(center).some((val) =>
+            val.toString().toLowerCase().includes(searchTerm.toLowerCase())
+          )
       )
       .sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1
-        if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1
-        return 0
-      })
-  }, [centers, filters, searchTerm, sortConfig])
+        if ((a[sortConfig.key] ?? "") < (b[sortConfig.key] ?? ""))
+          return sortConfig.direction === "asc" ? -1 : 1;
+        if ((a[sortConfig.key] ?? "") > (b[sortConfig.key] ?? ""))
+          return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
+  }, [examCenters, filters, searchTerm, sortConfig]);
 
   return (
     <div className="container mx-auto p-4 space-y-8">
@@ -101,9 +126,12 @@ export default function ExamCentersPage() {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 pr-4 py-2 w-full bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
             />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60" size={18} />
+            <Search
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60"
+              size={18}
+            />
           </div>
-          <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
             <DialogTrigger asChild>
               <Button className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300 w-full sm:w-auto">
                 <Plus className="mr-2 h-4 w-4" /> Create New
@@ -113,7 +141,7 @@ export default function ExamCentersPage() {
               <DialogHeader>
                 <DialogTitle>Create New Exam Center</DialogTitle>
               </DialogHeader>
-              <CenterForm onSubmit={handleCreateCenter} />
+              <CreateForm />
             </DialogContent>
           </Dialog>
         </div>
@@ -128,77 +156,116 @@ export default function ExamCentersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {['code', 'name', 'address', 'contact', 'status'].map((key) => (
-                    <TableHead key={key}>
-                      <div className="flex items-center justify-between">
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="ml-2 hover:bg-primary/10 transition-colors duration-300">
-                              <Filter className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="bg-background/95 backdrop-blur-sm border-primary/20">
-                            <DropdownMenuItem onClick={() => handleSort(key as keyof ExamCenter, 'asc')} className="flex items-center">
-                              <SortAsc className="mr-2 h-4 w-4" /> Sort Ascending
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleSort(key as keyof ExamCenter, 'desc')} className="flex items-center">
-                              <SortDesc className="mr-2 h-4 w-4" /> Sort Descending
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                              <div className="relative w-full">
-                                <Input
-                                  placeholder={`Filter ${key}...`}
-                                  value={filters[key as keyof ExamCenter] || ''}
-                                  onChange={(e) => handleFilter(key as keyof ExamCenter, e.target.value)}
-                                  className="mt-2 w-full pl-8 pr-4 py-1 bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-                                />
-                                <Search className="absolute left-2 top-1/2 transform -translate-y-1/4 text-primary/60" size={16} />
-                              </div>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </TableHead>
-                  ))}
+                  {["code", "name", "address", "contact", "status"].map(
+                    (key) => (
+                      <TableHead key={key}>
+                        <div className="flex items-center justify-between">
+                          {key.charAt(0).toUpperCase() + key.slice(1)}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="ml-2 hover:bg-primary/10 transition-colors duration-300"
+                              >
+                                <Filter className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                              align="end"
+                              className="bg-background/95 backdrop-blur-sm border-primary/20"
+                            >
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleSort(key as keyof ExamCenter, "asc")
+                                }
+                                className="flex items-center"
+                              >
+                                <SortAsc className="mr-2 h-4 w-4" /> Sort
+                                Ascending
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  handleSort(key as keyof ExamCenter, "desc")
+                                }
+                                className="flex items-center"
+                              >
+                                <SortDesc className="mr-2 h-4 w-4" /> Sort
+                                Descending
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onSelect={(e) => e.preventDefault()}
+                              >
+                                <div className="relative w-full">
+                                  <Input
+                                    placeholder={`Filter ${key}...`}
+                                    value={
+                                      filters[key as keyof ExamCenter] || ""
+                                    }
+                                    onChange={(e) =>
+                                      handleFilter(
+                                        key as keyof ExamCenter,
+                                        e.target.value
+                                      )
+                                    }
+                                    className="mt-2 w-full pl-8 pr-4 py-1 bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+                                  />
+                                  <Search
+                                    className="absolute left-2 top-1/2 transform -translate-y-1/4 text-primary/60"
+                                    size={16}
+                                  />
+                                </div>
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </TableHead>
+                    )
+                  )}
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 <AnimatePresence>
-                  {filteredAndSortedCenters.map((center) => (
+                  {examCenters.map((center) => (
                     <motion.tr
-                      key={center.id}
+                      key={center._id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
                       transition={{ duration: 0.3 }}
                       className="hover:bg-primary/5 transition-colors duration-300"
                     >
-                      <TableCell className="font-medium">{center.code}</TableCell>
+                      <TableCell className="font-medium">
+                        {center.code}
+                      </TableCell>
                       <TableCell>{center.name}</TableCell>
                       <TableCell>{center.address}</TableCell>
                       <TableCell>{center.contact}</TableCell>
                       <TableCell>
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          center.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}>
-                          {center.status}
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            center.active
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {center.active ? "Active" : "Inactive"}
                         </span>
                       </TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
-                          <Dialog open={isEditModalOpen && currentCenter?.id === center.id} onOpenChange={(open) => {
-                            setIsEditModalOpen(open)
-                            if (!open) setCurrentCenter(null)
-                          }}>
+                          <Dialog
+                            open={isUpdateOpen}
+                            onOpenChange={setIsUpdateOpen}
+                          >
                             <DialogTrigger asChild>
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => {
-                                  setCurrentCenter(center)
-                                  setIsEditModalOpen(true)
+                                  setExamCenter(center);
+                                  setIsUpdateOpen(true);
                                 }}
                                 className="hover:bg-primary/10 transition-colors duration-300"
                               >
@@ -209,22 +276,70 @@ export default function ExamCentersPage() {
                               <DialogHeader>
                                 <DialogTitle>Edit Exam Center</DialogTitle>
                               </DialogHeader>
-                              {currentCenter && (
-                                <CenterForm
-                                  onSubmit={handleEditCenter}
-                                  initialData={currentCenter}
-                                />
+                              <UpdateForm
+                                initialData={examCenter as ExamCenter}
+                              />
+                            </DialogContent>
+                          </Dialog>
+                          <Dialog
+                            open={isDeleteOpen}
+                            onOpenChange={setIsDeleteOpen}
+                          >
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => {
+                                  setExamCenter(center);
+                                  setIsDeleteOpen(true);
+                                }}
+                                className="hover:bg-red-600 transition-colors duration-300"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </DialogTrigger>
+
+                            <DialogContent className="w-11/12 lg:w-full rounded-lg">
+                              <DialogHeader>
+                                <DialogTitle>
+                                  Delete {examCenter?.name}
+                                </DialogTitle>
+                              </DialogHeader>
+                              {examCenter && (
+                                <div className="pb-4">
+                                  <Label className="block text-sm font-medium text-primary mb-4">
+                                    Are you sure you want to delete{" "}
+                                    {examCenter?.name}?
+                                  </Label>
+                                  <DialogFooter className="flex flex-row justify-end gap-2">
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      className="flex items-center gap-2"
+                                      onClick={() => {
+                                        setIsDeleteOpen(false);
+                                      }}
+                                    >
+                                      <CircleX className="h-4 w-4" />
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      type="button"
+                                      size="sm"
+                                      className={`flex items-center gap-2 `}
+                                      onClick={() => {
+                                        deleteExamCenter(examCenter._id);
+                                      }}
+                                    >
+                                      <Trash className="h-4 w-4" />
+                                      Delete
+                                    </Button>
+                                  </DialogFooter>
+                                </div>
                               )}
                             </DialogContent>
                           </Dialog>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDeleteCenter(center.id)}
-                            className="hover:bg-red-600 transition-colors duration-300"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
                         </div>
                       </TableCell>
                     </motion.tr>
@@ -235,28 +350,32 @@ export default function ExamCentersPage() {
           </div>
         </CardContent>
       </Card>
-      {/* <Toaster /> */}
     </div>
-  )
+  );
 }
 
-function CenterForm({ onSubmit, initialData }: { 
-  onSubmit: (center: ExamCenter) => void
-  initialData?: ExamCenter 
-}) {
-  const [formData, setFormData] = useState<ExamCenter>(
-    initialData || { id: '', code: '', name: '', address: '', contact: '', status: 'active' }
-  )
+function CreateForm() {
+  const [formData, setFormData] = useState({
+    code: "",
+    name: "",
+    address: "",
+    contact: 0,
+    active: true,
+  });
+
+  const { createExamCenter } = useExamCenterStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-  }
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    onSubmit(formData)
-  }
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    createExamCenter(formData);
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -298,6 +417,7 @@ function CenterForm({ onSubmit, initialData }: {
         <Input
           id="contact"
           name="contact"
+          type="number"
           value={formData.contact}
           onChange={handleChange}
           required
@@ -307,8 +427,13 @@ function CenterForm({ onSubmit, initialData }: {
       <div className="space-y-2">
         <Label>Status</Label>
         <RadioGroup
-          value={formData.status}
-          onValueChange={(value) => setFormData(prev => ({ ...prev, status: value  as 'active' | 'inactive' }))}
+          value={formData.active ? "active" : "inactive"}
+          onValueChange={(value) =>
+            setFormData((prev) => ({
+              ...prev,
+              active: value === "active",
+            }))
+          }
           className="flex space-x-4"
         >
           <div className="flex items-center space-x-2">
@@ -321,9 +446,108 @@ function CenterForm({ onSubmit, initialData }: {
           </div>
         </RadioGroup>
       </div>
-      <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300">
-        {initialData ? 'Update' : 'Create'} Exam Center
+      <Button
+        type="submit"
+        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300"
+      >
+        Create Exam Center
       </Button>
     </form>
-  )
+  );
+}
+
+function UpdateForm({ initialData }: { initialData: ExamCenter }) {
+  const [formData, setFormData] = useState(initialData);
+
+  const { updateExamCenter } = useExamCenterStore();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    updateExamCenter(formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="code">Code</Label>
+        <Input
+          id="code"
+          name="code"
+          value={formData.code}
+          onChange={handleChange}
+          required
+          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="name">Name</Label>
+        <Input
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="address">Address</Label>
+        <Input
+          id="address"
+          name="address"
+          value={formData.address}
+          onChange={handleChange}
+          required
+          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="contact">Contact</Label>
+        <Input
+          id="contact"
+          name="contact"
+          type="number"
+          value={formData.contact}
+          onChange={handleChange}
+          required
+          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label>Status</Label>
+        <RadioGroup
+          value={formData.active ? "active" : "inactive"}
+          onValueChange={(value) =>
+            setFormData((prev) => ({
+              ...prev,
+              active: value === "active",
+            }))
+          }
+          className="flex space-x-4"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="active" id="active" />
+            <Label htmlFor="active">Active</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="inactive" id="inactive" />
+            <Label htmlFor="inactive">Inactive</Label>
+          </div>
+        </RadioGroup>
+      </div>
+      <Button
+        type="submit"
+        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300"
+      >
+        Update Exam Center
+      </Button>
+    </form>
+  );
 }

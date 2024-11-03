@@ -15,14 +15,25 @@ interface MarkColumnStoreState {
   deleteMarkColumn: (_id: string) => void;
   isNull: boolean;
   setIsNull: (isNull: boolean) => void;
+  isCreateOpen: boolean;
+  setIsCreateOpen: (isCreateOpen: boolean) => void;
+  isUpdateOpen: boolean;
+  setIsUpdateOpen: (isUpdateOpen: boolean) => void;
+  isDeleteOpen: boolean;
+  setIsDeleteOpen: (isDeleteOpen: boolean) => void;
   errorMessage: string;
   setErrorMessage: (errorMessage: string) => void;
 }
 
 const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
   isNull: false,
-  setIsNull: (isNull) => set({ isNull }),
-  errorMessage: "",
+setIsNull: (isNull) => set({ isNull }),
+  isCreateOpen: false,
+  setIsCreateOpen: (isCreateOpen) => set({ isCreateOpen }),
+  isUpdateOpen: false,
+  setIsUpdateOpen: (isUpdateOpen) => set({ isUpdateOpen }),
+  isDeleteOpen: false,
+  setIsDeleteOpen: (isDeleteOpen) => set({ isDeleteOpen }),  errorMessage: "",
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   markColumns: [],
   setMarkColumns: (markColumns) => set({ markColumns }),
@@ -32,7 +43,7 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
     const loadingToast = toast.loading("Creating markColumn...");
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/markColumn`, markColumn,{
+        .post(`http://localhost:3000/api/markColumn`, markColumn,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -78,7 +89,7 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/markColumn`,{
+        .get(`http://localhost:3000/api/markColumn`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -116,7 +127,7 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/markColumn/${_id}`,{
+        .get(`http://localhost:3000/api/markColumn/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -151,7 +162,7 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
     const loadingToast = toast.loading("Updating markColumn...");
     try {
       await axios
-        .put(`${import.meta.env.API_URL}/markColumn/${markColumn._id}`, markColumn,{
+        .put(`http://localhost:3000/api/markColumn/${markColumn._id}`, markColumn,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -192,7 +203,7 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting markColumn...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/markColumn/${_id}`,{
+        .delete(`http://localhost:3000/api/markColumn/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

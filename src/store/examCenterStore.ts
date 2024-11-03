@@ -8,13 +8,19 @@ interface ExamCenterStoreState {
   setExamCenters: (examCenters: [ExamCenter]) => void;
   examCenter: ExamCenter | null;
   setExamCenter: (examCenter: ExamCenter) => void;
-  createExamCenter: (examCenter: Partial<ExamCenter>) => void;
+  createExamCenter: (examCenter: Omit<ExamCenter, "_id">) => void;
   getExamCenters: () => void;
   getExamCenter: (_id: string) => void;
-  updateExamCenter: (examCenter: Partial<ExamCenter>) => void;
+  updateExamCenter: (examCenter: ExamCenter) => void;
   deleteExamCenter: (_id: string) => void;
   isNull: boolean;
   setIsNull: (isNull: boolean) => void;
+  isCreateOpen: boolean;
+  setIsCreateOpen: (isCreateOpen: boolean) => void;
+  isUpdateOpen: boolean;
+  setIsUpdateOpen: (isUpdateOpen: boolean) => void;
+  isDeleteOpen: boolean;
+  setIsDeleteOpen: (isDeleteOpen: boolean) => void;
   errorMessage: string;
   setErrorMessage: (errorMessage: string) => void;
 }
@@ -22,6 +28,12 @@ interface ExamCenterStoreState {
 const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
   isNull: false,
   setIsNull: (isNull) => set({ isNull }),
+  isCreateOpen: false,
+  setIsCreateOpen: (isCreateOpen) => set({ isCreateOpen }),
+  isUpdateOpen: false,
+  setIsUpdateOpen: (isUpdateOpen) => set({ isUpdateOpen }),
+  isDeleteOpen: false,
+  setIsDeleteOpen: (isDeleteOpen) => set({ isDeleteOpen }),
   errorMessage: "",
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   examCenters: [],
@@ -32,7 +44,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     const loadingToast = toast.loading("Creating examCenter...");
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/examCenter`, examCenter,{
+        .post(`http://localhost:3000/api/examCenter`, examCenter, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -40,10 +52,17 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
+            set({
+              examCenters: [
+                ...useExamCenterStore.getState().examCenters,
+                response.data,
+              ],
+            });
             toast.success("ExamCenter created successfully", {
               id: loadingToast,
               duration: 3000,
             });
+            set({ isCreateOpen: false });
           } else if (response.status === 200) {
             toast.error(
               response?.data?.message || `Failed to create examCenter`,
@@ -78,7 +97,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/examCenter`,{
+        .get(`http://localhost:3000/api/examCenter`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -116,7 +135,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/examCenter/${_id}`,{
+        .get(`http://localhost:3000/api/examCenter/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -151,38 +170,53 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     const loadingToast = toast.loading("Updating examCenter...");
     try {
       await axios
-        .put(`${import.meta.env.API_URL}/examCenter/${examCenter._id}`, examCenter,{
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        .put(
+          `http://localhost:3000/api/examCenter/${examCenter._id}`,
+          examCenter,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        )
         .then((response) => {
           console.log(response.data);
-          if (response.status === 200) {
+          if (response.status === 201) {
+            set({
+              examCenters: useExamCenterStore
+                .getState()
+                .examCenters.map((item) =>
+                  item._id === examCenter._id ? examCenter : item
+                ),
+            });
             toast.success("ExamCenter updated successfully", {
               id: loadingToast,
               duration: 3000,
             });
-          } else if (response.status === 404) {
-            toast.error(response?.data?.message || `ExamCenter not found`, {
-              id: loadingToast,
-              duration: 3000,
-            });
+            set({ isUpdateOpen: false });
+          } else if (response.status === 200) {
+            toast.error(
+              response?.data?.message || `Failed to update Exam Center`,
+              {
+                id: loadingToast,
+                duration: 3000,
+              }
+            );
           } else {
-            toast.error(`Failed to update examCenter`, {
+            toast.error(`Failed to update Exam Center`, {
               id: loadingToast,
               duration: 3000,
             });
           }
         })
         .catch((error) => {
-          toast.error(`Failed to update examCenter`, {
+          toast.error(`Failed to update Exam Center`, {
             id: loadingToast,
             duration: 3000,
           });
         });
     } catch (error) {
-      toast.error(`Failed to update examCenter`, {
+      toast.error(`Failed to update Exam Center`, {
         id: loadingToast,
         duration: 3000,
       });
@@ -192,32 +226,41 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting examCenter...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/examCenter/${_id}`,{
+        .delete(`http://localhost:3000/api/examCenter/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         })
         .then((response) => {
           console.log(response.data);
-          if (response.status === 200) {
+          if (response.status === 201) {
+            set({
+              examCenters: useExamCenterStore
+                .getState()
+                .examCenters.filter((item) => item._id !== _id),
+            });
             toast.success("ExamCenter deleted successfully", {
               id: loadingToast,
               duration: 3000,
             });
-          } else if (response.status === 404) {
-            toast.error(response?.data?.message || `ExamCenter not found`, {
-              id: loadingToast,
-              duration: 3000,
-            });
+            set({ isDeleteOpen: false });
+          } else if (response.status === 200) {
+            toast.error(
+              response?.data?.message || `Failed to delete Exam Center`,
+              {
+                id: loadingToast,
+                duration: 3000,
+              }
+            );
           } else {
-            toast.error(`Failed to delete examCenter`, {
+            toast.error(`Failed to delete Exam Center`, {
               id: loadingToast,
               duration: 3000,
             });
           }
         })
         .catch((error) => {
-          toast.error(`Failed to delete examCenter`, {
+          toast.error(`Failed to delete Exam Center`, {
             id: loadingToast,
             duration: 3000,
           });

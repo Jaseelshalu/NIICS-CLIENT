@@ -16,14 +16,25 @@ interface CredentialStoreState {
   deleteCredential: (_id: string) => void;
   isNull: boolean;
   setIsNull: (isNull: boolean) => void;
+  isCreateOpen: boolean;
+  setIsCreateOpen: (isCreateOpen: boolean) => void;
+  isUpdateOpen: boolean;
+  setIsUpdateOpen: (isUpdateOpen: boolean) => void;
+  isDeleteOpen: boolean;
+  setIsDeleteOpen: (isDeleteOpen: boolean) => void;
   errorMessage: string;
   setErrorMessage: (errorMessage: string) => void;
 }
 
 const useCredentialStore = create<CredentialStoreState>((set) => ({
   isNull: false,
-  setIsNull: (isNull) => set({ isNull }),
-  errorMessage: "",
+setIsNull: (isNull) => set({ isNull }),
+  isCreateOpen: false,
+  setIsCreateOpen: (isCreateOpen) => set({ isCreateOpen }),
+  isUpdateOpen: false,
+  setIsUpdateOpen: (isUpdateOpen) => set({ isUpdateOpen }),
+  isDeleteOpen: false,
+  setIsDeleteOpen: (isDeleteOpen) => set({ isDeleteOpen }),  errorMessage: "",
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   credentials: [],
   setCredentials: (credentials) => set({ credentials }),
@@ -33,7 +44,7 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     const loadingToast = toast.loading("Authenticating credential...");
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/credential/auth`, {
+        .post(`http://localhost:3000/api/credential/login`, {
           username,
           password,
         },{
@@ -81,7 +92,7 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     const loadingToast = toast.loading("Creating credential...");
     try {
       await axios
-        .post(`${import.meta.env.API_URL}/credential`, credential,{
+        .post(`http://localhost:3000/api/credential`, credential,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -127,7 +138,7 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/credential`,{
+        .get(`http://localhost:3000/api/credential`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -165,7 +176,7 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`${import.meta.env.API_URL}/credential/${_id}`,{
+        .get(`http://localhost:3000/api/credential/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -201,7 +212,7 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     try {
       await axios
         .put(
-          `${import.meta.env.API_URL}/credential/${credential._id}`,
+          `http://localhost:3000/api/credential/${credential._id}`,
           credential
         ,{
           headers: {
@@ -244,7 +255,7 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     const loadingToast = toast.loading("Deleting credential...");
     try {
       await axios
-        .delete(`${import.meta.env.API_URL}/credential/${_id}`,{
+        .delete(`http://localhost:3000/api/credential/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

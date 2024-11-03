@@ -84,10 +84,11 @@ export interface Credential {
 // src/types/Applicant.ts
 
 export interface Applicant {
-  _id: string;
+  _id: string;  
   name: string;
-  dob: Date;
+  applicationNumber: string;
   imageURL: string;
+  dob: Date;
   fathersName: string;
   guardiansName: string;
   aadharNumber: string;
@@ -100,7 +101,7 @@ export interface Applicant {
   whatsapp: string;
   alternativeNumber: string;
   email: string;
-  examCenter: ExamCenter; // ObjectId as string reference
+  examCenter: ExamCenter; // ObjectId as a string reference
   options: Institution[]; // Array of ObjectId references to institutions
   aadharDocument: string;
   birthCertificate: string;

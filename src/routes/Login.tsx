@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./../components/ui/button";
 import {
   Card,
@@ -11,30 +11,36 @@ import {
 import { Input } from "./../components/ui/input";
 import { Label } from "./../components/ui/label";
 import { AlertCircle } from "lucide-react";
+import useCredentialStore from "@/store/credentialStore";
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const token = localStorage.getItem("token");
+  const decodedToken: any = jwtDecode(token as string);
+
+  useEffect(() => {
+    if (token && decodedToken?.role === "admin") {
+      window.location.href = "/admin";
+    } else {
+      window.location.href = "/exam-center";
+    }
+  }, []);
+
+  const { authCredential, errorMessage } = useCredentialStore();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-
-    if (!username || !password) {
-      setError("Please enter both username and password.");
-      return;
-    }
-
-    // Here you would typically handle the login logic
-    console.log("Login attempted with:", { username, password });
+    authCredential(username, password);
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
+          <CardTitle className="text-2xl font-bold text-center">
+            Login
+          </CardTitle>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
@@ -60,10 +66,10 @@ export default function LoginPage() {
                 required
               />
             </div>
-            {error && (
+            {errorMessage && (
               <div className="flex items-center text-red-600 space-x-2">
                 <AlertCircle size={20} />
-                <span className="text-sm">{error}</span>
+                <span className="text-sm">{errorMessage}</span>
               </div>
             )}
           </CardContent>
