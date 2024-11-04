@@ -11,7 +11,7 @@ interface ApplicantStoreState {
   getNewApplicant: () => void;
   applicant: Applicant | null;
   setApplicant: (applicant: Applicant) => void;
-  createApplicant: (applicant: Partial<Applicant>) => void;
+  createApplicant: (applicant: Partial<Applicant>) => Promise<Boolean>;
   getApplicants: () => void;
   getApplicant: (_id: string) => void;
   updateApplicant: (applicant: Partial<Applicant>) => void;
@@ -30,13 +30,14 @@ interface ApplicantStoreState {
 
 const useApplicantStore = create<ApplicantStoreState>((set) => ({
   isNull: false,
-setIsNull: (isNull) => set({ isNull }),
+  setIsNull: (isNull) => set({ isNull }),
   isCreateOpen: false,
   setIsCreateOpen: (isCreateOpen) => set({ isCreateOpen }),
   isUpdateOpen: false,
   setIsUpdateOpen: (isUpdateOpen) => set({ isUpdateOpen }),
   isDeleteOpen: false,
-  setIsDeleteOpen: (isDeleteOpen) => set({ isDeleteOpen }),  errorMessage: "",
+  setIsDeleteOpen: (isDeleteOpen) => set({ isDeleteOpen }),
+  errorMessage: "",
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   applicants: [],
   newApplicant: null,
@@ -72,6 +73,7 @@ setIsNull: (isNull) => set({ isNull }),
               id: loadingToast,
               duration: 3000,
             });
+            return true;
           } else if (response.status === 200) {
             toast.error(
               response?.data?.message || `Failed to create applicant`,
@@ -80,11 +82,13 @@ setIsNull: (isNull) => set({ isNull }),
                 duration: 3000,
               }
             );
+            return false;
           } else {
             toast.error(`Failed to create applicant`, {
               id: loadingToast,
               duration: 3000,
             });
+            return false;
           }
         })
         .catch((error) => {
@@ -92,13 +96,16 @@ setIsNull: (isNull) => set({ isNull }),
             id: loadingToast,
             duration: 3000,
           });
+          return false;
         });
     } catch (error) {
       toast.error(`Failed to create applicant`, {
         id: loadingToast,
         duration: 3000,
       });
+      return false;
     }
+    return false;
   },
   getApplicants: async () => {
     set({ applicants: [] });

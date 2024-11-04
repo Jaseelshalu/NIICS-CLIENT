@@ -58,10 +58,24 @@ export default function Component() {
   const [details, setDetails] = useState<ApplicationDetails>(sampleData);
   const {
     newApplicant,
-    setNewApplicant
+    setNewApplicant,
+    createApplicant
   } = useApplicantStore()
 
   const navigate = useNavigate()
+
+  const handleClickSubmit = async () => {
+    // setNewApplicant(details)
+    // navigate('/apply/upload-documents')
+    const created = await createApplicant(newApplicant as any).then((created) => {
+      if (created) {
+        navigate('/apply/success-message')
+      }else{
+        navigate('/apply/error-message')
+      }
+    })
+
+  }
 
   return (
     <div className="w-full max-w-6xl mx-auto p-6 bg-background">
@@ -118,7 +132,7 @@ export default function Component() {
           <Edit className="w-4 h-4 mr-2" />
           Edit
         </Button>
-        <Button className="flex items-center">
+        <Button onClick={handleClickSubmit} className="flex items-center">
           <Send className="w-4 h-4 mr-2" />
           Submit
         </Button>

@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { LoadingAnimation } from '../components/ApplicationLoading'
 import { Navigate, Outlet } from 'react-router-dom'
 import useApplicantStore from '@/store/applicantStore'
+import ErrorMessage from '@/components/ApplicationError'
 
 export default function Apply() {
   const [step, setStep] = useState(1)
@@ -42,13 +43,15 @@ export default function Apply() {
 
   return (
     <div className="container mx-auto p-4 ">
-      <Navigate to="/apply/personal-details" />
+      {/* <Navigate to="/apply/personal-details" /> */}
       <h1 className="text-2xl font-bold mb-4">Admission Application</h1>
 
       {/* {step === 1 && <PersonalInfo onNext={handleNext} />} */}
       {/* {step === 2 && <ContactDetails onNext={handleNext} onDoLater={handleDoLater} />} */}
       {/* {step === 3 && <ExamCenter onNext={handleNext} onDoLater={handleDoLater} />} */}
-      {/* {step > 3 && <SuccessMessage />} */}
+      {step > 4 && <SuccessMessage />}
+      {/* <SuccessMessage /> */}
+      {/* <ErrorMessage /> */}
       <Outlet />
     </div>
   )

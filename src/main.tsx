@@ -22,6 +22,8 @@ import MarkListPage from './routes/MarkLists.tsx';
 import ExamCenterDashboard from './routes/ExamCenter.tsx';
 import PreviewApplicationDetails from './components/apply/Preview.tsx';
 import CredentialManagementPage from './routes/CreateCredentials.tsx';
+import { SuccessMessage } from './components/ApplicationSuccess.tsx';
+import ErrorMessage from './components/ApplicationError.tsx';
 
 const router = createBrowserRouter([
   {
@@ -72,6 +74,16 @@ const router = createBrowserRouter([
       {
         path: "preview",
         element: <PreviewApplicationDetails />,
+        errorElement: <Error />,
+      },
+      {
+        path: "success-message",
+        element: <SuccessMessage />,
+        errorElement: <Error />,
+      },
+      {
+        path: "error-message",
+        element: <ErrorMessage />,
         errorElement: <Error />,
       }
 
