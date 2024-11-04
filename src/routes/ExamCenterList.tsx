@@ -289,28 +289,26 @@ export default function ExamCentersPage() {
                     {examCenters.length === 0 &&
                       errorMessage === "" &&
                       isNull === false &&
-                      Array.from({ length: 1 }).map((_, index) => (
-                        <motion.tr
-                          key={index}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
-                          transition={{ duration: 0.3 }}
-                          className="hover:bg-primary/5 transition-colors duration-300"
-                        >
-                          <TableCell className="animate-pulse bg-gray-200 rounded h-6 w-44" />
-                          <TableCell className="animate-pulse bg-gray-200 rounded h-6 w-44" />
-                          <TableCell className="animate-pulse bg-gray-200 rounded h-6 w-44" />
-                          <TableCell className="animate-pulse bg-gray-200 rounded h-6 w-44" />
-                          <TableCell className="animate-pulse bg-gray-200 rounded h-6 w-44" />
-                          <TableCell>
-                            <div className="flex space-x-2">
-                              <div className="animate-pulse bg-gray-200 rounded-full h-8 w-8" />
-                              <div className="animate-pulse bg-gray-200 rounded-full h-8 w-8" />
-                            </div>
-                          </TableCell>
-                        </motion.tr>
-                      ))}
+                      Array.from({ length: 1 }).map((_, index) =>
+                        Array.from({ length: 1 }).map((_, index) => (
+                          <motion.tr
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.3 }}
+                            className="hover:bg-primary/5 transition-colors duration-300 w-full"
+                          >
+                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
+                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
+                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
+                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
+                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
+                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
+                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
+                          </motion.tr>
+                        ))
+                      )}
                     {isNull && (
                       <motion.tr
                         initial={{ opacity: 0, y: 20 }}
