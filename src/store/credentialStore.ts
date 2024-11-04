@@ -134,7 +134,7 @@ setIsNull: (isNull) => set({ isNull }),
   },
   getCredentials: async () => {
     set({ credentials: [] });
-    set({ isNull: true });
+    set({ isNull:false });
     set({ errorMessage: "" });
     try {
       await axios
@@ -172,7 +172,7 @@ setIsNull: (isNull) => set({ isNull }),
   },
   getCredential: async (_id) => {
     set({ credential: null });
-    set({ isNull: true });
+    set({ isNull:false });
     set({ errorMessage: "" });
     try {
       await axios

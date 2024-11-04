@@ -109,7 +109,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   },
   getApplicants: async () => {
     set({ applicants: [] });
-    set({ isNull: true });
+    set({ isNull:false });
     set({ errorMessage: "" });
     try {
       await axios
@@ -147,7 +147,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   },
   getApplicant: async (_id) => {
     set({ applicant: null });
-    set({ isNull: true });
+    set({ isNull:false });
     set({ errorMessage: "" });
     try {
       await axios

@@ -85,7 +85,7 @@ setIsNull: (isNull) => set({ isNull }),
   },
   getInstitutions: async () => {
     set({ institutions: [] });
-    set({ isNull: true });
+    set({ isNull:false });
     set({ errorMessage: "" });
     try {
       await axios
@@ -123,7 +123,7 @@ setIsNull: (isNull) => set({ isNull }),
   },
   getInstitution: async (_id) => {
     set({ institution: null });
-    set({ isNull: true });
+    set({ isNull:false });
     set({ errorMessage: "" });
     try {
       await axios
