@@ -58,6 +58,8 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
                 response.data,
               ],
             });
+            useExamCenterStore.getState().examCenters.length > 0 &&
+              set({ isNull: false });
             toast.success("ExamCenter created successfully", {
               id: loadingToast,
               duration: 3000,
@@ -93,7 +95,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
   },
   getExamCenters: async () => {
     set({ examCenters: [] });
-    set({ isNull: true });
+    set({ isNull: false });
     set({ errorMessage: "" });
     try {
       await axios
@@ -106,7 +108,9 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
           console.log(response.data);
           if (response.status === 201) {
             set({ examCenters: response.data });
-            set({ isNull: false });
+            if (response.data.length === 0) {
+              set({ isNull: true });
+            }
           } else if (response.status === 200) {
             set({
               errorMessage:
@@ -131,7 +135,6 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
   },
   getExamCenter: async (_id) => {
     set({ examCenter: null });
-    set({ isNull: true });
     set({ errorMessage: "" });
     try {
       await axios
@@ -144,7 +147,6 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
           console.log(response.data);
           if (response.status === 201) {
             set({ examCenter: response.data });
-            set({ isNull: false });
           } else if (response.status === 200) {
             set({
               errorMessage: response?.data?.message || `ExamCenter not found`,
@@ -239,6 +241,8 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
                 .getState()
                 .examCenters.filter((item) => item._id !== _id),
             });
+            useExamCenterStore.getState().examCenters.length === 0 &&
+              set({ isNull: true });
             toast.success("ExamCenter deleted successfully", {
               id: loadingToast,
               duration: 3000,

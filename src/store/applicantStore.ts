@@ -102,7 +102,7 @@ setIsNull: (isNull) => set({ isNull }),
   },
   getApplicants: async () => {
     set({ applicants: [] });
-    set({ isNull: true });
+    set({ isNull:false });
     set({ errorMessage: "" });
     try {
       await axios
@@ -140,7 +140,7 @@ setIsNull: (isNull) => set({ isNull }),
   },
   getApplicant: async (_id) => {
     set({ applicant: null });
-    set({ isNull: true });
+    set({ isNull:false });
     set({ errorMessage: "" });
     try {
       await axios

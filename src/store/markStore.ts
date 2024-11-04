@@ -85,7 +85,7 @@ setIsNull: (isNull) => set({ isNull }),
   },
   getMarks: async () => {
     set({ marks: [] });
-    set({ isNull: true });
+    set({ isNull:false });
     set({ errorMessage: "" });
     try {
       await axios
@@ -123,7 +123,7 @@ setIsNull: (isNull) => set({ isNull }),
   },
   getMark: async (_id) => {
     set({ mark: null });
-    set({ isNull: true });
+    set({ isNull:false });
     set({ errorMessage: "" });
     try {
       await axios
