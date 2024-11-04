@@ -13,22 +13,33 @@ import { Label } from "./../components/ui/label";
 import { AlertCircle } from "lucide-react";
 import useCredentialStore from "@/store/credentialStore";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
   const token = localStorage.getItem("token");
-  const decodedToken: any = token && jwtDecode(token as string);
+  let decodedToken: any = null;
+
+  try {
+    if (token) {
+      decodedToken = jwtDecode(token);
+    }
+  } catch (error) {
+    console.error("Invalid token:", error);
+    localStorage.removeItem("token");
+    navigate("/login"); // Redirect to login page if token is invalid
+  }
 
   useEffect(() => {
-    if (token && decodedToken?.role === "admin") {
-      window.location.href = "/admin";
-    } else if (token && decodedToken?.role === "examCenter") {
-      window.location.href = "/exam-center";
-    } else {
-      null;
+    if (decodedToken?.role === "admin") {
+      navigate("/admin");
+    } else if (decodedToken?.role === "examCenter") {
+      navigate("/exam-center");
     }
-  }, []);
+  }, [decodedToken, navigate]);
 
   const { authCredential, errorMessage } = useCredentialStore();
 
