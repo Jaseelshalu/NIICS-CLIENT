@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { User, Calendar, Image, Users, CreditCard, MapPin, Phone, Mail, Building, FileText, Send, Edit } from "lucide-react"
 import useApplicantStore from '@/store/applicantStore';
+import { useNavigate } from 'react-router-dom';
 
 interface Institution {
   name: string;
@@ -60,6 +61,8 @@ export default function Component() {
     setNewApplicant
   } = useApplicantStore()
 
+  const navigate = useNavigate()
+
   return (
     <div className="w-full max-w-6xl mx-auto p-6 bg-background">
       <h1 className="text-2xl font-bold text-center mb-6">Full Application Preview</h1>
@@ -107,7 +110,11 @@ export default function Component() {
         </div>
       </div>
       <div className="flex justify-between mt-6">
-        <Button variant="outline" className="flex items-center">
+        <Button onClick={
+          () => {
+            navigate('/apply/personal-details')
+          }
+        } variant="outline" className="flex items-center">
           <Edit className="w-4 h-4 mr-2" />
           Edit
         </Button>

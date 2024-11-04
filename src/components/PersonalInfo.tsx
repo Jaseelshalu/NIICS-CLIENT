@@ -151,7 +151,7 @@ export function PersonalInfo() {
                             <Input id="email" name="email" type="email" value={newApplicant?.email} onChange={handleChange} required/>
                         </div>
 
-                        <Button type="submit" disabled={!isFormValid()}>Next</Button>
+                        <Button className='relative left-[80%] md:left-[89%]' type="submit" disabled={!isFormValid()}>Next</Button>
 
                     </form>
                 </CardContent>
