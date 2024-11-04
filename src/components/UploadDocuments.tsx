@@ -9,10 +9,14 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { SuccessMessage } from './ApplicationSuccess'
 import useApplicantStore from "@/store/applicantStore"
+import { Applicant } from "@/types/types"
+import { uploadImageToCloudinary } from "@/lib/utils"
 
 
 
 export function UploadDocuments() {
+  const [aadharDocument, setAadharDocument] = useState<File | null>(null);
+  const [birthCertificate , setBirthCertificate] = useState<File | null>(null);
   const {newApplicant , setNewApplicant} = useApplicantStore()
   const [fileErrors, setFileErrors] = useState({
     aadharDocument: '',
@@ -37,11 +41,53 @@ export function UploadDocuments() {
       reader.onload = (e) => {
         if (e.target) {
           // setnewApplicant?(prev => ({ ...prev, [fieldName]: e.target!.result as string }))
-          setNewApplicant({ ...newApplicant, [fieldName]: e.target!.result as string } as any)
+          // setNewApplicant({ ...newApplicant, [fieldName]: e.target!.result as string } as any)
+          if(fieldName === 'aadharDocument') setAadharDocument(file)
+          if(fieldName === 'birthCertificate') setBirthCertificate(file)
           setFileErrors(prev => ({ ...prev, [fieldName]: '' }))
         }
       }
       reader.readAsDataURL(file)
+    }
+  }
+
+  const handleAadharUpload = async () => {
+    if (aadharDocument) {
+      setNewApplicant({
+        ...newApplicant,
+        aadharDocument: "uploading" as string,
+      } as Applicant);
+      try {
+        const url = await uploadImageToCloudinary(aadharDocument);
+        setNewApplicant({ ...newApplicant, imageURL: url } as Applicant);
+      } catch (error) {
+        console.error("Failed to upload image", error);
+        setFileErrors(prev => ({ ...prev, aadharDocument: 'Failed to upload image' }))
+        setNewApplicant({
+          ...newApplicant,
+          aadharDocument: "" as string,
+        } as Applicant);
+      }
+    }
+  };
+
+  const handleBirthCertificateUpload = async () => {
+    if (birthCertificate) {
+      setNewApplicant({
+        ...newApplicant,
+        birthCertificate: "uploading" as string,
+      } as Applicant);
+      try {
+        const url = await uploadImageToCloudinary(birthCertificate);
+        setNewApplicant({ ...newApplicant, imageURL: url } as Applicant);
+      } catch (error) {
+        console.error("Failed to upload image", error);
+        setFileErrors(prev => ({ ...prev, birthCertificate: 'Failed to upload image' }))
+        setNewApplicant({
+          ...newApplicant,
+          birthCertificate: "" as string,
+        } as Applicant);
+      }
     }
   }
 
@@ -88,9 +134,36 @@ export function UploadDocuments() {
                   </p>
                 )}
                 <p className="text-sm text-gray-500 mt-1">Upload a JPG or JPEG image, max 1MB</p>
-                {newApplicant?.aadharDocument && (
-                  <div className="mt-2">
-                    <img src={newApplicant?.aadharDocument} alt="Aadhar Document" className="max-w-[100px] h-auto" />
+                {(newApplicant?.aadharDocument || aadharDocument) && (
+                  <div className="mt-2 relative">
+                    <img src={aadharDocument
+                            ? URL.createObjectURL(aadharDocument)
+                            : newApplicant?.aadharDocument
+                            ? newApplicant.aadharDocument
+                            : ""} alt="Aadhar Document" className="max-w-[100px] h-auto" />
+                     <div className="absolute top-[40%] left-4 flex items-center justify-center">
+                        <span className="text-white text-sm bg-black bg-opacity-50 rounded-lg p-1">
+                          {!newApplicant?.aadharDocument
+                            ? "Not Uploaded"
+                            : newApplicant?.aadharDocument === "uploading"
+                            ? "Uploading..."
+                            : newApplicant?.aadharDocument === ""
+                            ? "Can't Upload"
+                            : "Uploaded"}
+                        </span>
+                      </div>
+                      {(!newApplicant?.aadharDocument ||
+                    newApplicant?.aadharDocument === "uploading") &&
+                    aadharDocument && (
+                      <Button
+                        type="button"
+                        onClick={handleAadharUpload}
+                        className="mt-2"
+                        disabled={newApplicant?.imageURL === "uploading"}
+                      >
+                        Upload Image
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>
@@ -109,9 +182,38 @@ export function UploadDocuments() {
                   </p>
                 )}
                 <p className="text-sm text-gray-500 mt-1">Upload a JPG or JPEG image, max 1MB</p>
-                {newApplicant?.birthCertificate && (
-                  <div className="mt-2">
-                    <img src={newApplicant?.birthCertificate} alt="Birth Certificate" className="max-w-[100px] h-auto" />
+                {(newApplicant?.birthCertificate || birthCertificate) && (
+                  <div className="mt-2 relative mb-2">
+                    <img src={
+                      birthCertificate
+                            ? URL.createObjectURL(birthCertificate)
+                            : newApplicant?.birthCertificate
+                            ? newApplicant.birthCertificate
+                            : ""
+                    } alt="Birth Certificate" className="max-w-[100px] h-auto" />
+                     <div className="absolute top-[40%] left-4 flex items-center justify-center">
+                        <span className="text-white text-sm bg-black bg-opacity-50 rounded-lg p-1">
+                          {!newApplicant?.birthCertificate
+                            ? "Not Uploaded"
+                            : newApplicant?.birthCertificate === "uploading"
+                            ? "Uploading..."
+                            : newApplicant?.birthCertificate === ""
+                            ? "Can't Upload"
+                            : "Uploaded"}
+                        </span>
+                      </div>
+                      {(!newApplicant?.birthCertificate ||
+                    newApplicant?.birthCertificate === "uploading") &&
+                    birthCertificate && (
+                      <Button
+                        type="button"
+                        onClick={handleBirthCertificateUpload}
+                        className="mt-2"
+                        disabled={newApplicant?.imageURL === "uploading"}
+                      >
+                        Upload Image
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>
