@@ -3,12 +3,12 @@
 export interface Settings {
   _id: string;
   academicYear: string;
-  admissionStartsAt: Date;
-  admissionEndsAt: Date;
-  resultsPublishingAt: Date;
-  resultsEndingAt: Date;
-  applicantDOBStarting: Date;
-  applicantDOBEnding: Date;
+  admissionStartsAt: string;
+  admissionEndsAt: string;
+  resultsPublishingAt: string;
+  resultsEndingAt: string;
+  applicantDOBStarting: string;
+  applicantDOBEnding: string;
   admissionMax: number;
   admissionMin: number;
   createdAt?: Date; // Optional since timestamps will be auto-generated
@@ -84,7 +84,7 @@ export interface Credential {
 // src/types/Applicant.ts
 
 export interface Applicant {
-  _id: string;  
+  _id: string;
   name: string;
   applicationNumber: string;
   imageURL: string;

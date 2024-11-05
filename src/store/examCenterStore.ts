@@ -99,11 +99,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`https://niics-server.vercel.app/api/examCenter`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        .get(`https://niics-server.vercel.app/api/examCenter`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -138,11 +134,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`https://niics-server.vercel.app/api/examCenter/${_id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        .get(`https://niics-server.vercel.app/api/examCenter/${_id}`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {

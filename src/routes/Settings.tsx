@@ -1,56 +1,129 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Sidebar } from '@/components/Sidebar'
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Sidebar } from "@/components/Sidebar";
+import { Settings } from "@/types/types";
+import useSettingsStore from "@/store/settingsStore";
+import { format } from "date-fns";
 
 export default function AdminSettings() {
-  const [settings, setSettings] = useState({
-    academicYear: '2023-2024',
-    admissionStartsAt: '2023-06-01T09:00',
-    admissionEndsAt: '2023-07-31T18:00',
-    resultsPublishingAt: '2023-08-15T12:00',
-    resultsEndingAt: '2023-08-31T23:59',
-    applicantDOBStarting: '2000-01-01',
-    applicantDOBEnding: '2005-12-31',
-    admissionMax: '1000',
-    admissionMin: '500',
-  })
+  const { isNull, errorMessage, getSettings, settings, updateSettings } =
+    useSettingsStore();
+
+  const [settingsState, setSettingsState] = useState<Settings>({
+    _id: "",
+    academicYear: "",
+    admissionStartsAt: "",
+    admissionEndsAt: "",
+    resultsPublishingAt: "",
+    resultsEndingAt: "",
+    applicantDOBStarting: "",
+    applicantDOBEnding: "",
+    admissionMin: 0,
+    admissionMax: 0,
+  });
+
+  useEffect(() => {
+    getSettings();
+  }, [getSettings]);
+
+  useEffect(() => {
+    if (settings) {
+      setSettingsState({
+        _id: settings?._id,
+        academicYear: settings?.academicYear,
+        admissionStartsAt: format(
+          new Date(
+            new Date(settings?.admissionStartsAt as string).getTime() -
+              (5 * 60 + 30) * 60 * 1000
+          ),
+          "yyyy-MM-dd'T'HH:mm"
+        ),
+        admissionEndsAt: format(
+          new Date(
+            new Date(settings?.admissionEndsAt as string).getTime() -
+              (5 * 60 + 30) * 60 * 1000
+          ),
+          "yyyy-MM-dd'T'HH:mm"
+        ),
+        resultsPublishingAt: format(
+          new Date(
+            new Date(settings?.resultsPublishingAt as string).getTime() -
+              (5 * 60 + 30) * 60 * 1000
+          ),
+          "yyyy-MM-dd'T'HH:mm"
+        ),
+        resultsEndingAt: format(
+          new Date(
+            new Date(settings?.resultsEndingAt as string).getTime() -
+              (5 * 60 + 30) * 60 * 1000
+          ),
+          "yyyy-MM-dd'T'HH:mm"
+        ),
+        applicantDOBStarting: format(
+          new Date(
+            new Date(settings?.applicantDOBStarting as string).getTime() -
+              (5 * 60 + 30) * 60 * 1000
+          ),
+          "yyyy-MM-dd"
+        ),
+        applicantDOBEnding: format(
+          new Date(
+            new Date(settings?.applicantDOBEnding as string).getTime() -
+              (5 * 60 + 30) * 60 * 1000
+          ),
+          "yyyy-MM-dd"
+        ),
+        admissionMin: settings?.admissionMin,
+        admissionMax: settings?.admissionMax,
+      } as Settings);
+    }
+  }, [settings]);
 
   const handleSettingsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSettings(prev => ({ ...prev, [e.target.name]: e.target.value }))
-  }
+    setSettingsState((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log('Submitting settings:', settings)
-    // toast({
-    //   title: "Settings updated",
-    //   description: "Your changes have been saved successfully.",
-    // })
-  }
+    e.preventDefault();
+    console.log("Submitting settings:", settingsState);
+    updateSettings(settingsState);
+  };
 
   return (
     <div className="">
       {/* <Sidebar/> */}
       <div className="bg-gradient-to-br from-background to-secondary">
         <CardHeader className="bg-background/50 backdrop-blur-sm">
-          <CardTitle className="text-2xl font-bold text-primary">Admin Settings</CardTitle>
-          <CardDescription>Manage admission and academic settings</CardDescription>
+          <CardTitle className="text-2xl font-bold text-primary">
+            Admin Settings
+          </CardTitle>
+          <CardDescription>
+            Manage admission and academic settings
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
-              <Label htmlFor="academicYear" className="text-lg font-semibold">Academic Year</Label>
+              <Label htmlFor="academicYear" className="text-lg font-semibold">
+                Academic Year
+              </Label>
               <Input
                 id="academicYear"
                 name="academicYear"
-                value={settings.academicYear}
+                value={settingsState?.academicYear}
                 onChange={handleSettingsChange}
                 className="bg-background/50 backdrop-blur-sm"
               />
@@ -67,7 +140,7 @@ export default function AdminSettings() {
                     id="admissionStartsAt"
                     name="admissionStartsAt"
                     type="datetime-local"
-                    value={settings.admissionStartsAt}
+                    value={settingsState?.admissionStartsAt}
                     onChange={handleSettingsChange}
                     className="bg-background/50 backdrop-blur-sm"
                   />
@@ -78,7 +151,7 @@ export default function AdminSettings() {
                     id="admissionEndsAt"
                     name="admissionEndsAt"
                     type="datetime-local"
-                    value={settings.admissionEndsAt}
+                    value={settingsState?.admissionEndsAt}
                     onChange={handleSettingsChange}
                     className="bg-background/50 backdrop-blur-sm"
                   />
@@ -97,7 +170,7 @@ export default function AdminSettings() {
                     id="resultsPublishingAt"
                     name="resultsPublishingAt"
                     type="datetime-local"
-                    value={settings.resultsPublishingAt}
+                    value={settingsState?.resultsPublishingAt}
                     onChange={handleSettingsChange}
                     className="bg-background/50 backdrop-blur-sm"
                   />
@@ -108,7 +181,7 @@ export default function AdminSettings() {
                     id="resultsEndingAt"
                     name="resultsEndingAt"
                     type="datetime-local"
-                    value={settings.resultsEndingAt}
+                    value={settingsState?.resultsEndingAt}
                     onChange={handleSettingsChange}
                     className="bg-background/50 backdrop-blur-sm"
                   />
@@ -119,7 +192,9 @@ export default function AdminSettings() {
             <Separator className="my-4" />
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Applicant Date of Birth Range</h3>
+              <h3 className="text-lg font-semibold">
+                Applicant Date of Birth Range
+              </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="applicantDOBStarting">Starting</Label>
@@ -127,7 +202,7 @@ export default function AdminSettings() {
                     id="applicantDOBStarting"
                     name="applicantDOBStarting"
                     type="date"
-                    value={settings.applicantDOBStarting}
+                    value={settingsState?.applicantDOBStarting}
                     onChange={handleSettingsChange}
                     className="bg-background/50 backdrop-blur-sm"
                   />
@@ -138,7 +213,7 @@ export default function AdminSettings() {
                     id="applicantDOBEnding"
                     name="applicantDOBEnding"
                     type="date"
-                    value={settings.applicantDOBEnding}
+                    value={settingsState?.applicantDOBEnding}
                     onChange={handleSettingsChange}
                     className="bg-background/50 backdrop-blur-sm"
                   />
@@ -149,7 +224,7 @@ export default function AdminSettings() {
             <Separator className="my-4" />
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Admission Limits</h3>
+              <h3 className="text-lg font-semibold">Institution Limits</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="admissionMin">Minimum</Label>
@@ -157,7 +232,7 @@ export default function AdminSettings() {
                     id="admissionMin"
                     name="admissionMin"
                     type="number"
-                    value={settings.admissionMin}
+                    value={settingsState?.admissionMin}
                     onChange={handleSettingsChange}
                     className="bg-background/50 backdrop-blur-sm"
                   />
@@ -168,7 +243,7 @@ export default function AdminSettings() {
                     id="admissionMax"
                     name="admissionMax"
                     type="number"
-                    value={settings.admissionMax}
+                    value={settingsState?.admissionMax}
                     onChange={handleSettingsChange}
                     className="bg-background/50 backdrop-blur-sm"
                   />
@@ -176,11 +251,12 @@ export default function AdminSettings() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full mt-6">Save Changes</Button>
+            <Button type="submit" className="w-full mt-6">
+              Save Changes
+            </Button>
           </form>
         </CardContent>
       </div>
-      {/* <Toaster /> */}
     </div>
-  )
+  );
 }
