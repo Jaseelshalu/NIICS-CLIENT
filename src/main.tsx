@@ -15,7 +15,7 @@ import { ExamCenter } from './components/ExamCenter.tsx';
 import { UploadDocuments } from './components/UploadDocuments.tsx';
 import AdminSettings from './routes/Settings.tsx';
 import ExamCentersPage from './routes/ExamCenterList.tsx';
-import InstitutionListsPage from './routes/InstitutionLists.tsx';
+import InstitutionListsPage from './routes/InstitutionList.tsx';
 import MarksEntryPage from './routes/MarkEntry.tsx';
 import Admin from './components/Admin.tsx';
 import MarkListPage from './routes/MarkLists.tsx';

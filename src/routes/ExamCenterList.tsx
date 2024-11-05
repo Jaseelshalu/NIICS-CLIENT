@@ -55,9 +55,7 @@ export default function ExamCentersPage() {
     examCenters,
     examCenter,
     setExamCenter,
-    createExamCenter,
     getExamCenters,
-    updateExamCenter,
     deleteExamCenter,
     isCreateOpen,
     isUpdateOpen,
@@ -97,19 +95,29 @@ export default function ExamCentersPage() {
     return examCenters
       ?.filter(
         (center) =>
-          Object.entries(filters).every(
-            ([key, value]) =>
-              center[key as keyof ExamCenter]?.toString().toLowerCase().includes(value.toLowerCase())
+          Object.entries(filters).every(([key, value]) =>
+            center[key as keyof ExamCenter]
+              ?.toString()
+              .toLowerCase()
+              .includes(value.toLowerCase())
           ) &&
-          Object.values(center).some(val =>
+          Object.values(center).some((val) =>
             val.toString().toLowerCase().includes(searchTerm.toLowerCase())
           )
       )
       .sort((a, b) => {
-        if ((a as ExamCenter | any)[sortConfig.key] < (b as ExamCenter | any)[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1
-        if ((a as ExamCenter | any)[sortConfig.key] > (b as ExamCenter | any)[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1
-        return 0
-      })
+        if (
+          (a as ExamCenter | any)[sortConfig.key] <
+          (b as ExamCenter | any)[sortConfig.key]
+        )
+          return sortConfig.direction === "asc" ? -1 : 1;
+        if (
+          (a as ExamCenter | any)[sortConfig.key] >
+          (b as ExamCenter | any)[sortConfig.key]
+        )
+          return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      });
   }, [examCenters, filters, searchTerm, sortConfig]);
 
   return (
@@ -234,10 +242,8 @@ export default function ExamCentersPage() {
                               >
                                 <DropdownMenuItem
                                   onClick={() => {
-                                    handleSort(key as keyof ExamCenter, "asc")
-                                  }
-
-                                  }
+                                    handleSort(key as keyof ExamCenter, "asc");
+                                  }}
                                   className="flex items-center"
                                 >
                                   <SortAsc className="mr-2 h-4 w-4" /> Sort
@@ -358,10 +364,11 @@ export default function ExamCentersPage() {
                           <TableCell>{center.contact}</TableCell>
                           <TableCell>
                             <span
-                              className={`px-2 py-1 rounded-full text-xs font-semibold ${center.active
+                              className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                center.active
                                   ? "bg-green-100 text-green-800"
                                   : "bg-red-100 text-red-800"
-                                }`}
+                              }`}
                             >
                               {center.active ? "Active" : "Inactive"}
                             </span>
