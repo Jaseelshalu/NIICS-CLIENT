@@ -20,6 +20,7 @@ export function PersonalInfo() {
   const [imageError, setImageError] = useState("");
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [showImageUploadButton, setShowImageUploadButton] = useState(false);
   //   const [formData, setFormData] = useState({
   //     personalInfo: {},
   //     contactDetails: {},
@@ -39,6 +40,7 @@ export function PersonalInfo() {
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    setShowImageUploadButton(true);
     if (file) {
       if (file.type !== "image/jpeg" && file.type !== "image/jpg") {
         setImageError("Please upload a JPG or JPEG image.");
@@ -68,6 +70,7 @@ export function PersonalInfo() {
       try {
         const url = await uploadImageToCloudinary(image);
         setNewApplicant({ ...newApplicant, imageURL: url } as Applicant);
+        setShowImageUploadButton(false);
       } catch (error) {
         console.error("Failed to upload image", error);
         setImageError("Failed to upload image");
@@ -163,8 +166,7 @@ export function PersonalInfo() {
                     </p>
                   )}
 
-                  {(!newApplicant?.imageURL ||
-                    newApplicant?.imageURL === "uploading") &&
+                  {(showImageUploadButton) &&
                     image && (
                       <Button
                         type="button"

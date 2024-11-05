@@ -17,6 +17,8 @@ import { uploadImageToCloudinary } from "@/lib/utils"
 export function UploadDocuments() {
   const [aadharDocument, setAadharDocument] = useState<File | null>(null);
   const [birthCertificate , setBirthCertificate] = useState<File | null>(null);
+  const [showAadharUploadButton, setShowAadharUploadButton] = useState(false);
+  const [showBirthCertificateUploadButton, setShowBirthCertificateUploadButton] = useState(false);
   const {newApplicant , setNewApplicant} = useApplicantStore()
   const [fileErrors, setFileErrors] = useState({
     aadharDocument: '',
@@ -42,8 +44,14 @@ export function UploadDocuments() {
         if (e.target) {
           // setnewApplicant?(prev => ({ ...prev, [fieldName]: e.target!.result as string }))
           // setNewApplicant({ ...newApplicant, [fieldName]: e.target!.result as string } as any)
-          if(fieldName === 'aadharDocument') setAadharDocument(file)
-          if(fieldName === 'birthCertificate') setBirthCertificate(file)
+          if(fieldName === 'aadharDocument') {
+            setAadharDocument(file)
+            setShowAadharUploadButton(true)
+          }
+          if(fieldName === 'birthCertificate') {
+            setBirthCertificate(file)
+            setShowBirthCertificateUploadButton(true)
+          }
           setFileErrors(prev => ({ ...prev, [fieldName]: '' }))
         }
       }
@@ -59,7 +67,7 @@ export function UploadDocuments() {
       } as Applicant);
       try {
         const url = await uploadImageToCloudinary(aadharDocument);
-        setNewApplicant({ ...newApplicant, imageURL: url } as Applicant);
+        setNewApplicant({ ...newApplicant, aadharDocument: url } as Applicant);
       } catch (error) {
         console.error("Failed to upload image", error);
         setFileErrors(prev => ({ ...prev, aadharDocument: 'Failed to upload image' }))
@@ -68,6 +76,7 @@ export function UploadDocuments() {
           aadharDocument: "" as string,
         } as Applicant);
       }
+      setShowAadharUploadButton(false)
     }
   };
 
@@ -79,7 +88,7 @@ export function UploadDocuments() {
       } as Applicant);
       try {
         const url = await uploadImageToCloudinary(birthCertificate);
-        setNewApplicant({ ...newApplicant, imageURL: url } as Applicant);
+        setNewApplicant({ ...newApplicant, birthCertificate: url } as Applicant);
       } catch (error) {
         console.error("Failed to upload image", error);
         setFileErrors(prev => ({ ...prev, birthCertificate: 'Failed to upload image' }))
@@ -87,6 +96,7 @@ export function UploadDocuments() {
           ...newApplicant,
           birthCertificate: "" as string,
         } as Applicant);
+        setShowBirthCertificateUploadButton(false)
       }
     }
   }
