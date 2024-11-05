@@ -102,7 +102,7 @@ export default function AdminSettings() {
   };
 
   return (
-    <div className="">
+    <div className="w-full">
       {/* <Sidebar/> */}
       <div className="bg-gradient-to-br from-background to-secondary">
         <CardHeader className="bg-background/50 backdrop-blur-sm">

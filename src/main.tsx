@@ -24,6 +24,7 @@ import PreviewApplicationDetails from './components/apply/Preview.tsx';
 import CredentialManagementPage from './routes/CreateCredentials.tsx';
 import { SuccessMessage } from './components/ApplicationSuccess.tsx';
 import ErrorMessage from './components/ApplicationError.tsx';
+import ApplicantApprovalPage from './routes/Approval.tsx';
 
 const router = createBrowserRouter([
   {
@@ -123,6 +124,11 @@ const router = createBrowserRouter([
         path: "credentials",
         element: <CredentialManagementPage />,
         errorElement: <Error />,  
+      },
+      {
+        path: "approval",
+        element: <ApplicantApprovalPage />,
+        errorElement: <Error />,
       }
     ]
   },
