@@ -297,15 +297,15 @@ export default function ExamCentersPage() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.3 }}
-                            className="hover:bg-primary/5 transition-colors duration-300 w-full"
+                            className="transition-colors duration-300 w-full"
                           >
-                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
-                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
-                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
-                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
-                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
-                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
-                            <td className="animate-pulse bg-gray-200 h-12 w-auto" />
+                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
                           </motion.tr>
                         ))
                       )}
