@@ -181,26 +181,31 @@ const cancelActionHandler = () => {
 
   return (
     <div className="container mx-auto p-4 space-y-8">
-      <h1 className="text-3xl font-bold text-primary">Applicant Management</h1>
-      
-      <div className="flex justify-between items-center">
-        <div className="relative w-64">
-          <Input
-            placeholder="Search applicants..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 pr-4 py-2 w-full bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-          />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60" size={18} />
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <h1 className="text-3xl font-bold text-primary">Applicant Management</h1>
+          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+            <div className="relative w-full sm:w-64">
+              <Input
+                placeholder="Search applicants..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 w-full bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+              />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60"
+                size={18}
+              />
+            </div>
+            <Button
+              className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300 w-full sm:w-auto"
+              onClick={() => {
+                () => navigate('/apply/personal-details')
+              }}
+            >
+              <Plus className="mr-2 h-4 w-4" /> Create New
+            </Button>
+          </div>
         </div>
-        <Button 
-        className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300 hover:cursor-pointer"
-        onClick={
-            () => navigate('/apply/personal-details')
-        }>
-          <Plus className="mr-2 h-4 w-4" /> Create New
-        </Button>
-      </div>
 
       <Card className="bg-gradient-to-br from-background to-secondary overflow-hidden">
         <CardHeader className="bg-background/50 backdrop-blur-sm">
