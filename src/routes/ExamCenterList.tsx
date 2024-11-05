@@ -82,6 +82,7 @@ export default function ExamCentersPage() {
   }, []);
 
   const handleSort = (key: keyof ExamCenter, direction: "asc" | "desc") => {
+    console.log(examCenter);
     setSortConfig({ key, direction });
   };
 
@@ -98,20 +99,17 @@ export default function ExamCentersPage() {
         (center) =>
           Object.entries(filters).every(
             ([key, value]) =>
-              center[key as keyof ExamCenter] ??
-              "".toString().toLowerCase().includes(value.toLowerCase())
+              center[key as keyof ExamCenter]?.toString().toLowerCase().includes(value.toLowerCase())
           ) &&
-          Object.values(center).some((val) =>
+          Object.values(center).some(val =>
             val.toString().toLowerCase().includes(searchTerm.toLowerCase())
           )
       )
       .sort((a, b) => {
-        if ((a[sortConfig.key] ?? "") < (b[sortConfig.key] ?? ""))
-          return sortConfig.direction === "asc" ? -1 : 1;
-        if ((a[sortConfig.key] ?? "") > (b[sortConfig.key] ?? ""))
-          return sortConfig.direction === "asc" ? 1 : -1;
-        return 0;
-      });
+        if ((a as ExamCenter | any)[sortConfig.key] < (b as ExamCenter | any)[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1
+        if ((a as ExamCenter | any)[sortConfig.key] > (b as ExamCenter | any)[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1
+        return 0
+      })
   }, [examCenters, filters, searchTerm, sortConfig]);
 
   return (
@@ -235,8 +233,10 @@ export default function ExamCentersPage() {
                                 className="bg-background/95 backdrop-blur-sm border-primary/20"
                               >
                                 <DropdownMenuItem
-                                  onClick={() =>
+                                  onClick={() => {
                                     handleSort(key as keyof ExamCenter, "asc")
+                                  }
+
                                   }
                                   className="flex items-center"
                                 >
@@ -358,11 +358,10 @@ export default function ExamCentersPage() {
                           <TableCell>{center.contact}</TableCell>
                           <TableCell>
                             <span
-                              className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                center.active
+                              className={`px-2 py-1 rounded-full text-xs font-semibold ${center.active
                                   ? "bg-green-100 text-green-800"
                                   : "bg-red-100 text-red-800"
-                              }`}
+                                }`}
                             >
                               {center.active ? "Active" : "Inactive"}
                             </span>

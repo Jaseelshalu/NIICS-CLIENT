@@ -60,8 +60,8 @@ export interface ExamCenter {
   address: string;
   contact: number;
   active: boolean;
-  createdAt?: Date; // Optional, auto-generated
-  updatedAt?: Date; // Optional, auto-generated
+  // createdAt?: Date; // Optional, auto-generated
+  // updatedAt?: Date; // Optional, auto-generated
 }
 
 // src/types/Credential.ts
