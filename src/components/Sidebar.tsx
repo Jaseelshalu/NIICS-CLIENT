@@ -10,7 +10,7 @@ const sidebarItems = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
   { name: 'Institutions', href: '/admin/institution-lists', icon: Building2 },
   { name: 'Exam Centres', href: '/admin/exam-centers', icon: BuildingIcon },
-  { name: 'Verification', href: '/admin/verification', icon: CheckCircle },
+  { name: 'Approval', href: '/admin/approval', icon: CheckCircle },
   { name: 'Result Generation', href: '/admin/result-generation', icon: FileText },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ]
