@@ -19,9 +19,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,7 +32,6 @@ import {
   Plus,
   Edit,
   Trash2,
-  ChevronDown,
   Search,
   SortAsc,
   SortDesc,
