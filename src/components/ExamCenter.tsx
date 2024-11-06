@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -10,6 +10,8 @@ import { AlertCircle, X, ChevronUp, ChevronDown } from 'lucide-react'
 import { Badge } from "@/components/ui/badge"
 import { useNavigate } from 'react-router-dom'
 import useApplicantStore from '@/store/applicantStore'
+import useExamCenterStore from '@/store/examCenterStore'
+import { ExamCenter as ExamCenterType } from '@/types/types'
 
 const admissionInstitutions = [
   "Institution A",
@@ -21,6 +23,12 @@ const admissionInstitutions = [
 
 export function ExamCenter() {
   const { newApplicant, setNewApplicant } = useApplicantStore()
+  const { examCenters , setExamCenters ,getExamCenters} = useExamCenterStore();
+
+  useEffect(()=>{
+    getExamCenters()
+  },[])
+
   const [fileErrors, setFileErrors] = useState({
     aadharDocument: '',
     birthCertificate: ''
@@ -86,9 +94,11 @@ export function ExamCenter() {
                   <SelectValue placeholder="Select Exam Center" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="center1">Exam Center 1</SelectItem>
-                  <SelectItem value="center2">Exam Center 2</SelectItem>
-                  <SelectItem value="center3">Exam Center 3</SelectItem>
+                  {
+                    examCenters?.map((examCenter:ExamCenterType)=>
+                      <SelectItem value={examCenter?._id}> <span className='font-semibold'>{examCenter?.code}</span> {examCenter.name}</SelectItem>
+                    )
+                  }
                 </SelectContent>
               </Select>
             </div>
