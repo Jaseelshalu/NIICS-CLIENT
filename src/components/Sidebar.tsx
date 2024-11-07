@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Building2, Settings, LayoutDashboard, CheckCircle, FileText, Menu, BuildingIcon } from "lucide-react"
+import { Building2, Settings, LayoutDashboard, CheckCircle, FileText, Menu, BuildingIcon, KeyRound } from "lucide-react"
 import { Link } from 'react-router-dom'
 
 const sidebarItems = [
@@ -13,6 +13,7 @@ const sidebarItems = [
   { name: 'Approval', href: '/admin/approval', icon: CheckCircle },
   { name: 'Result Generation', href: '/admin/result-generation', icon: FileText },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
+  { name: 'Credentials', href: '/admin/credentials', icon: KeyRound },
 ]
 
 export function Sidebar() {

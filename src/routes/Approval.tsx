@@ -12,9 +12,10 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Plus, Search, Edit, Trash2, Eye, Filter, SortAsc, SortDesc, CheckCircle, XCircle } from "lucide-react"
+import { Plus, Search, Edit, Trash2, Eye, Filter, SortAsc, SortDesc, CheckCircle, XCircle, CircleX, FilterX } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useNavigate } from "react-router-dom"
+import TableFilterSort from "@/components/ui/TableFilterSort"
 
 interface Institution {
   name: string;
@@ -42,7 +43,7 @@ interface Applicant {
   options: Institution[];
   aadharDocument: string;
   birthCertificate: string;
-  accepted: boolean;  
+  accepted: boolean;
 }
 
 const sampleApplicants: Applicant[] = [
@@ -119,7 +120,7 @@ export default function ApplicantApprovalPage() {
 
   const confirmActionHandler = () => {
     if (confirmAction) {
-      setApplicants(applicants.map(app => 
+      setApplicants(applicants.map(app =>
         app.id === confirmAction.id
           ? { ...app, accepted: !app.accepted }
           : app
@@ -129,7 +130,7 @@ export default function ApplicantApprovalPage() {
     setIsDialogOpen(false)
   }
 
-const cancelActionHandler = () => {
+  const cancelActionHandler = () => {
     setConfirmAction(null)
     setIsDialogOpen(false)
   }
@@ -148,11 +149,11 @@ const cancelActionHandler = () => {
     navigate('/')
   };
 
-  const handleSort = (key: keyof Applicant) => {
-    setSortConfig(prevConfig => ({
+  const handleSort = (key: keyof Applicant, direction: "asc" | "desc") => {
+    setSortConfig({
       key,
-      direction: prevConfig.key === key && prevConfig.direction === 'asc' ? 'desc' : 'asc'
-    }));
+      direction
+    });
   };
 
   const handleFilter = (key: keyof Applicant, value: string) => {
@@ -162,55 +163,67 @@ const cancelActionHandler = () => {
     }));
   };
 
-  const filteredAndSortedApplicants = useMemo(() => {
-    return applicants
-      .filter(app => 
-        Object.entries(filters).every(([key, value]) => 
-          app[key as keyof Applicant].toString().toLowerCase().includes(value.toLowerCase())
+  const useFilteredAndSorted = <Type,>(
+    items: Type[],
+    filters: Partial<Record<keyof Type, string>>,
+    searchTerm: string,
+    sortConfig: { key: keyof Type; direction: 'asc' | 'desc' }
+  ): Type[] => useMemo(() => {
+    return items
+      .filter((item: Type) =>
+        Object.entries(filters).every(([key, value]) =>
+          item[key as keyof Type]?.toString().toLowerCase().includes((value as any).toLowerCase())
         ) &&
-        Object.values(app).some(val => 
-          val.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        Object.values(item as Record<string, unknown>).some(val =>
+          val?.toString().toLowerCase().includes(searchTerm.toLowerCase())
         )
       )
-      .sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === 'asc' ? -1 : 1;
-        if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === 'asc' ? 1 : -1;
+      .sort((a: Type, b: Type) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === "asc" ? -1 : 1;
+        if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === "asc" ? 1 : -1;
         return 0;
       });
-  }, [applicants, filters, searchTerm, sortConfig]);
+  }, [items, filters, searchTerm, sortConfig]);
+
+  const filteredAndSortedApplicants = useFilteredAndSorted<Applicant>(
+    applicants,
+    filters,
+    searchTerm,
+    sortConfig
+  );
+
+
+
 
   return (
-    <div className="container mx-auto p-4 space-y-8">
+    <div className="container mx-auto p-4 space-y-8 ">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="text-3xl font-bold text-primary">Applicant Management</h1>
-          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-            <div className="relative w-full sm:w-64">
-              <Input
-                placeholder="Search applicants..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 w-full bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-              />
-              <Search
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60"
-                size={18}
-              />
-            </div>
-            <Button
-              className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300 w-full sm:w-auto"
-              onClick={() => {
-                () => navigate('/apply/personal-details')
-              }}
-            >
-              <Plus className="mr-2 h-4 w-4" /> Create New
-            </Button>
+        <h1 className="text-3xl font-bold text-primary">Applicant Management</h1>
+        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+          <div className="relative w-full sm:w-64">
+            <Input
+              placeholder="Search Applicants..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 w-full bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+            />
+            <Search
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60"
+              size={18}
+            />
           </div>
+          <Button
+            className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300 w-full sm:w-auto"
+            onClick={() => {
+              () => navigate('/apply/personal-details')
+            }}
+          >
+            <Plus className="mr-2 h-4 w-4" /> Create New
+          </Button>
         </div>
+      </div>
 
-      <Card className="bg-gradient-to-br from-background to-secondary overflow-hidden">
-        <CardHeader className="bg-background/50 backdrop-blur-sm">
-          <CardTitle className="text-2xl font-bold text-primary">Applicants</CardTitle>
-        </CardHeader>
+      <Card className="bg-gradient-to-br from-background to-secondary">
         <CardContent>
           <div className="overflow-x-auto">
             <Table>
@@ -219,33 +232,14 @@ const cancelActionHandler = () => {
                   {['name', 'applicationNumber', 'dob', 'email', 'examCenter'].map((key) => (
                     <TableHead key={key}>
                       <div className="flex items-center justify-between">
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="ml-2 hover:bg-primary/10 transition-colors duration-300">
-                              <Filter className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="bg-background/95 backdrop-blur-sm border-primary/20">
-                            <DropdownMenuItem onClick={() => handleSort(key as keyof Applicant)} className="flex items-center">
-                              <SortAsc className="mr-2 h-4 w-4" /> Sort Ascending
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleSort(key as keyof Applicant)} className="flex items-center">
-                              <SortDesc className="mr-2 h-4 w-4" /> Sort Descending
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                              <div className="relative w-full">
-                                <Input
-                                  placeholder={`Filter ${key}...`}
-                                  value={filters[key as keyof Applicant] || ''}
-                                  onChange={(e) => handleFilter(key as keyof Applicant, e.target.value)}
-                                  className="mt-2 w-full pl-8 pr-4 py-1 bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-                                />
-                                <Search className="absolute left-2 top-1/2 transform -translate-y-1/4 text-primary/60" size={16} />
-                              </div>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                        <TableFilterSort
+                          filters={filters}
+                          handleFilter={handleFilter}
+                          sortConfig={sortConfig}
+                          handleSort={handleSort}
+                          keyLabel={key as keyof Applicant}
+                        />
                       </div>
                     </TableHead>
                   ))}
@@ -256,10 +250,10 @@ const cancelActionHandler = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                <AnimatePresence initial={false}>
-                  {filteredAndSortedApplicants.map((app, index) => (
+                <AnimatePresence>
+                  {filteredAndSortedApplicants.map((data, index) => (
                     <motion.tr
-                      key={app.id}
+                      key={data.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
@@ -267,13 +261,13 @@ const cancelActionHandler = () => {
                       className="hover:bg-primary/5 transition-colors duration-300"
                       layout
                     >
-                      <TableCell className="font-medium">{app.name}</TableCell>
-                      <TableCell>{app.applicationNumber}</TableCell>
-                      <TableCell>{app.dob.toLocaleDateString()}</TableCell>
-                      <TableCell>{app.email}</TableCell>
-                      <TableCell>{app.examCenter}</TableCell>
+                      <TableCell className="font-medium">{data.name}</TableCell>
+                      <TableCell>{data.applicationNumber}</TableCell>
+                      <TableCell>{data.dob.toLocaleDateString()}</TableCell>
+                      <TableCell>{data.email}</TableCell>
+                      <TableCell>{data.examCenter}</TableCell>
                       <TableCell>
-                        <img src={app.imageURL} alt={app.name} className="w-10 h-10 rounded-full object-cover" />
+                        <img src={data.imageURL} alt={data.name} className="w-10 h-10 rounded-full object-cover" />
                       </TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
@@ -285,7 +279,7 @@ const cancelActionHandler = () => {
                               <DialogHeader>
                                 <DialogTitle>Aadhar Document</DialogTitle>
                               </DialogHeader>
-                              <img src={app.aadharDocument} alt="Aadhar Document" className="w-full h-auto" />
+                              <img src={data.aadharDocument} alt="Aadhar Document" className="w-full h-auto" />
                             </DialogContent>
                           </Dialog>
                           <Dialog>
@@ -296,41 +290,40 @@ const cancelActionHandler = () => {
                               <DialogHeader>
                                 <DialogTitle>Birth Certificate</DialogTitle>
                               </DialogHeader>
-                              <img src={app.birthCertificate} alt="Birth Certificate" className="w-full h-auto" />
+                              <img src={data.birthCertificate} alt="Birth Certificate" className="w-full h-auto" />
                             </DialogContent>
                           </Dialog>
                         </div>
                       </TableCell>
                       <TableCell>
-                      <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2">
                           <Button
                             size="sm"
-                            onClick={() => handleActionClick(app.id, 'approve')}
-                            className={`transition-colors duration-300 ${
-                              app.accepted
-                                ? 'bg-green-500 hover:bg-green-600'
-                                : 'bg-yellow-500 hover:bg-yellow-600'
-                            }`}
+                            onClick={() => handleActionClick(data.id, 'approve')}
+                            className={`transition-colors duration-300 ${data.accepted
+                              ? 'bg-green-500 hover:bg-green-600'
+                              : 'bg-yellow-500 hover:bg-yellow-600'
+                              }`}
                           >
-                            {app.accepted ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+                            {data.accepted ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
                           </Button>
                           <motion.span
-                            key={`approved-${app.id}`}
+                            key={`approved-${data.id}`}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.3 }}
                           >
-                            {app.accepted ? 'Approved' : 'Not Approved'}
+                            {data.accepted ? 'Approved' : 'Not Approved'}
                           </motion.span>
                         </div>
-                        </TableCell>
+                      </TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleViewMore(app.id)}
+                            onClick={() => handleViewMore(data.id)}
                             className="hover:bg-primary/10 transition-colors duration-300"
                           >
                             <Eye className="h-4 w-4" />

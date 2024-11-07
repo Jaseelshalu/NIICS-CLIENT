@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom'
 import useApplicantStore from '@/store/applicantStore'
 import useExamCenterStore from '@/store/examCenterStore'
 import { ExamCenter as ExamCenterType } from '@/types/types'
+import useInstitutionStore from '@/store/institutionStore'
 
 const admissionInstitutions = [
   "Institution A",
@@ -24,9 +25,11 @@ const admissionInstitutions = [
 export function ExamCenter() {
   const { newApplicant, setNewApplicant } = useApplicantStore()
   const { examCenters , setExamCenters ,getExamCenters} = useExamCenterStore();
+  const { institutions , getInstitutions } = useInstitutionStore()
 
   useEffect(()=>{
     getExamCenters()
+    getInstitutions()
   },[])
 
   const [fileErrors, setFileErrors] = useState({
@@ -109,8 +112,8 @@ export function ExamCenter() {
                   <SelectValue placeholder="Select Admission Institution" />
                 </SelectTrigger>
                 <SelectContent>
-                  {admissionInstitutions.map((institution) => (
-                    <SelectItem key={institution} value={institution}>{institution}</SelectItem>
+                  {institutions?.map((institution) => (
+                    <SelectItem key={institution._id} value={institution._id}> <span className='font-semibold'>{institution?.code}</span> {institution.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
