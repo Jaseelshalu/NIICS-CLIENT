@@ -164,13 +164,13 @@ export default function MarkListPage() {
                             </TableHeader>
                             <TableBody>
                                 <AnimatePresence>
-                                    {filteredAndSortedCenters.map((mark) => (
+                                    {filteredAndSortedCenters.map((mark, index) => (
                                         <motion.tr
                                             key={mark.id}
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -20 }}
-                                            transition={{ duration: 0.3 }}
+                                            transition={{ duration: 0.3, delay: index * 0.05 }}
                                             className="hover:bg-primary/5 transition-colors duration-300"
                                         >
                                             <TableCell className="font-medium">{mark.name}</TableCell>
