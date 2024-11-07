@@ -48,7 +48,7 @@ type SortConfig = {
   direction: "asc" | "desc";
 };
 
-export default function ExamCentersPage() {
+export default function ExamCenters() {
   const {
     examCenters,
     examCenter,
@@ -362,11 +362,10 @@ export default function ExamCentersPage() {
                           <TableCell>{center.contact}</TableCell>
                           <TableCell>
                             <span
-                              className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                center.active
+                              className={`px-2 py-1 rounded-full text-xs font-semibold ${center.active
                                   ? "bg-green-100 text-green-800"
                                   : "bg-red-100 text-red-800"
-                              }`}
+                                }`}
                             >
                               {center.active ? "Active" : "Inactive"}
                             </span>

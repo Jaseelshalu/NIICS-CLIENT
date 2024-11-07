@@ -9,10 +9,10 @@ interface CredentialStoreState {
   credential: Credential | null;
   setCredential: (credential: Credential) => void;
   authCredential: (username: string, password: string) => void;
-  createCredential: (credential: Partial<Credential>) => void;
+  createCredential: (credential: Omit<Credential, "_id">) => void;
   getCredentials: () => void;
   getCredential: (_id: string) => void;
-  updateCredential: (credential: Partial<Credential>) => void;
+  updateCredential: (credential: Credential) => void;
   deleteCredential: (_id: string) => void;
   isNull: boolean;
   setIsNull: (isNull: boolean) => void;
@@ -28,61 +28,63 @@ interface CredentialStoreState {
 
 const useCredentialStore = create<CredentialStoreState>((set) => ({
   isNull: false,
-setIsNull: (isNull) => set({ isNull }),
+  setIsNull: (isNull) => set({ isNull }),
   isCreateOpen: false,
   setIsCreateOpen: (isCreateOpen) => set({ isCreateOpen }),
   isUpdateOpen: false,
   setIsUpdateOpen: (isUpdateOpen) => set({ isUpdateOpen }),
   isDeleteOpen: false,
-  setIsDeleteOpen: (isDeleteOpen) => set({ isDeleteOpen }),  errorMessage: "",
+  setIsDeleteOpen: (isDeleteOpen) => set({ isDeleteOpen }),
+  errorMessage: "",
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   credentials: [],
   setCredentials: (credentials) => set({ credentials }),
   credential: null,
   setCredential: (credential) => set({ credential }),
   authCredential: async (username, password) => {
-    const loadingToast = toast.loading("Authenticating credential...");
+    const loadingToast = toast.loading("Logging in...");
     try {
       await axios
-        .post(`https://niics-server.vercel.app/api/credential/login`, {
-          username,
-          password,
-        },{
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        .post(
+          `https://niics-server.vercel.app/api/credential/login`,
+          {
+            username,
+            password,
           },
-        })
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        )
         .then((response) => {
           console.log(response.data);
           if (response.status === 200) {
             localStorage.setItem("token", response.data.token);
-            toast.success("Credential authenticated successfully", {
+            toast.success("Logged in successfully", {
               id: loadingToast,
               duration: 3000,
             });
           } else if (response.status === 200) {
-            toast.error(
-              response?.data?.message || `Failed to authenticate credential`,
-              {
-                id: loadingToast,
-                duration: 3000,
-              }
-            );
+            toast.error(response?.data?.message || `Failed to login`, {
+              id: loadingToast,
+              duration: 3000,
+            });
           } else {
-            toast.error(`Failed to authenticate credential`, {
+            toast.error(`Failed to login`, {
               id: loadingToast,
               duration: 3000,
             });
           }
         })
         .catch((error) => {
-          toast.error(`Failed to authenticate credential`, {
+          toast.error(`Failed to login`, {
             id: loadingToast,
             duration: 3000,
           });
         });
     } catch (error) {
-      toast.error(`Failed to authenticate credential`, {
+      toast.error(`Failed to login`, {
         id: loadingToast,
         duration: 3000,
       });
@@ -92,7 +94,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Creating credential...");
     try {
       await axios
-        .post(`https://niics-server.vercel.app/api/credential`, credential,{
+        .post(`https://niics-server.vercel.app/api/credential`, credential, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -100,10 +102,19 @@ setIsNull: (isNull) => set({ isNull }),
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
+            set({
+              credentials: [
+                ...useCredentialStore.getState().credentials,
+                response.data,
+              ],
+            });
+            useCredentialStore.getState().credentials.length > 0 &&
+              set({ isNull: false });
             toast.success("Credential created successfully", {
               id: loadingToast,
               duration: 3000,
             });
+            set({ isCreateOpen: false });
           } else if (response.status === 200) {
             toast.error(
               response?.data?.message || `Failed to create credential`,
@@ -134,20 +145,18 @@ setIsNull: (isNull) => set({ isNull }),
   },
   getCredentials: async () => {
     set({ credentials: [] });
-    set({ isNull:false });
+    set({ isNull: false });
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`https://niics-server.vercel.app/api/credential`,{
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        .get(`https://niics-server.vercel.app/api/credential`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
             set({ credentials: response.data });
-            set({ isNull: false });
+            if (response.data.length === 0) {
+              set({ isNull: true });
+            }
           } else if (response.status === 200) {
             set({
               errorMessage:
@@ -172,20 +181,14 @@ setIsNull: (isNull) => set({ isNull }),
   },
   getCredential: async (_id) => {
     set({ credential: null });
-    set({ isNull:false });
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`https://niics-server.vercel.app/api/credential/${_id}`,{
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        .get(`https://niics-server.vercel.app/api/credential/${_id}`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
             set({ credential: response.data });
-            set({ isNull: false });
           } else if (response.status === 200) {
             set({
               errorMessage: response?.data?.message || `Credential not found`,
@@ -213,39 +216,51 @@ setIsNull: (isNull) => set({ isNull }),
       await axios
         .put(
           `https://niics-server.vercel.app/api/credential/${credential._id}`,
-          credential
-        ,{
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+          credential,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        )
         .then((response) => {
           console.log(response.data);
-          if (response.status === 200) {
+          if (response.status === 201) {
+            set({
+              credentials: useCredentialStore
+                .getState()
+                .credentials.map((item) =>
+                  item._id === credential._id ? credential : item
+                ),
+            });
             toast.success("Credential updated successfully", {
               id: loadingToast,
               duration: 3000,
             });
-          } else if (response.status === 404) {
-            toast.error(response?.data?.message || `Credential not found`, {
-              id: loadingToast,
-              duration: 3000,
-            });
+            set({ isUpdateOpen: false });
+          } else if (response.status === 200) {
+            toast.error(
+              response?.data?.message || `Failed to update Credential`,
+              {
+                id: loadingToast,
+                duration: 3000,
+              }
+            );
           } else {
-            toast.error(`Failed to update credential`, {
+            toast.error(`Failed to update Credential`, {
               id: loadingToast,
               duration: 3000,
             });
           }
         })
         .catch((error) => {
-          toast.error(`Failed to update credential`, {
+          toast.error(`Failed to update Credential`, {
             id: loadingToast,
             duration: 3000,
           });
         });
     } catch (error) {
-      toast.error(`Failed to update credential`, {
+      toast.error(`Failed to update Credential`, {
         id: loadingToast,
         duration: 3000,
       });
@@ -255,23 +270,34 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Deleting credential...");
     try {
       await axios
-        .delete(`https://niics-server.vercel.app/api/credential/${_id}`,{
+        .delete(`https://niics-server.vercel.app/api/credential/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         })
         .then((response) => {
           console.log(response.data);
-          if (response.status === 200) {
+          if (response.status === 201) {
+            set({
+              credentials: useCredentialStore
+                .getState()
+                .credentials.filter((item) => item._id !== _id),
+            });
+            useCredentialStore.getState().credentials.length === 0 &&
+              set({ isNull: true });
             toast.success("Credential deleted successfully", {
               id: loadingToast,
               duration: 3000,
             });
-          } else if (response.status === 404) {
-            toast.error(response?.data?.message || `Credential not found`, {
-              id: loadingToast,
-              duration: 3000,
-            });
+            set({ isDeleteOpen: false });
+          } else if (response.status === 200) {
+            toast.error(
+              response?.data?.message || `Failed to delete credential`,
+              {
+                id: loadingToast,
+                duration: 3000,
+              }
+            );
           } else {
             toast.error(`Failed to delete credential`, {
               id: loadingToast,

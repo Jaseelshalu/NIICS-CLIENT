@@ -75,7 +75,7 @@ export interface Credential {
   _id: string;
   userName: string;
   password: string;
-  role: Role;
+  role?: Role;
   examCenter?: ExamCenter; // ObjectId as a string reference, optional if not populated
   createdAt?: Date; // Optional, auto-generated
   updatedAt?: Date; // Optional, auto-generated

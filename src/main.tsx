@@ -14,17 +14,17 @@ import { ContactDetails } from './components/ContactDetails.tsx';
 import { ExamCenter } from './components/ExamCenter.tsx';
 import { UploadDocuments } from './components/UploadDocuments.tsx';
 import AdminSettings from './routes/Settings.tsx';
-import ExamCentersPage from './routes/ExamCenterList.tsx';
+import ExamCenters from './routes/ExamCenters.tsx';
 import MarksEntryPage from './routes/MarkEntry.tsx';
 import Admin from './components/Admin.tsx';
 import MarkListPage from './routes/MarkLists.tsx';
-import ExamCenterDashboard from './routes/ExamCenter.tsx';
+import ExamCenterDashboard from './routes/ExamCenterDashboard.tsx';
 import PreviewApplicationDetails from './components/apply/Preview.tsx';
-import CredentialManagementPage from './routes/CreateCredentials.tsx';
+import CredentialManagementPage from './routes/Credentials.tsx';
 import { SuccessMessage } from './components/ApplicationSuccess.tsx';
 import ErrorMessage from './components/ApplicationError.tsx';
 import ApplicantApprovalPage from './routes/Approval.tsx';
-import InstitutionsPage from './routes/InstitutionList.tsx';
+import Institutions from './routes/Institutions.tsx';
 
 const router = createBrowserRouter([
   {
@@ -107,12 +107,12 @@ const router = createBrowserRouter([
       },
       {
         path: "exam-centers",
-        element: <ExamCentersPage />,
+        element: <ExamCenters />,
         errorElement: <Error />,
       },
       {
         path: "institution-lists",
-        element: <InstitutionsPage />,
+        element: <Institutions />,
         errorElement: <Error />,
       },
       {
@@ -123,7 +123,7 @@ const router = createBrowserRouter([
       {
         path: "credentials",
         element: <CredentialManagementPage />,
-        errorElement: <Error />,  
+        errorElement: <Error />,
       },
       {
         path: "approval",
