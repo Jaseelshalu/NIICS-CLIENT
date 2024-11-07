@@ -8,10 +8,10 @@ interface InstitutionStoreState {
   setInstitutions: (institutions: [Institution]) => void;
   institution: Institution | null;
   setInstitution: (institution: Institution) => void;
-  createInstitution: (institution: Partial<Institution>) => void;
+  createInstitution: (institution: Omit<Institution, "_id">) => void;
   getInstitutions: () => void;
   getInstitution: (_id: string) => void;
-  updateInstitution: (institution: Partial<Institution>) => void;
+  updateInstitution: (institution: Institution) => void;
   deleteInstitution: (_id: string) => void;
   isNull: boolean;
   setIsNull: (isNull: boolean) => void;
@@ -27,13 +27,14 @@ interface InstitutionStoreState {
 
 const useInstitutionStore = create<InstitutionStoreState>((set) => ({
   isNull: false,
-setIsNull: (isNull) => set({ isNull }),
+  setIsNull: (isNull) => set({ isNull }),
   isCreateOpen: false,
   setIsCreateOpen: (isCreateOpen) => set({ isCreateOpen }),
   isUpdateOpen: false,
   setIsUpdateOpen: (isUpdateOpen) => set({ isUpdateOpen }),
   isDeleteOpen: false,
-  setIsDeleteOpen: (isDeleteOpen) => set({ isDeleteOpen }),  errorMessage: "",
+  setIsDeleteOpen: (isDeleteOpen) => set({ isDeleteOpen }),
+  errorMessage: "",
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   institutions: [],
   setInstitutions: (institutions) => set({ institutions }),
@@ -43,7 +44,7 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Creating institution...");
     try {
       await axios
-        .post(`https://niics-server.vercel.app/api/institution`, institution,{
+        .post(`https://niics-server.vercel.app/api/institution`, institution, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -51,10 +52,19 @@ setIsNull: (isNull) => set({ isNull }),
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
+            set({
+              institutions: [
+                ...useInstitutionStore.getState().institutions,
+                response.data,
+              ],
+            });
+            useInstitutionStore.getState().institutions.length > 0 &&
+              set({ isNull: false });
             toast.success("Institution created successfully", {
               id: loadingToast,
               duration: 3000,
             });
+            set({ isCreateOpen: false });
           } else if (response.status === 200) {
             toast.error(
               response?.data?.message || `Failed to create institution`,
@@ -85,20 +95,18 @@ setIsNull: (isNull) => set({ isNull }),
   },
   getInstitutions: async () => {
     set({ institutions: [] });
-    set({ isNull:false });
+    set({ isNull: false });
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`https://niics-server.vercel.app/api/institution`,{
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        .get(`https://niics-server.vercel.app/api/institution`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
             set({ institutions: response.data });
-            set({ isNull: false });
+            if (response.data.length === 0) {
+              set({ isNull: true });
+            }
           } else if (response.status === 200) {
             set({
               errorMessage:
@@ -123,20 +131,14 @@ setIsNull: (isNull) => set({ isNull }),
   },
   getInstitution: async (_id) => {
     set({ institution: null });
-    set({ isNull:false });
     set({ errorMessage: "" });
     try {
       await axios
-        .get(`https://niics-server.vercel.app/api/institution/${_id}`,{
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        .get(`https://niics-server.vercel.app/api/institution/${_id}`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
             set({ institution: response.data });
-            set({ isNull: false });
           } else if (response.status === 200) {
             set({
               errorMessage: response?.data?.message || `Institution not found`,
@@ -162,38 +164,53 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Updating institution...");
     try {
       await axios
-        .put(`https://niics-server.vercel.app/api/institution/${institution._id}`, institution,{
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        .put(
+          `https://niics-server.vercel.app/api/institution/${institution._id}`,
+          institution,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        )
         .then((response) => {
           console.log(response.data);
-          if (response.status === 200) {
+          if (response.status === 201) {
+            set({
+              institutions: useInstitutionStore
+                .getState()
+                .institutions.map((item) =>
+                  item._id === institution._id ? institution : item
+                ),
+            });
             toast.success("Institution updated successfully", {
               id: loadingToast,
               duration: 3000,
             });
-          } else if (response.status === 404) {
-            toast.error(response?.data?.message || `Institution not found`, {
-              id: loadingToast,
-              duration: 3000,
-            });
+            set({ isUpdateOpen: false });
+          } else if (response.status === 200) {
+            toast.error(
+              response?.data?.message || `Failed to update Institution`,
+              {
+                id: loadingToast,
+                duration: 3000,
+              }
+            );
           } else {
-            toast.error(`Failed to update institution`, {
+            toast.error(`Failed to update Institution`, {
               id: loadingToast,
               duration: 3000,
             });
           }
         })
         .catch((error) => {
-          toast.error(`Failed to update institution`, {
+          toast.error(`Failed to update Institution`, {
             id: loadingToast,
             duration: 3000,
           });
         });
     } catch (error) {
-      toast.error(`Failed to update institution`, {
+      toast.error(`Failed to update Institution`, {
         id: loadingToast,
         duration: 3000,
       });
@@ -203,23 +220,34 @@ setIsNull: (isNull) => set({ isNull }),
     const loadingToast = toast.loading("Deleting institution...");
     try {
       await axios
-        .delete(`https://niics-server.vercel.app/api/institution/${_id}`,{
+        .delete(`https://niics-server.vercel.app/api/institution/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         })
         .then((response) => {
           console.log(response.data);
-          if (response.status === 200) {
+          if (response.status === 201) {
+            set({
+              institutions: useInstitutionStore
+                .getState()
+                .institutions.filter((item) => item._id !== _id),
+            });
+            useInstitutionStore.getState().institutions.length === 0 &&
+              set({ isNull: true });
             toast.success("Institution deleted successfully", {
               id: loadingToast,
               duration: 3000,
             });
-          } else if (response.status === 404) {
-            toast.error(response?.data?.message || `Institution not found`, {
-              id: loadingToast,
-              duration: 3000,
-            });
+            set({ isDeleteOpen: false });
+          } else if (response.status === 200) {
+            toast.error(
+              response?.data?.message || `Failed to delete institution`,
+              {
+                id: loadingToast,
+                duration: 3000,
+              }
+            );
           } else {
             toast.error(`Failed to delete institution`, {
               id: loadingToast,

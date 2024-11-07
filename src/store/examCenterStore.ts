@@ -41,7 +41,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
   examCenter: null,
   setExamCenter: (examCenter) => set({ examCenter }),
   createExamCenter: async (examCenter) => {
-    const loadingToast = toast.loading("Creating examCenter...");
+    const loadingToast = toast.loading("Creating exam center...");
     try {
       await axios
         .post(`https://niics-server.vercel.app/api/examCenter`, examCenter, {
@@ -60,34 +60,34 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
             });
             useExamCenterStore.getState().examCenters.length > 0 &&
               set({ isNull: false });
-            toast.success("ExamCenter created successfully", {
+            toast.success("Exam Center created successfully", {
               id: loadingToast,
               duration: 3000,
             });
             set({ isCreateOpen: false });
           } else if (response.status === 200) {
             toast.error(
-              response?.data?.message || `Failed to create examCenter`,
+              response?.data?.message || `Failed to create exam center`,
               {
                 id: loadingToast,
                 duration: 3000,
               }
             );
           } else {
-            toast.error(`Failed to create examCenter`, {
+            toast.error(`Failed to create exam center`, {
               id: loadingToast,
               duration: 3000,
             });
           }
         })
         .catch((error) => {
-          toast.error(`Failed to create examCenter`, {
+          toast.error(`Failed to create exam center`, {
             id: loadingToast,
             duration: 3000,
           });
         });
     } catch (error) {
-      toast.error(`Failed to create examCenter`, {
+      toast.error(`Failed to create exam center`, {
         id: loadingToast,
         duration: 3000,
       });
@@ -110,22 +110,22 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
           } else if (response.status === 200) {
             set({
               errorMessage:
-                response?.data?.message || `Failed to fetch examCenters`,
+                response?.data?.message || `Failed to fetch exam centers`,
             });
           } else {
             set({
-              errorMessage: `Failed to fetch examCenters`,
+              errorMessage: `Failed to fetch exam centers`,
             });
           }
         })
         .catch((error) => {
           set({
-            errorMessage: `Failed to fetch examCenters`,
+            errorMessage: `Failed to fetch exam centers`,
           });
         });
     } catch (error) {
       set({
-        errorMessage: `Failed to fetch examCenters`,
+        errorMessage: `Failed to fetch exam centers`,
       });
     }
   },
@@ -145,23 +145,23 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
             });
           } else {
             set({
-              errorMessage: `Failed to fetch examCenter`,
+              errorMessage: `Failed to fetch exam center`,
             });
           }
         })
         .catch((error) => {
           set({
-            errorMessage: `Failed to fetch examCenter`,
+            errorMessage: `Failed to fetch exam center`,
           });
         });
     } catch (error) {
       set({
-        errorMessage: `Failed to fetch examCenter`,
+        errorMessage: `Failed to fetch exam center`,
       });
     }
   },
   updateExamCenter: async (examCenter) => {
-    const loadingToast = toast.loading("Updating examCenter...");
+    const loadingToast = toast.loading("Updating exam center...");
     try {
       await axios
         .put(
@@ -183,7 +183,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
                   item._id === examCenter._id ? examCenter : item
                 ),
             });
-            toast.success("ExamCenter updated successfully", {
+            toast.success("Exam Center updated successfully", {
               id: loadingToast,
               duration: 3000,
             });
@@ -217,7 +217,7 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     }
   },
   deleteExamCenter: async (_id) => {
-    const loadingToast = toast.loading("Deleting examCenter...");
+    const loadingToast = toast.loading("Deleting exam center...");
     try {
       await axios
         .delete(`https://niics-server.vercel.app/api/examCenter/${_id}`, {
@@ -235,34 +235,34 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
             });
             useExamCenterStore.getState().examCenters.length === 0 &&
               set({ isNull: true });
-            toast.success("ExamCenter deleted successfully", {
+            toast.success("Exam Center deleted successfully", {
               id: loadingToast,
               duration: 3000,
             });
             set({ isDeleteOpen: false });
           } else if (response.status === 200) {
             toast.error(
-              response?.data?.message || `Failed to delete Exam Center`,
+              response?.data?.message || `Failed to delete exam center`,
               {
                 id: loadingToast,
                 duration: 3000,
               }
             );
           } else {
-            toast.error(`Failed to delete Exam Center`, {
+            toast.error(`Failed to delete exam center`, {
               id: loadingToast,
               duration: 3000,
             });
           }
         })
         .catch((error) => {
-          toast.error(`Failed to delete Exam Center`, {
+          toast.error(`Failed to delete exam center`, {
             id: loadingToast,
             duration: 3000,
           });
         });
     } catch (error) {
-      toast.error(`Failed to delete examCenter`, {
+      toast.error(`Failed to delete exam center`, {
         id: loadingToast,
         duration: 3000,
       });
