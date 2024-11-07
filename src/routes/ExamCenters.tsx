@@ -112,13 +112,13 @@ export default function ExamCenters() {
       });
   }, [items, filters, searchTerm, sortConfig]);
 
-const filteredAndSortedCenters = 
-  useFilteredAndSorted<ExamCenter>(
-    examCenters,
-    filters,
-    searchTerm,
-    sortConfig
-  );
+  const filteredAndSortedCenters =
+    useFilteredAndSorted<ExamCenter>(
+      examCenters,
+      filters,
+      searchTerm,
+      sortConfig
+    );
 
 
   return (
@@ -228,12 +228,12 @@ const filteredAndSortedCenters =
                           <div className="flex items-center justify-between">
                             {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
                             <TableFilterSort
-                          filters={filters}
-                          handleFilter={handleFilter}
-                          sortConfig={sortConfig}
-                          handleSort={handleSort}
-                          keyLabel={key as keyof ExamCenter}
-                        />
+                              filters={filters}
+                              handleFilter={handleFilter}
+                              sortConfig={sortConfig}
+                              handleSort={handleSort}
+                              keyLabel={key as keyof ExamCenter}
+                            />
                           </div>
                         </TableHead>
                       )
@@ -298,15 +298,16 @@ const filteredAndSortedCenters =
                       </motion.tr>
                     )}
                     {examCenters.length > 0 &&
+                    filteredAndSortedCenters.length !== 0 &&
                       filteredAndSortedCenters.map((center, i) => (
                         <motion.tr
-                        key={center._id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3, delay: i * 0.05 }}
-                        className="hover:bg-primary/5 transition-colors duration-300"
-                        layout
+                          key={center._id}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          transition={{ duration: 0.3, delay: i * 0.05 }}
+                          className="hover:bg-primary/5 transition-colors duration-300"
+                          layout
                         >
                           <TableCell className="font-medium">
                             {center.code}
@@ -317,8 +318,8 @@ const filteredAndSortedCenters =
                           <TableCell>
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-semibold ${center.active
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
                                 }`}
                             >
                               {center.active ? "Active" : "Inactive"}
@@ -352,6 +353,24 @@ const filteredAndSortedCenters =
                           </TableCell>
                         </motion.tr>
                       ))}
+
+                    {filteredAndSortedCenters.length === 0 && 
+                    examCenters.length > 0 &&
+                    (
+                      <motion.tr
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="hover:bg-primary/5 transition-colors duration-300"
+                      >
+                        <TableCell colSpan={9} className="text-center py-4">
+                          <span className="text-sm text-primary">
+                            Clear the filters to see centers
+                          </span>
+                        </TableCell>
+                      </motion.tr>
+                    )}
                   </AnimatePresence>
                 </TableBody>
               </Table>

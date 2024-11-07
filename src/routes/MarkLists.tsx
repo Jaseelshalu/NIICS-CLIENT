@@ -161,67 +161,83 @@ export default function MarkListPage() {
                             </TableHeader>
                             <TableBody>
                                 <AnimatePresence>
-                                    {filteredAndSortedMarks.map((mark, index) => (
+                                    {filteredAndSortedMarks.length !== 0 &&
+                                        filteredAndSortedMarks.map((mark, index) => (
+                                            <motion.tr
+                                                key={mark.id}
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -20 }}
+                                                transition={{ duration: 0.3, delay: index * 0.05 }}
+                                                className="hover:bg-primary/5 transition-colors duration-300"
+                                                layout
+                                            >
+                                                <TableCell className="font-medium">{mark.name}</TableCell>
+                                                <TableCell>{mark.maxMarks}</TableCell>
+                                                <TableCell>
+                                                    {/* ${mark.name === 'active' ?'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} */}
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold`}>
+                                                        {mark.type}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex space-x-2">
+                                                        <Dialog open={isEditModalOpen && currentMark?.id === mark.id} onOpenChange={(open) => {
+                                                            setIsEditModalOpen(open)
+                                                            if (!open) setCurrentMark(null)
+                                                        }}>
+                                                            <DialogTrigger asChild>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    onClick={() => {
+                                                                        setCurrentMark(mark)
+                                                                        setIsEditModalOpen(true)
+                                                                    }}
+                                                                    className="hover:bg-primary/10 transition-colors duration-300"
+                                                                >
+                                                                    <Edit className="h-4 w-4" />
+                                                                </Button>
+                                                            </DialogTrigger>
+                                                            <DialogContent className="sm:max-w-[425px]">
+                                                                <DialogHeader>
+                                                                    <DialogTitle>Edit Mark</DialogTitle>
+                                                                </DialogHeader>
+                                                                {currentMark && (
+                                                                    <MarkForm
+                                                                        onSubmit={handleEditMark}
+                                                                        initialData={currentMark}
+                                                                    />
+                                                                )}
+                                                            </DialogContent>
+                                                        </Dialog>
+                                                        <Button
+                                                            variant="destructive"
+                                                            size="sm"
+                                                            onClick={() => handleDeleteMark(mark.id)}
+                                                            className="hover:bg-red-600 transition-colors duration-300"
+                                                        >
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                            </motion.tr>
+                                        ))}
+                                    {filteredAndSortedMarks.length === 0 && (
                                         <motion.tr
-                                            key={mark.id}
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: -20 }}
-                                            transition={{ duration: 0.3, delay: index * 0.05 }}
+                                            transition={{ duration: 0.3 }}
                                             className="hover:bg-primary/5 transition-colors duration-300"
-                                            layout
                                         >
-                                            <TableCell className="font-medium">{mark.name}</TableCell>
-                                            <TableCell>{mark.maxMarks}</TableCell>
-                                            <TableCell>
-                                                {/* ${mark.name === 'active' ?'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} */}
-                                                <span className={`px-2 py-1 rounded-full text-xs font-semibold`}>
-                                                    {mark.type}
+                                            <TableCell colSpan={9} className="text-center py-4">
+                                                <span className="text-sm text-primary">
+                                                    Clear the filters to see marks
                                                 </span>
                                             </TableCell>
-                                            <TableCell>
-                                                <div className="flex space-x-2">
-                                                    <Dialog open={isEditModalOpen && currentMark?.id === mark.id} onOpenChange={(open) => {
-                                                        setIsEditModalOpen(open)
-                                                        if (!open) setCurrentMark(null)
-                                                    }}>
-                                                        <DialogTrigger asChild>
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                onClick={() => {
-                                                                    setCurrentMark(mark)
-                                                                    setIsEditModalOpen(true)
-                                                                }}
-                                                                className="hover:bg-primary/10 transition-colors duration-300"
-                                                            >
-                                                                <Edit className="h-4 w-4" />
-                                                            </Button>
-                                                        </DialogTrigger>
-                                                        <DialogContent className="sm:max-w-[425px]">
-                                                            <DialogHeader>
-                                                                <DialogTitle>Edit Mark</DialogTitle>
-                                                            </DialogHeader>
-                                                            {currentMark && (
-                                                                <MarkForm
-                                                                    onSubmit={handleEditMark}
-                                                                    initialData={currentMark}
-                                                                />
-                                                            )}
-                                                        </DialogContent>
-                                                    </Dialog>
-                                                    <Button
-                                                        variant="destructive"
-                                                        size="sm"
-                                                        onClick={() => handleDeleteMark(mark.id)}
-                                                        className="hover:bg-red-600 transition-colors duration-300"
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
                                         </motion.tr>
-                                    ))}
+                                    )}
                                 </AnimatePresence>
                             </TableBody>
                         </Table>
