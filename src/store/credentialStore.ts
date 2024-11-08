@@ -41,14 +41,14 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
   setCredentials: (credentials) => set({ credentials }),
   credential: null,
   setCredential: (credential) => set({ credential }),
-  authCredential: async (username, password) => {
+  authCredential: async (userName, password) => {
     const loadingToast = toast.loading("Logging in...");
     try {
       await axios
         .post(
           `https://niics-server.vercel.app/api/credential/login`,
           {
-            username,
+            userName,
             password,
           },
           {
@@ -59,7 +59,7 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
         )
         .then((response) => {
           console.log(response.data);
-          if (response.status === 200) {
+          if (response.status === 201) {
             localStorage.setItem("token", response.data.token);
             toast.success("Logged in successfully", {
               id: loadingToast,

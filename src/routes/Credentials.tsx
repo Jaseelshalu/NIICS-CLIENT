@@ -45,6 +45,8 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Credential } from "@/types/types";
 import useCredentialStore from "@/store/credentialStore";
+import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
+import useExamCenterStore from "@/store/examCenterStore";
 
 type SortConfig = {
   key: keyof Credential;
@@ -67,6 +69,7 @@ export default function Credentials() {
     isNull,
     errorMessage,
   } = useCredentialStore();
+  const { getExamCenters } = useExamCenterStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: "userName",
@@ -77,6 +80,7 @@ export default function Credentials() {
   >({});
 
   useEffect(() => {
+    getExamCenters();
     getCredentials()
   }, [])
 
@@ -327,7 +331,10 @@ export default function Credentials() {
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => setIsUpdateOpen(true)}
+                              onClick={() => {
+                                setIsUpdateOpen(true)
+                                setCredential(cred)
+                              }}
                               className="hover:bg-primary/10 transition-colors duration-300"
                             >
                               <Edit className="h-4 w-4" />
@@ -335,7 +342,10 @@ export default function Credentials() {
                             <Button
                               variant="destructive"
                               size="sm"
-                              onClick={() => setIsDeleteOpen(true)}
+                              onClick={() => {
+                                setIsDeleteOpen(true)
+                                setCredential(cred)
+                              }}
                               className="hover:bg-destructive/90 transition-colors duration-300"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -369,11 +379,27 @@ function CreateForm() {
   });
 
   const { createCredential } = useCredentialStore();
+  const { examCenters } = useExamCenterStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
+    }));
+  };
+
+  const handleSelectChange = (value: string) => {
+    const selectedCenter = examCenters.find(center => center._id === value);
+    setFormData((prev) => ({
+      ...prev,
+      examCenter: selectedCenter || {
+        _id: '',
+        code: '',
+        name: '',
+        address: '',
+        contact: 0,
+        active: false,
+      },
     }));
   };
 
@@ -385,7 +411,7 @@ function CreateForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="userName">Code</Label>
+        <Label htmlFor="userName">User Name</Label>
         <Input
           id="userName"
           name="userName"
@@ -396,32 +422,36 @@ function CreateForm() {
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="password">Password</Label>
         <Input
-          id="name"
-          name="name"
+          id="password"
+          name="password"
+          type="password"
           value={formData.password}
           onChange={handleChange}
           required
           className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
         />
       </div>
-      {/* <div className="space-y-2">
+      <div className="space-y-2">
         <Label htmlFor="examCenter">Exam Center</Label>
-        <select
-          id="examCenter"
-          name="examCenter"
-          value={formData.examCenter._id}
-          onChange={handleChange}
+        <Select
           required
-          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+          onValueChange={handleSelectChange} // Updated to handle changes at the Select level
         >
-          <option value="">Select Exam Center</option>
-          <option value="1">Exam Center 1</option>
-          <option value="2">Exam Center 2</option>
-          <option value="3">Exam Center 3</option>
-        </select>
-      </div> */}
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select Exam Center" />
+          </SelectTrigger>
+          <SelectContent>
+            {examCenters?.map((center) => (
+              <SelectItem key={center._id} value={center._id}>
+                {center.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+      </div>
       <Button
         type="submit"
         className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300"
@@ -433,9 +463,14 @@ function CreateForm() {
 }
 
 function UpdateForm({ initialData }: { initialData: Credential }) {
-  const [formData, setFormData] = useState(initialData);
+  const [formData, setFormData] = useState({
+    ...initialData,
+    password: '',
+  });
 
   const { updateCredential } = useCredentialStore();
+
+  const { examCenters } = useExamCenterStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -449,72 +484,71 @@ function UpdateForm({ initialData }: { initialData: Credential }) {
     updateCredential(formData);
   };
 
+  const handleSelectChange = (value: string) => {
+    const selectedCenter = examCenters.find(center => center._id === value);
+    setFormData((prev) => ({
+      ...prev,
+      examCenter: selectedCenter || {
+        _id: '',
+        code: '',
+        name: '',
+        address: '',
+        contact: 0,
+        active: false,
+      },
+    }));
+  };
+
   return (
-    // <form onSubmit={handleSubmit} className="space-y-4">
-    //   <div className="space-y-2">
-    //     <Label htmlFor="code">Code</Label>
-    //     <Input
-    //       id="code"
-    //       name="code"
-    //       value={formData.code}
-    //       onChange={handleChange}
-    //       required
-    //       className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-    //     />
-    //   </div>
-    //   <div className="space-y-2">
-    //     <Label htmlFor="name">Name</Label>
-    //     <Input
-    //       id="name"
-    //       name="name"
-    //       value={formData.name}
-    //       onChange={handleChange}
-    //       required
-    //       className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-    //     />
-    //   </div>
-    //   <div className="space-y-2">
-    //     <Label htmlFor="address">Address</Label>
-    //     <Input
-    //       id="address"
-    //       name="address"
-    //       value={formData.address}
-    //       onChange={handleChange}
-    //       required
-    //       className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-    //     />
-    //   </div>
-    //   <div className="space-y-2">
-    //     <Label htmlFor="contact">Contact</Label>
-    //     <Input
-    //       id="contact"
-    //       name="contact"
-    //       type="number"
-    //       value={formData.contact}
-    //       onChange={handleChange}
-    //       required
-    //       className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-    //     />
-    //   </div>
-    //   <div className="space-y-2">
-    //     <Label htmlFor="seatCount">Seat Count</Label>
-    //     <Input
-    //       id="seatCount"
-    //       name="seatCount"
-    //       type="number"
-    //       value={formData.seatCount}
-    //       onChange={handleChange}
-    //       required
-    //       className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-    //     />
-    //   </div>
-    //   <Button
-    //     type="submit"
-    //     className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300"
-    //   >
-    //     Update Credential
-    //   </Button>
-    // </form>
-    <></>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="userName">User Name</Label>
+        <Input
+          id="userName"
+          name="userName"
+          value={formData?.userName}
+          onChange={handleChange}
+          required
+          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="password">Password</Label>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          value={formData?.password}
+          onChange={handleChange}
+          required
+          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="examCenter">Exam Center</Label>
+        <Select
+          required
+          onValueChange={handleSelectChange}
+          defaultValue={formData.examCenter?._id}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select Exam Center" />
+          </SelectTrigger>
+          <SelectContent>
+            {examCenters?.map((center) => (
+              <SelectItem key={center._id} value={center._id}>
+                {center.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <Button
+        type="submit"
+        className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300"
+      >
+        Update Credential
+      </Button>
+    </form>
   );
 }
