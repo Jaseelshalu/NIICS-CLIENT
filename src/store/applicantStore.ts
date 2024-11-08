@@ -11,7 +11,7 @@ interface ApplicantStoreState {
   getNewApplicant: () => void;
   applicant: Applicant | null;
   setApplicant: (applicant: Applicant) => void;
-  authApplicant: (number: string, dob: Date) => void;
+  authApplicant: (number: string, dob: Date) => Promise<Boolean>;
   createApplicant: (applicant: Partial<Applicant>) => Promise<Boolean>;
   getApplicants: () => void;
   getApplicant: (_id: string) => void;
@@ -59,7 +59,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   setApplicant: (applicant) => set({ applicant }),
   authApplicant: async (number, dob) => {
     const loadingToast = toast.loading("Logging In applicant...");
-
+    let auth = false;
     try {
       await axios
         .post(`https://niics-server.vercel.app/api/applicant/auth`, {
@@ -74,6 +74,8 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
               duration: 3000,
             });
             set({ applicant: response.data });
+            auth = true;
+            return true;
           } else if (response.status === 200) {
             toast.error(
               response?.data?.message || `Failed to log in applicant`,
@@ -82,19 +84,23 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
                 duration: 3000,
               }
             );
+            return false;
           } else {
             toast.error(`Failed to log in applicant`, {
               id: loadingToast,
               duration: 3000,
             });
           }
+          return false;
         });
     } catch (error) {
       toast.error(`Failed to log in applicant`, {
         id: loadingToast,
         duration: 3000,
       });
+      return false;
     }
+    return auth;
   },
   createApplicant: async (applicant) => {
     const loadingToast = toast.loading("Creating applicant...");
