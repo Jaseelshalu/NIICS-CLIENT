@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { CheckCircle2, Circle, Edit, MoreHorizontal, Download } from "lucide-react"
 import { motion } from "framer-motion"
+import useApplicantStore from '@/store/applicantStore'
 
 export default function CandidateProfile() {
 
@@ -16,6 +17,8 @@ export default function CandidateProfile() {
     guardianName: "Jane Doe",
     guardianAadhar: "9876 5432 1098",
   }
+
+  const {applicant} = useApplicantStore()
 
   const profileUrl = "/placeholder.svg?height=200&width=200"
 

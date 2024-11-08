@@ -14,14 +14,6 @@ import useExamCenterStore from '@/store/examCenterStore'
 import { ExamCenter as ExamCenterType } from '@/types/types'
 import useInstitutionStore from '@/store/institutionStore'
 
-const admissionInstitutions = [
-  "Institution A",
-  "Institution B",
-  "Institution C",
-  "Institution D",
-  "Institution E",
-]
-
 export function ExamCenter() {
   const { newApplicant, setNewApplicant } = useApplicantStore()
   const { examCenters , setExamCenters ,getExamCenters} = useExamCenterStore();
@@ -121,7 +113,12 @@ export function ExamCenter() {
                 {newApplicant?.options?.map((institution : any, index) => (
                   <div key={institution} className="flex items-center justify-between bg-gray-100 p-2 rounded">
                     <Badge variant="secondary" className="mr-2">{index + 1}</Badge>
-                    <span className="flex-grow">{institution}</span>
+                    <span className="flex-grow">
+                      <span className="font-semibold">{
+                        institutions.find((i : any) => i._id === institution)?.code
+                        } </span>
+                      {institutions.find((i : any) => i._id === institution)?.name
+                      }</span>
                     <div className="flex items-center space-x-2">
                       <Button
                         type="button"
