@@ -27,6 +27,7 @@ interface ApplicantStoreState {
   setIsDeleteOpen: (isDeleteOpen: boolean) => void;
   errorMessage: string;
   setErrorMessage: (errorMessage: string) => void;
+  initialApplicantLoad: (data:Applicant) => void;
 }
 
 const useApplicantStore = create<ApplicantStoreState>((set) => ({
@@ -74,6 +75,8 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
               duration: 3000,
             });
             set({ applicant: response.data });
+            // set to local storage
+            localStorage.setItem("applicant", JSON.stringify(response.data));
             auth = true;
             return true;
           } else if (response.status === 200) {
@@ -120,6 +123,9 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
               id: loadingToast,
               duration: 3000,
             });
+            set({ applicant: response.data });
+            // set to local storage
+            localStorage.setItem("applicant", JSON.stringify(response.data));
             created = true;
             return true;
           } else if (response.status === 200) {
@@ -316,6 +322,9 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
       });
     }
   },
+  initialApplicantLoad : (data) => {
+    set({applicant:data})
+  }
 }));
 
 export default useApplicantStore;

@@ -1,24 +1,31 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { CheckCircle2, Circle, Edit, MoreHorizontal, Download } from "lucide-react"
 import { motion } from "framer-motion"
 import useApplicantStore from '@/store/applicantStore'
+import { Applicant } from '@/types/types'
+import { useNavigate } from 'react-router-dom'
 
 export default function CandidateProfile() {
 
-  const candidate = {
-    name: "John Doe",
-    phone: "+91 9876543210",
-    aadhar: "1234 5678 9012",
-    dob: "1990-01-01",
-    guardianName: "Jane Doe",
-    guardianAadhar: "9876 5432 1098",
-  }
+ 
 
-  const {applicant} = useApplicantStore()
+  const {applicant , initialApplicantLoad} = useApplicantStore()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    document.title = "Candidate Profile"
+    // take applicant data from local storage
+    const applicant = JSON.parse(localStorage.getItem('applicant') as string)
+    if (applicant) {
+      initialApplicantLoad(applicant as Applicant)
+    }else{
+      navigate('/check-status')
+    }
+  }, [])
 
   const profileUrl = "https://e7.pngegg.com/pngimages/84/165/png-clipart-united-states-avatar-organization-information-user-avatar-service-computer-wallpaper-thumbnail.png"
 
@@ -45,13 +52,13 @@ export default function CandidateProfile() {
   
           </CardHeader>
           <CardContent className="flex flex-col sm:flex-row gap-6 p-6">
-            <div className="flex-shrink-0 w-full sm:w-auto">
+            <div className="flex flex-shrink-0 w-full h-full sm:w-auto items-center justify-center">
               <img
                 src={applicant?.imageURL || profileUrl}
                 alt="Candidate"
                 width={200}
                 height={200}
-                className="rounded-lg  w-full sm:w-[200px] h-[200px] ring-2 ring-primary/20"
+                className="rounded-lg   w-[200px] h-[200px] ring-2 ring-primary/20"
               />
             </div>
             <div className="flex-grow space-y-2 text-sm sm:text-base">
@@ -109,6 +116,13 @@ export default function CandidateProfile() {
                   >
                     <h3 className={`text-sm sm:text-base font-medium leading-tight ${step.completed ? 'text-primary' : 'text-muted-foreground'}`}>
                       {step.label}
+                      <span>
+                        {step.date && (
+                          <time className="block mt-2 text-xs font-normal leading-none text-muted-foreground">
+                            {new Date(step.date).toLocaleDateString()}
+                          </time>
+                        )}
+                      </span>
                     </h3>
                     <time className="block mb-2 text-xs font-normal leading-none text-muted-foreground">{
                       }</time>
