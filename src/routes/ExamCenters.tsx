@@ -42,13 +42,14 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { ExamCenter } from "@/types/types";
 import useExamCenterStore from "@/store/examCenterStore";
+import TableFilterSort from "@/components/ui/TableFilterSort";
 
 type SortConfig = {
   key: keyof ExamCenter;
   direction: "asc" | "desc";
 };
 
-export default function ExamCentersPage() {
+export default function ExamCenters() {
   const {
     examCenters,
     examCenter,
@@ -89,34 +90,36 @@ export default function ExamCentersPage() {
     }));
   };
 
-  const filteredAndSortedCenters = useMemo(() => {
-    return examCenters
-      ?.filter(
-        (center) =>
-          Object.entries(filters).every(([key, value]) =>
-            center[key as keyof ExamCenter]
-              ?.toString()
-              .toLowerCase()
-              .includes(value.toLowerCase())
-          ) &&
-          Object.values(center).some((val) =>
-            val.toString().toLowerCase().includes(searchTerm.toLowerCase())
-          )
+  const useFilteredAndSorted = <Type,>(
+    items: Type[],
+    filters: Partial<Record<keyof Type, string>>,
+    searchTerm: string,
+    sortConfig: { key: keyof Type; direction: 'asc' | 'desc' }
+  ): Type[] => useMemo(() => {
+    return items
+      .filter((item: Type) =>
+        Object.entries(filters).every(([key, value]) =>
+          item[key as keyof Type]?.toString().toLowerCase().includes((value as any).toLowerCase())
+        ) &&
+        Object.values(item as Record<string, unknown>).some(val =>
+          val?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        )
       )
-      .sort((a, b) => {
-        if (
-          (a as ExamCenter | any)[sortConfig.key] <
-          (b as ExamCenter | any)[sortConfig.key]
-        )
-          return sortConfig.direction === "asc" ? -1 : 1;
-        if (
-          (a as ExamCenter | any)[sortConfig.key] >
-          (b as ExamCenter | any)[sortConfig.key]
-        )
-          return sortConfig.direction === "asc" ? 1 : -1;
+      .sort((a: Type, b: Type) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === "asc" ? -1 : 1;
+        if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === "asc" ? 1 : -1;
         return 0;
       });
-  }, [examCenters, filters, searchTerm, sortConfig]);
+  }, [items, filters, searchTerm, sortConfig]);
+
+  const filteredAndSortedCenters =
+    useFilteredAndSorted<ExamCenter>(
+      examCenters,
+      filters,
+      searchTerm,
+      sortConfig
+    );
+
 
   return (
     <>
@@ -189,7 +192,7 @@ export default function ExamCentersPage() {
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
             <div className="relative w-full sm:w-64">
               <Input
-                placeholder="Search centers..."
+                placeholder="Search Centers..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 pr-4 py-2 w-full bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
@@ -223,64 +226,14 @@ export default function ExamCentersPage() {
                       (key) => (
                         <TableHead key={key}>
                           <div className="flex items-center justify-between">
-                            {key.charAt(0).toUpperCase() + key.slice(1)}
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="ml-2 hover:bg-primary/10 transition-colors duration-300"
-                                >
-                                  <Filter className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent
-                                align="end"
-                                className="bg-background/95 backdrop-blur-sm border-primary/20"
-                              >
-                                <DropdownMenuItem
-                                  onClick={() => {
-                                    handleSort(key as keyof ExamCenter, "asc");
-                                  }}
-                                  className="flex items-center"
-                                >
-                                  <SortAsc className="mr-2 h-4 w-4" /> Sort
-                                  Ascending
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    handleSort(key as keyof ExamCenter, "desc")
-                                  }
-                                  className="flex items-center"
-                                >
-                                  <SortDesc className="mr-2 h-4 w-4" /> Sort
-                                  Descending
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onSelect={(e) => e.preventDefault()}
-                                >
-                                  <div className="relative w-full">
-                                    <Input
-                                      placeholder={`Filter ${key}...`}
-                                      value={
-                                        filters[key as keyof ExamCenter] || ""
-                                      }
-                                      onChange={(e) =>
-                                        handleFilter(
-                                          key as keyof ExamCenter,
-                                          e.target.value
-                                        )
-                                      }
-                                      className="mt-2 w-full pl-8 pr-4 py-1 bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-                                    />
-                                    <Search
-                                      className="absolute left-2 top-1/2 transform -translate-y-1/4 text-primary/60"
-                                      size={16}
-                                    />
-                                  </div>
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                            {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                            <TableFilterSort
+                              filters={filters}
+                              handleFilter={handleFilter}
+                              sortConfig={sortConfig}
+                              handleSort={handleSort}
+                              keyLabel={key as keyof ExamCenter}
+                            />
                           </div>
                         </TableHead>
                       )
@@ -301,7 +254,7 @@ export default function ExamCentersPage() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -20 }}
                             transition={{ duration: 0.3 }}
-                            className="transition-colors duration-300 w-full"
+                            className="hover:bg-primary/5 transition-colors duration-300"
                           >
                             <td className="animate-pulse bg-primary/15 h-12 w-auto" />
                             <td className="animate-pulse bg-primary/15 h-12 w-auto" />
@@ -345,14 +298,16 @@ export default function ExamCentersPage() {
                       </motion.tr>
                     )}
                     {examCenters.length > 0 &&
-                      filteredAndSortedCenters.map((center) => (
+                    filteredAndSortedCenters.length !== 0 &&
+                      filteredAndSortedCenters.map((center, i) => (
                         <motion.tr
                           key={center._id}
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -20 }}
-                          transition={{ duration: 0.3 }}
+                          transition={{ duration: 0.3, delay: i * 0.05 }}
                           className="hover:bg-primary/5 transition-colors duration-300"
+                          layout
                         >
                           <TableCell className="font-medium">
                             {center.code}
@@ -362,11 +317,10 @@ export default function ExamCentersPage() {
                           <TableCell>{center.contact}</TableCell>
                           <TableCell>
                             <span
-                              className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                                center.active
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
-                              }`}
+                              className={`px-2 py-1 rounded-full text-xs font-semibold ${center.active
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                                }`}
                             >
                               {center.active ? "Active" : "Inactive"}
                             </span>
@@ -399,6 +353,24 @@ export default function ExamCentersPage() {
                           </TableCell>
                         </motion.tr>
                       ))}
+
+                    {filteredAndSortedCenters.length === 0 && 
+                    examCenters.length > 0 &&
+                    (
+                      <motion.tr
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="hover:bg-primary/5 transition-colors duration-300"
+                      >
+                        <TableCell colSpan={9} className="text-center py-4">
+                          <span className="text-sm text-primary">
+                            Clear the filters to see centers
+                          </span>
+                        </TableCell>
+                      </motion.tr>
+                    )}
                   </AnimatePresence>
                 </TableBody>
               </Table>

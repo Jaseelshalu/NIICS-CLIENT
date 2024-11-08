@@ -11,6 +11,7 @@ interface ApplicantStoreState {
   getNewApplicant: () => void;
   applicant: Applicant | null;
   setApplicant: (applicant: Applicant) => void;
+  authApplicant: (number: string, dob: Date) => void;
   createApplicant: (applicant: Partial<Applicant>) => Promise<Boolean>;
   getApplicants: () => void;
   getApplicant: (_id: string) => void;
@@ -56,6 +57,45 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   setApplicants: (applicants) => set({ applicants }),
   applicant: null,
   setApplicant: (applicant) => set({ applicant }),
+  authApplicant: async (number, dob) => {
+    const loadingToast = toast.loading("Logging In applicant...");
+
+    try {
+      await axios
+        .post(`https://niics-server.vercel.app/api/applicant/auth`, {
+          number,
+          dob,
+        })
+        .then((response) => {
+          console.log(response.data);
+          if (response.status === 201) {
+            toast.success("Applicant logged in successfully", {
+              id: loadingToast,
+              duration: 3000,
+            });
+            set({ applicant: response.data });
+          } else if (response.status === 200) {
+            toast.error(
+              response?.data?.message || `Failed to log in applicant`,
+              {
+                id: loadingToast,
+                duration: 3000,
+              }
+            );
+          } else {
+            toast.error(`Failed to log in applicant`, {
+              id: loadingToast,
+              duration: 3000,
+            });
+          }
+        });
+    } catch (error) {
+      toast.error(`Failed to log in applicant`, {
+        id: loadingToast,
+        duration: 3000,
+      });
+    }
+  },
   createApplicant: async (applicant) => {
     const loadingToast = toast.loading("Creating applicant...");
     let created = false;
@@ -111,7 +151,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   },
   getApplicants: async () => {
     set({ applicants: [] });
-    set({ isNull:false });
+    set({ isNull: false });
     set({ errorMessage: "" });
     try {
       await axios
@@ -149,7 +189,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   },
   getApplicant: async (_id) => {
     set({ applicant: null });
-    set({ isNull:false });
+    set({ isNull: false });
     set({ errorMessage: "" });
     try {
       await axios

@@ -43,21 +43,24 @@ import {
   Trash,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Institution } from "@/types/types";
-import useInstitutionStore from "@/store/institutionStore";
+import { Credential } from "@/types/types";
+import useCredentialStore from "@/store/credentialStore";
+import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
+import useExamCenterStore from "@/store/examCenterStore";
+import TableFilterSort from "@/components/ui/TableFilterSort";
 
 type SortConfig = {
-  key: keyof Institution;
+  key: keyof Credential;
   direction: "asc" | "desc";
 };
 
-export default function InstitutionsPage() {
+export default function Credentials() {
   const {
-    institutions,
-    institution,
-    setInstitution,
-    getInstitutions,
-    deleteInstitution,
+    credentials,
+    credential,
+    setCredential,
+    getCredentials,
+    deleteCredential,
     isCreateOpen,
     isUpdateOpen,
     isDeleteOpen,
@@ -66,59 +69,59 @@ export default function InstitutionsPage() {
     setIsDeleteOpen,
     isNull,
     errorMessage,
-  } = useInstitutionStore();
+  } = useCredentialStore();
+  const { getExamCenters } = useExamCenterStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState<SortConfig>({
-    key: "code",
+    key: "userName",
     direction: "asc",
   });
   const [filters, setFilters] = useState<
-    Partial<Record<keyof Institution, string>>
+    Partial<Record<keyof Credential, string>>
   >({});
 
   useEffect(() => {
-    getInstitutions()
+    getExamCenters();
+    getCredentials()
   }, [])
 
-  const handleSort = (key: keyof Institution, direction: "asc" | "desc") => {
+  const handleSort = (key: keyof Credential, direction: "asc" | "desc") => {
     setSortConfig({ key, direction });
   };
 
-  const handleFilter = (key: keyof Institution, value: string) => {
+  const handleFilter = (key: keyof Credential, value: string) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       [key]: value,
     }));
   };
 
-  const filteredAndSortedInstitutions = useMemo(() => {
-    return institutions
-      .filter(
-        (institute) =>
-          Object.entries(filters).every(([key, value]) =>
-            institute[key as keyof Institution]
-              ?.toString()
-              .toLowerCase()
-              .includes(value.toLowerCase())
-          ) &&
-          Object.values(institute).some((val) =>
-            val.toString().toLowerCase().includes(searchTerm.toLowerCase())
-          )
+
+  const useFilteredAndSorted = <Type,>(
+    items: Type[],
+    filters: Partial<Record<keyof Type, string>>,
+    searchTerm: string,
+    sortConfig: { key: keyof Type; direction: 'asc' | 'desc' }
+  ): Type[] => useMemo(() => {
+    return items
+      .filter((item: Type) =>
+        Object.entries(filters).every(([key, value]) =>
+          item[key as keyof Type]?.toString().toLowerCase().includes((value as any).toLowerCase())
+        ) &&
+        Object.values(item as Record<string, unknown>).some(val =>
+          val?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        )
       )
-      .sort((a, b) => {
-        if (
-          (a as Institution | any)[sortConfig.key] <
-          (b as Institution | any)[sortConfig.key]
-        )
-          return sortConfig.direction === "asc" ? -1 : 1;
-        if (
-          (a as Institution | any)[sortConfig.key] >
-          (b as Institution | any)[sortConfig.key]
-        )
-          return sortConfig.direction === "asc" ? 1 : -1;
+      .sort((a: Type, b: Type) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === "asc" ? -1 : 1;
+        if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === "asc" ? 1 : -1;
         return 0;
       });
-  }, [institutions, filters, searchTerm, sortConfig]);
+  }, [items, filters, searchTerm, sortConfig]);
+
+  const filteredAndSortedCredentials = useFilteredAndSorted<Credential>(
+    credentials, filters, searchTerm, sortConfig
+  );
 
   return (
     <>
@@ -126,7 +129,7 @@ export default function InstitutionsPage() {
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Create New Institution</DialogTitle>
+              <DialogTitle>Create New Credential</DialogTitle>
             </DialogHeader>
             <CreateForm />
           </DialogContent>
@@ -137,9 +140,9 @@ export default function InstitutionsPage() {
         <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Edit Institution</DialogTitle>
+              <DialogTitle>Edit Credential</DialogTitle>
             </DialogHeader>
-            <UpdateForm initialData={institution as Institution} />
+            <UpdateForm initialData={credential as Credential} />
           </DialogContent>
         </Dialog>
       )}
@@ -148,12 +151,12 @@ export default function InstitutionsPage() {
         <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
           <DialogContent className="w-full lg:w-full rounded-lg">
             <DialogHeader className="sm:text-center">
-              <DialogTitle>Delete {institution?.name}</DialogTitle>
+              <DialogTitle>Delete {credential?.userName}</DialogTitle>
             </DialogHeader>
-            {institution && (
+            {credential && (
               <div>
                 <Label className="block text-sm font-medium text-primary mb-4 sm:text-center">
-                  Are you sure you want to delete {institution?.name}?
+                  Are you sure you want to delete {credential?.userName}?
                 </Label>
                 <DialogFooter className="flex flex-row sm:justify-center gap-2">
                   <Button
@@ -173,7 +176,7 @@ export default function InstitutionsPage() {
                     size="sm"
                     className={`flex items-center gap-2 `}
                     onClick={() => {
-                      deleteInstitution(institution._id);
+                      deleteCredential(credential._id);
                     }}
                   >
                     <Trash className="h-4 w-4" />
@@ -187,7 +190,7 @@ export default function InstitutionsPage() {
       )}
       <div className="container mx-auto p-4 space-y-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h1 className="text-3xl font-bold text-primary">Institutions List</h1>
+          <h1 className="text-3xl font-bold text-primary">Credentials List</h1>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
             <div className="relative w-full sm:w-64">
               <Input
@@ -217,64 +220,17 @@ export default function InstitutionsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {["code", "name", "address", "contact", "seat"].map((key) => (
+                  {['userName', 'examCenter'].map((key) => (
                     <TableHead key={key}>
                       <div className="flex items-center justify-between">
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="ml-2 hover:bg-primary/10 transition-colors duration-300"
-                            >
-                              <Filter className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent
-                            align="end"
-                            className="bg-background/95 backdrop-blur-sm border-primary/20"
-                          >
-                            <DropdownMenuItem
-                              onClick={() =>
-                                handleSort(key as keyof Institution, "asc")
-                              }
-                              className="flex items-center"
-                            >
-                              <SortAsc className="mr-2 h-4 w-4" /> Sort Ascending
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() =>
-                                handleSort(key as keyof Institution, "desc")
-                              }
-                              className="flex items-center"
-                            >
-                              <SortDesc className="mr-2 h-4 w-4" /> Sort
-                              Descending
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onSelect={(e) => e.preventDefault()}
-                            >
-                              <div className="relative w-full">
-                                <Input
-                                  placeholder={`Filter ${key}...`}
-                                  value={filters[key as keyof Institution] || ""}
-                                  onChange={(e) =>
-                                    handleFilter(
-                                      key as keyof Institution,
-                                      e.target.value
-                                    )
-                                  }
-                                  className="mt-2 w-full pl-8 pr-4 py-1 bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-                                />
-                                <Search
-                                  className="absolute left-2 top-1/2 transform -translate-y-1/4 text-primary/60"
-                                  size={16}
-                                />
-                              </div>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                        <TableFilterSort
+                          filters={filters}
+                          handleFilter={handleFilter}
+                          sortConfig={sortConfig}
+                          handleSort={handleSort}
+                          keyLabel={key as keyof Credential}
+                        />
                       </div>
                     </TableHead>
                   ))}
@@ -283,7 +239,7 @@ export default function InstitutionsPage() {
               </TableHeader>
               <TableBody>
                 <AnimatePresence>
-                  {institutions.length === 0 &&
+                  {credentials.length === 0 &&
                     errorMessage === "" &&
                     isNull === false &&
                     Array.from({ length: 1 }).map((_, index) =>
@@ -316,7 +272,7 @@ export default function InstitutionsPage() {
                     >
                       <TableCell colSpan={6} className="text-center">
                         <span className="text-sm text-primary">
-                          No Institutions found
+                          No Credentials found
                         </span>
                       </TableCell>
                     </motion.tr>
@@ -337,32 +293,28 @@ export default function InstitutionsPage() {
                       </TableCell>
                     </motion.tr>
                   )}
-                  {institutions.length > 0 &&
-
-                    filteredAndSortedInstitutions.map((institute) => (
+                  {credentials.length > 0 &&
+                    filteredAndSortedCredentials.length !== 0 &&
+                    filteredAndSortedCredentials.map((cred, index) => (
                       <motion.tr
-                        key={institute?._id}
+                        key={cred._id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
                         className="hover:bg-primary/5 transition-colors duration-300"
+                        layout
                       >
-                        <TableCell className="font-medium">
-                          {institute?.code}
-                        </TableCell>
-                        <TableCell>{institute?.name}</TableCell>
-                        <TableCell>{institute?.address}</TableCell>
-                        <TableCell>{institute?.contact}</TableCell>
-                        <TableCell>{institute?.seatCount}</TableCell>
+                        <TableCell className="font-medium">{cred?.userName}</TableCell>
+                        <TableCell>{cred?.examCenter?.name}</TableCell>
                         <TableCell>
                           <div className="flex space-x-2">
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={() => {
-                                setInstitution(institute);
-                                setIsUpdateOpen(true);
+                                setIsUpdateOpen(true)
+                                setCredential(cred)
                               }}
                               className="hover:bg-primary/10 transition-colors duration-300"
                             >
@@ -372,10 +324,10 @@ export default function InstitutionsPage() {
                               variant="destructive"
                               size="sm"
                               onClick={() => {
-                                setInstitution(institute);
-                                setIsDeleteOpen(true);
+                                setIsDeleteOpen(true)
+                                setCredential(cred)
                               }}
-                              className="hover:bg-red-600 transition-colors duration-300"
+                              className="hover:bg-destructive/90 transition-colors duration-300"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -383,6 +335,23 @@ export default function InstitutionsPage() {
                         </TableCell>
                       </motion.tr>
                     ))}
+
+                  {credentials.length > 0 &&
+                    filteredAndSortedCredentials.length === 0 && (
+                      <motion.tr
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="hover:bg-primary/5 transition-colors duration-300"
+                      >
+                        <TableCell colSpan={9} className="text-center py-4">
+                          <span className="text-sm text-primary">
+                            Clear the filters to see applicants
+                          </span>
+                        </TableCell>
+                      </motion.tr>
+                    )}
                 </AnimatePresence>
               </TableBody>
             </Table>
@@ -395,14 +364,20 @@ export default function InstitutionsPage() {
 
 function CreateForm() {
   const [formData, setFormData] = useState({
-    code: ``,
-    name: ``,
-    address: ``,
-    contact: 0,
-    seatCount: 0,
+    userName: '',
+    password: '',
+    examCenter: {
+      _id: '',
+      code: '',
+      name: '',
+      address: '',
+      contact: 0,
+      active: false,
+    },
   });
 
-  const { createInstitution } = useInstitutionStore();
+  const { createCredential } = useCredentialStore();
+  const { examCenters } = useExamCenterStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -411,84 +386,89 @@ function CreateForm() {
     }));
   };
 
+  const handleSelectChange = (value: string) => {
+    const selectedCenter = examCenters.find(center => center._id === value);
+    setFormData((prev) => ({
+      ...prev,
+      examCenter: selectedCenter || {
+        _id: '',
+        code: '',
+        name: '',
+        address: '',
+        contact: 0,
+        active: false,
+      },
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    createInstitution(formData);
+    createCredential(formData);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="code">Code</Label>
+        <Label htmlFor="userName">User Name</Label>
         <Input
-          id="code"
-          name="code"
-          value={formData.code}
+          id="userName"
+          name="userName"
+          value={formData.userName}
           onChange={handleChange}
           required
           className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="password">Password</Label>
         <Input
-          id="name"
-          name="name"
-          value={formData.name}
+          id="password"
+          name="password"
+          type="password"
+          value={formData.password}
           onChange={handleChange}
           required
           className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="address">Address</Label>
-        <Input
-          id="address"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
+        <Label htmlFor="examCenter">Exam Center</Label>
+        <Select
           required
-          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="contact">Contact</Label>
-        <Input
-          id="contact"
-          name="contact"
-          type="number"
-          value={formData.contact}
-          onChange={handleChange}
-          required
-          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="seatCount">Seat Count</Label>
-        <Input
-          id="seatCount"
-          name="seatCount"
-          type="number"
-          value={formData.seatCount}
-          onChange={handleChange}
-          required
-          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-        />
+          onValueChange={handleSelectChange} // Updated to handle changes at the Select level
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select Exam Center" />
+          </SelectTrigger>
+          <SelectContent>
+            {examCenters?.map((center) => (
+              <SelectItem key={center._id} value={center._id}>
+                {center.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
       </div>
       <Button
         type="submit"
         className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300"
       >
-        Create Institution
+        Create Credential
       </Button>
     </form>
   );
 }
 
-function UpdateForm({ initialData }: { initialData: Institution }) {
-  const [formData, setFormData] = useState(initialData);
+function UpdateForm({ initialData }: { initialData: Credential }) {
+  const [formData, setFormData] = useState({
+    ...initialData,
+    password: '',
+  });
 
-  const { updateInstitution } = useInstitutionStore();
+  const { updateCredential } = useCredentialStore();
+
+  const { examCenters } = useExamCenterStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -499,73 +479,73 @@ function UpdateForm({ initialData }: { initialData: Institution }) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    updateInstitution(formData);
+    updateCredential(formData);
+  };
+
+  const handleSelectChange = (value: string) => {
+    const selectedCenter = examCenters.find(center => center._id === value);
+    setFormData((prev) => ({
+      ...prev,
+      examCenter: selectedCenter || {
+        _id: '',
+        code: '',
+        name: '',
+        address: '',
+        contact: 0,
+        active: false,
+      },
+    }));
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="code">Code</Label>
+        <Label htmlFor="userName">User Name</Label>
         <Input
-          id="code"
-          name="code"
-          value={formData.code}
+          id="userName"
+          name="userName"
+          value={formData?.userName}
           onChange={handleChange}
           required
           className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
+        <Label htmlFor="password">Password</Label>
         <Input
-          id="name"
-          name="name"
-          value={formData.name}
+          id="password"
+          name="password"
+          type="password"
+          value={formData?.password}
           onChange={handleChange}
           required
           className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="address">Address</Label>
-        <Input
-          id="address"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
+        <Label htmlFor="examCenter">Exam Center</Label>
+        <Select
           required
-          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="contact">Contact</Label>
-        <Input
-          id="contact"
-          name="contact"
-          type="number"
-          value={formData.contact}
-          onChange={handleChange}
-          required
-          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="seatCount">Seat Count</Label>
-        <Input
-          id="seatCount"
-          name="seatCount"
-          type="number"
-          value={formData.seatCount}
-          onChange={handleChange}
-          required
-          className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-        />
+          onValueChange={handleSelectChange}
+          defaultValue={formData.examCenter?._id}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select Exam Center" />
+          </SelectTrigger>
+          <SelectContent>
+            {examCenters?.map((center) => (
+              <SelectItem key={center._id} value={center._id}>
+                {center.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <Button
         type="submit"
         className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300"
       >
-        Update Institution
+        Update Credential
       </Button>
     </form>
   );
