@@ -98,6 +98,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   },
   createApplicant: async (applicant) => {
     const loadingToast = toast.loading("Creating applicant...");
+    let created = false;
 
     try {
       await axios
@@ -113,6 +114,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
               id: loadingToast,
               duration: 3000,
             });
+            created = true;
             return true;
           } else if (response.status === 200) {
             toast.error(
@@ -145,7 +147,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
       });
       return false;
     }
-    return false;
+    return created;
   },
   getApplicants: async () => {
     set({ applicants: [] });

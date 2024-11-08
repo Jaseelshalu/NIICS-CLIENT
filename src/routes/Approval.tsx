@@ -21,6 +21,10 @@ interface Institution {
   name: string;
 }
 
+interface ExamCenter {
+  name: string;
+}
+
 interface Applicant {
   id: string;
   name: string;
@@ -39,7 +43,7 @@ interface Applicant {
   whatsapp: string;
   alternativeNumber: string;
   email: string;
-  examCenter: string;
+  examCenter: ExamCenter;
   options: Institution[];
   aadharDocument: string;
   birthCertificate: string;
@@ -65,7 +69,7 @@ const sampleApplicants: Applicant[] = [
     whatsapp: "+91 98765 43210",
     alternativeNumber: "+91 98765 43211",
     email: "john.doe@example.com",
-    examCenter: "Sample Exam Center",
+    examCenter: {name:"Sample Exam Center"},
     options: [{ name: "Institution 1" }, { name: "Institution 2" }],
     aadharDocument: "https://example.com/john-doe-aadhar.jpg",
     birthCertificate: "https://example.com/john-doe-birth.jpg",
@@ -89,7 +93,7 @@ const sampleApplicants: Applicant[] = [
     whatsapp: "+91 98765 43212",
     alternativeNumber: "+91 98765 43213",
     email: "sampel@email.com",
-    examCenter: "Sample Exam Center",
+    examCenter: {name:"Sample Exam Center 2"},
     options: [{ name: "Institution 1" }, { name: "Institution 2" }],
     aadharDocument: "https://example.com/jane-doe-aadhar.jpg",
     birthCertificate: "https://example.com/jane-doe-birth.jpg",
@@ -245,7 +249,20 @@ export default function ApplicantApprovalPage() {
                   ))}
                   <TableHead>Photo</TableHead>
                   <TableHead>Documents</TableHead>
-                  <TableHead>Approved</TableHead>
+                  {/* <TableHead>Approved</TableHead> */}
+                  <TableHead key={'accepted'}>
+                      <div className="flex items-center justify-between">
+                        Approved
+                        <TableFilterSort
+                          filters={filters}
+                          handleFilter={handleFilter}
+                          sortConfig={sortConfig}
+                          handleSort={handleSort}
+                          haveFilter={false}
+                          keyLabel={'accepted' as keyof Applicant}
+                        />
+                      </div>
+                    </TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
@@ -266,7 +283,7 @@ export default function ApplicantApprovalPage() {
                         <TableCell>{data.applicationNumber}</TableCell>
                         <TableCell>{data.dob.toLocaleDateString()}</TableCell>
                         <TableCell>{data.email}</TableCell>
-                        <TableCell>{data.examCenter}</TableCell>
+                        <TableCell>{data.examCenter.name}</TableCell>
                         <TableCell>
                           <img src={data.imageURL} alt={data.name} className="w-10 h-10 rounded-full object-cover" />
                         </TableCell>

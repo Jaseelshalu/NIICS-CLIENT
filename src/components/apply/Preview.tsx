@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { User, Calendar, Image, Users, CreditCard, MapPin, Phone, Mail, Building, FileText, Send, Edit } from "lucide-react"
 import useApplicantStore from '@/store/applicantStore';
 import { useNavigate } from 'react-router-dom';
+import { Separator } from '../ui/separator';
 
 interface Institution {
   name: string;
@@ -67,19 +68,22 @@ export default function Component() {
   const handleClickSubmit = async () => {
     // setNewApplicant(details)
     // navigate('/apply/upload-documents')
-    const created = await createApplicant(newApplicant as any).then((created) => {
+    const created = await createApplicant(newApplicant as any)
+      console.log(created);
+      
       if (created) {
         navigate('/apply/success-message')
       }else{
         navigate('/apply/error-message')
       }
-    })
 
   }
 
   return (
     <div className="w-full max-w-6xl mx-auto p-6 bg-background">
-      <h1 className="text-2xl font-bold text-center mb-6">Full Application Preview</h1>
+      <Separator className='mb-4'/>
+
+      <h1 className="text-2xl font-semibold text-center mb-6">Full Application Preview</h1>
       <div className="flex flex-col items-center mb-6">
         <img src={newApplicant?.imageURL} alt="Applicant" className="w-32 h-32 rounded-full object-cover mb-4" />
         <h2 className="text-xl font-semibold">{newApplicant?.name}</h2>
@@ -111,7 +115,8 @@ export default function Component() {
         </div>
       </div>
       <div className="mt-6 space-y-4">
-        <h3 className="font-semibold flex items-center"><FileText className="mr-2" /> Documents</h3>
+      <Separator className='mb-4'/>
+        <h3 className="font-semibold flex items-center text-center"><FileText className="mr-2" /> Documents</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <p className="mb-2">Aadhar Document:</p>
@@ -123,6 +128,7 @@ export default function Component() {
           </div>
         </div>
       </div>
+      <Separator className='mb-4'/>
       <div className="flex justify-between mt-6">
         <Button onClick={
           () => {

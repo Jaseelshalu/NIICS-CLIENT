@@ -47,10 +47,12 @@ export function UploadDocuments() {
           if(fieldName === 'aadharDocument') {
             setAadharDocument(file)
             setShowAadharUploadButton(true)
+            setNewApplicant({ ...newApplicant, aadharDocument: "" as string } as Applicant)
           }
           if(fieldName === 'birthCertificate') {
             setBirthCertificate(file)
             setShowBirthCertificateUploadButton(true)
+            setNewApplicant({ ...newApplicant, birthCertificate: "" as string } as Applicant)
           }
           setFileErrors(prev => ({ ...prev, [fieldName]: '' }))
         }
@@ -162,8 +164,7 @@ export function UploadDocuments() {
                             : "Uploaded"}
                         </span>
                       </div>
-                      {(!newApplicant?.aadharDocument ||
-                    newApplicant?.aadharDocument === "uploading") &&
+                      {showAadharUploadButton &&
                     aadharDocument && (
                       <Button
                         type="button"
@@ -212,9 +213,7 @@ export function UploadDocuments() {
                             : "Uploaded"}
                         </span>
                       </div>
-                      {(!newApplicant?.birthCertificate ||
-                    newApplicant?.birthCertificate === "uploading") &&
-                    birthCertificate && (
+                      {showBirthCertificateUploadButton && (
                       <Button
                         type="button"
                         onClick={handleBirthCertificateUpload}

@@ -41,6 +41,11 @@ export function PersonalInfo() {
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     setShowImageUploadButton(true);
+    // set newApplicant image to null to reset the image
+    setNewApplicant({
+      ...newApplicant,
+      imageURL: "" as string,
+    } as Applicant);
     if (file) {
       if (file.type !== "image/jpeg" && file.type !== "image/jpg") {
         setImageError("Please upload a JPG or JPEG image.");
@@ -130,7 +135,7 @@ export function PersonalInfo() {
                         className="w-full h-full object-cover"
                       />
 
-                      <div className="absolute top-[40%] left-4 flex items-center justify-center">
+                      <div className="absolute top-[40%] left-6 flex items-center justify-center">
                         <span className="text-white text-sm bg-black bg-opacity-50 rounded-lg p-1">
                           {!newApplicant?.imageURL
                             ? "Not Uploaded"
