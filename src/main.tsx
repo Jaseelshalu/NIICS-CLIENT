@@ -25,6 +25,8 @@ import { SuccessMessage } from './components/ApplicationSuccess.tsx';
 import ErrorMessage from './components/ApplicationError.tsx';
 import ApplicantApprovalPage from './routes/Approval.tsx';
 import Institutions from './routes/Institutions.tsx';
+import ExamCenterProtected from './routes/protected/ExamCenter.tsx';
+import AdminProtected from './routes/protected/Admin.tsx';
 
 const router = createBrowserRouter([
   {
@@ -86,64 +88,127 @@ const router = createBrowserRouter([
         path: "error-message",
         element: <ErrorMessage />,
         errorElement: <Error />,
-      }
-
+      },
     ]
   },
   {
-    path: "/admin",
-    element: <Admin />,
-    errorElement: <Error />,
+    element: <ExamCenterProtected />,
     children: [
       {
-        path: "settings",
-        element: <AdminSettings />,
+        path: "/exam-center",
+        element: <Outlet />,
         errorElement: <Error />,
+        children: [
+          {
+            path: "dashboard",
+            element: <ExamCenterDashboard />,
+            errorElement: <Error />,
+          },
+        ]
       },
-      {
-        path: "marks-list",
-        element: <MarkListPage />,
-        errorElement: <Error />,
-      },
-      {
-        path: "exam-centers",
-        element: <ExamCenters />,
-        errorElement: <Error />,
-      },
-      {
-        path: "institution-lists",
-        element: <Institutions />,
-        errorElement: <Error />,
-      },
-      {
-        path: "marks-entry",
-        element: <MarksEntryPage />,
-        errorElement: <Error />,
-      },
-      {
-        path: "credentials",
-        element: <CredentialManagementPage />,
-        errorElement: <Error />,
-      },
-      {
-        path: "approval",
-        element: <ApplicantApprovalPage />,
-        errorElement: <Error />,
-      }
     ]
   },
   {
-    path: "/exam-center",
-    element: <Outlet />,
-    errorElement: <Error />,
+    element: <AdminProtected />,
     children: [
       {
-        path: "dashboard",
-        element: <ExamCenterDashboard />,
+        path: "/admin",
+        element: <Admin />,
         errorElement: <Error />,
-      },
+        children: [
+          {
+            path: "settings",
+            element: <AdminSettings />,
+            errorElement: <Error />,
+          },
+          {
+            path: "marks-list",
+            element: <MarkListPage />,
+            errorElement: <Error />,
+          },
+          {
+            path: "exam-centers",
+            element: <ExamCenters />,
+            errorElement: <Error />,
+          },
+          {
+            path: "institution-lists",
+            element: <Institutions />,
+            errorElement: <Error />,
+          },
+          {
+            path: "marks-entry",
+            element: <MarksEntryPage />,
+            errorElement: <Error />,
+          },
+          {
+            path: "credentials",
+            element: <CredentialManagementPage />,
+            errorElement: <Error />,
+          },
+          {
+            path: "approval",
+            element: <ApplicantApprovalPage />,
+            errorElement: <Error />,
+          },
+        ]
+      }
     ]
-  }
+  },
+  // {
+  //   path: "/admin",
+  //   element: <Admin />,
+  //   errorElement: <Error />,
+  //   children: [
+  //     {
+  //       path: "settings",
+  //       element: <AdminSettings />,
+  //       errorElement: <Error />,
+  //     },
+  //     {
+  //       path: "marks-list",
+  //       element: <MarkListPage />,
+  //       errorElement: <Error />,
+  //     },
+  //     {
+  //       path: "exam-centers",
+  //       element: <ExamCenters />,
+  //       errorElement: <Error />,
+  //     },
+  //     {
+  //       path: "institution-lists",
+  //       element: <Institutions />,
+  //       errorElement: <Error />,
+  //     },
+  //     {
+  //       path: "marks-entry",
+  //       element: <MarksEntryPage />,
+  //       errorElement: <Error />,
+  //     },
+  //     {
+  //       path: "credentials",
+  //       element: <CredentialManagementPage />,
+  //       errorElement: <Error />,
+  //     },
+  //     {
+  //       path: "approval",
+  //       element: <ApplicantApprovalPage />,
+  //       errorElement: <Error />,
+  //     },
+  //   ]
+  // },
+  // {
+  //   path: "/exam-center",
+  //   element: <Outlet />,
+  //   errorElement: <Error />,
+  //   children: [
+  //     {
+  //       path: "dashboard",
+  //       element: <ExamCenterDashboard />,
+  //       errorElement: <Error />,
+  //     },
+  //   ]
+  // }
 
 ]);
 

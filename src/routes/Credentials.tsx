@@ -112,9 +112,17 @@ export default function Credentials() {
           val?.toString().toLowerCase().includes(searchTerm.toLowerCase())
         )
       )
-      .sort((a: Type, b: Type) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === "asc" ? -1 : 1;
-        if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === "asc" ? 1 : -1;
+      .sort((a, b) => {
+        if (
+          (a as Credential | any)[sortConfig.key] <
+          (b as Credential | any)[sortConfig.key]
+        )
+          return sortConfig.direction === "asc" ? -1 : 1;
+        if (
+          (a as Credential | any)[sortConfig.key] >
+          (b as Credential | any)[sortConfig.key]
+        )
+          return sortConfig.direction === "asc" ? 1 : -1;
         return 0;
       });
   }, [items, filters, searchTerm, sortConfig]);
@@ -377,7 +385,6 @@ function CreateForm() {
   });
 
   const { createCredential } = useCredentialStore();
-  const { examCenters } = useExamCenterStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
@@ -385,6 +392,8 @@ function CreateForm() {
       [e.target.name]: e.target.value,
     }));
   };
+
+  const { examCenters } = useExamCenterStore();
 
   const handleSelectChange = (value: string) => {
     const selectedCenter = examCenters.find(center => center._id === value);

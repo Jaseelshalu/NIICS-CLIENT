@@ -16,7 +16,7 @@ export default function AdminProtected() {
 
         // Check if the user is an admin
         if (user.role !== "admin") {
-            return <Navigate to="/admin" />;
+            return <Navigate to="/login" />;
         }
 
         // If the user is an admin, allow access

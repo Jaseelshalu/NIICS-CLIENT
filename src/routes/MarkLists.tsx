@@ -1,24 +1,21 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-// import { toast, Toaster } from "@/components/ui/use-toast"
-import { Plus, Edit, Trash2, ChevronDown, Search, SortAsc, SortDesc, Filter } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useEffect, useMemo, useState } from 'react'
 import TableFilterSort from '@/components/ui/TableFilterSort'
+import { AnimatePresence, motion } from "framer-motion"
+import { Edit, Plus, Search, Trash2 } from "lucide-react"
 
 type MarksList = {
-    id: string
+    _id: string
     name: string
     maxMarks: number
-    type: 'oral' | 'written'
+    description: string
 }
 
 type SortConfig = {
@@ -27,9 +24,9 @@ type SortConfig = {
 }
 
 const sampleMarks: MarksList[] = [
-    { id: '1', name: 'City Central', maxMarks: 100, type: 'oral' },
-    { id: '2', name: 'Suburban Institute', maxMarks: 100, type: 'written' },
-    { id: '3', name: 'Rural College', maxMarks: 100, type: 'oral' }
+    { _id: '1', name: 'City Central', maxMarks: 100, description: 'This is the best institute' },
+    { _id: '2', name: 'Suburban Institute', maxMarks: 100, description: 'This is the best institute in the city' },
+    { _id: '3', name: 'Rural College', maxMarks: 100, description: 'This is the best institute in the city' },
 ]
 
 export default function MarkListPage() {
@@ -41,23 +38,23 @@ export default function MarkListPage() {
     const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'name', direction: 'asc' })
     const [filters, setFilters] = useState<Partial<Record<keyof MarksList, string>>>({})
 
-    const handleCreateMark = (center: Omit<MarksList, 'id'>) => {
-        const newMark = { ...center, id: Date.now().toString() }
+    const handleCreateMark = (center: Omit<MarksList, '_id'>) => {
+        const newMark = { ...center, _id: Date.now().toString() }
         setMarks([...marks, newMark])
         setIsCreateModalOpen(false)
-        // toast({ title: "Exam Mark Created", description: "The new exam center has been added successfully." })
+
     }
 
     const handleEditMark = (center: MarksList) => {
-        setMarks(marks.map(c => c.id === center.id ? center : c))
+        setMarks(marks.map(c => c._id === center._id ? center : c))
         setIsEditModalOpen(false)
         setCurrentMark(null)
-        // toast({ title: "Exam Mark Updated", description: "The exam center has been updated successfully." })
+
     }
 
-    const handleDeleteMark = (id: string) => {
-        setMarks(marks.filter(c => c.id !== id))
-        // toast({ title: "Exam Mark Deleted", description: "The exam center has been removed successfully." })
+    const handleDeleteMark = (_id: string) => {
+        setMarks(marks.filter(c => c._id !== _id))
+
     }
 
     const handleSort = (key: keyof MarksList, direction: 'asc' | 'desc') => {
@@ -142,7 +139,7 @@ export default function MarkListPage() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    {['name', 'maxMarks', 'type'].map((key) => (
+                                    {['name', 'maxMarks', 'description'].map((key) => (
                                         <TableHead key={key}>
                                             <div className="flex items-center justify-between">
                                                 {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
@@ -164,7 +161,7 @@ export default function MarkListPage() {
                                     {filteredAndSortedMarks.length !== 0 &&
                                         filteredAndSortedMarks.map((mark, index) => (
                                             <motion.tr
-                                                key={mark.id}
+                                                key={mark._id}
                                                 initial={{ opacity: 0, y: 20 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 exit={{ opacity: 0, y: -20 }}
@@ -174,15 +171,10 @@ export default function MarkListPage() {
                                             >
                                                 <TableCell className="font-medium">{mark.name}</TableCell>
                                                 <TableCell>{mark.maxMarks}</TableCell>
-                                                <TableCell>
-                                                    {/* ${mark.name === 'active' ?'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} */}
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-semibold`}>
-                                                        {mark.type}
-                                                    </span>
-                                                </TableCell>
+                                                <TableCell className="font-medium" > {mark.description} </TableCell>
                                                 <TableCell>
                                                     <div className="flex space-x-2">
-                                                        <Dialog open={isEditModalOpen && currentMark?.id === mark.id} onOpenChange={(open) => {
+                                                        <Dialog open={isEditModalOpen && currentMark?._id === mark._id} onOpenChange={(open) => {
                                                             setIsEditModalOpen(open)
                                                             if (!open) setCurrentMark(null)
                                                         }}>
@@ -214,7 +206,7 @@ export default function MarkListPage() {
                                                         <Button
                                                             variant="destructive"
                                                             size="sm"
-                                                            onClick={() => handleDeleteMark(mark.id)}
+                                                            onClick={() => handleDeleteMark(mark._id)}
                                                             className="hover:bg-red-600 transition-colors duration-300"
                                                         >
                                                             <Trash2 className="h-4 w-4" />
@@ -254,7 +246,7 @@ function MarkForm({ onSubmit, initialData }: {
     initialData?: MarksList
 }) {
     const [formData, setFormData] = useState<MarksList>(
-        initialData || { id: '', name: '', maxMarks: 0, type: 'oral' }
+        initialData || { _id: '', name: '', maxMarks: 0, description: 'oral' }
     )
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -293,21 +285,15 @@ function MarkForm({ onSubmit, initialData }: {
                 />
             </div>
             <div className="space-y-2">
-                <Label>Type</Label>
-                <RadioGroup
-                    value={formData.type}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, type: value as 'oral' | 'written' }))}
-                    className="flex space-x-4"
-                >
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="oral" id="oral" />
-                        <Label htmlFor="oral">Oral</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="written" id="written" />
-                        <Label htmlFor="written">Written</Label>
-                    </div>
-                </RadioGroup>
+                <Label>Description</Label>
+                <Input
+                    id="description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    required
+                    className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+                />
             </div>
             <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300">
                 {initialData ? 'Update' : 'Create'} Exam Center
