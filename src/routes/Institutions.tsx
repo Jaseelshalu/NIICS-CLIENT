@@ -45,6 +45,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Institution } from "@/types/types";
 import useInstitutionStore from "@/store/institutionStore";
+import TableFilterSort from "@/components/ui/TableFilterSort";
 
 type SortConfig = {
   key: keyof Institution;
@@ -76,6 +77,8 @@ export default function Institutions() {
     Partial<Record<keyof Institution, string>>
   >({});
 
+
+
   useEffect(() => {
     getInstitutions()
   }, [])
@@ -91,34 +94,39 @@ export default function Institutions() {
     }));
   };
 
-  const filteredAndSortedInstitutions = useMemo(() => {
-    return institutions
-      .filter(
-        (institute) =>
-          Object.entries(filters).every(([key, value]) =>
-            institute[key as keyof Institution]
-              ?.toString()
-              .toLowerCase()
-              .includes(value.toLowerCase())
-          ) &&
-          Object.values(institute).some((val) =>
-            val.toString().toLowerCase().includes(searchTerm.toLowerCase())
-          )
+
+  const useFilteredAndSorted = <Type,>(
+    items: Type[],
+    filters: Partial<Record<keyof Type, string>>,
+    searchTerm: string,
+    sortConfig: { key: keyof Type; direction: 'asc' | 'desc' }
+  ): Type[] => useMemo(() => {
+    return items
+      .filter((item: Type) =>
+        Object.entries(filters).every(([key, value]) =>
+          item[key as keyof Type]?.toString().toLowerCase().includes((value as any).toLowerCase())
+        ) &&
+        Object.values(item as Record<string, unknown>).some(val =>
+          val?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        )
       )
-      .sort((a, b) => {
-        if (
-          (a as Institution | any)[sortConfig.key] <
-          (b as Institution | any)[sortConfig.key]
-        )
-          return sortConfig.direction === "asc" ? -1 : 1;
-        if (
-          (a as Institution | any)[sortConfig.key] >
-          (b as Institution | any)[sortConfig.key]
-        )
-          return sortConfig.direction === "asc" ? 1 : -1;
+      .sort((a: Type, b: Type) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === "asc" ? -1 : 1;
+        if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === "asc" ? 1 : -1;
         return 0;
       });
-  }, [institutions, filters, searchTerm, sortConfig]);
+  }, [items, filters, searchTerm, sortConfig]);
+
+  const filteredAndSortedInstitutions = useFilteredAndSorted<Institution>(
+    institutions,
+    filters,
+    searchTerm,
+    sortConfig
+  );
+
+  useEffect(() => {
+    console.log(filters);
+  }, [filters]);
 
   return (
     <>
@@ -217,64 +225,17 @@ export default function Institutions() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {["code", "name", "address", "contact", "seat"].map((key) => (
+                  {["code", "name", "address", "contact", "seatCount"].map((key) => (
                     <TableHead key={key}>
                       <div className="flex items-center justify-between">
-                        {key.charAt(0).toUpperCase() + key.slice(1)}
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="ml-2 hover:bg-primary/10 transition-colors duration-300"
-                            >
-                              <Filter className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent
-                            align="end"
-                            className="bg-background/95 backdrop-blur-sm border-primary/20"
-                          >
-                            <DropdownMenuItem
-                              onClick={() =>
-                                handleSort(key as keyof Institution, "asc")
-                              }
-                              className="flex items-center"
-                            >
-                              <SortAsc className="mr-2 h-4 w-4" /> Sort Ascending
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() =>
-                                handleSort(key as keyof Institution, "desc")
-                              }
-                              className="flex items-center"
-                            >
-                              <SortDesc className="mr-2 h-4 w-4" /> Sort
-                              Descending
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onSelect={(e) => e.preventDefault()}
-                            >
-                              <div className="relative w-full">
-                                <Input
-                                  placeholder={`Filter ${key}...`}
-                                  value={filters[key as keyof Institution] || ""}
-                                  onChange={(e) =>
-                                    handleFilter(
-                                      key as keyof Institution,
-                                      e.target.value
-                                    )
-                                  }
-                                  className="mt-2 w-full pl-8 pr-4 py-1 bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-                                />
-                                <Search
-                                  className="absolute left-2 top-1/2 transform -translate-y-1/4 text-primary/60"
-                                  size={16}
-                                />
-                              </div>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                        <TableFilterSort
+                          filters={filters}
+                          handleFilter={handleFilter}
+                          sortConfig={sortConfig}
+                          handleSort={handleSort}
+                          keyLabel={key as keyof Institution}
+                        />
                       </div>
                     </TableHead>
                   ))}
@@ -338,16 +299,16 @@ export default function Institutions() {
                     </motion.tr>
                   )}
                   {institutions.length > 0 &&
-
-                    filteredAndSortedInstitutions.map((institute) => (
+                    filteredAndSortedInstitutions.length !== 0 &&
+                    filteredAndSortedInstitutions.map((institute, index) => (
                       <motion.tr
                         key={institute?._id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
                         className="hover:bg-primary/5 transition-colors duration-300"
-                      >
+                        layout>
                         <TableCell className="font-medium">
                           {institute?.code}
                         </TableCell>
@@ -383,6 +344,23 @@ export default function Institutions() {
                         </TableCell>
                       </motion.tr>
                     ))}
+
+                  {institutions.length > 0 &&
+                  filteredAndSortedInstitutions.length === 0 && (
+                    <motion.tr
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                      className="hover:bg-primary/5 transition-colors duration-300"
+                    >
+                      <TableCell colSpan={9} className="text-center py-4">
+                        <span className="text-sm text-primary">
+                          Clear the filters to see institutions
+                        </span>
+                      </TableCell>
+                    </motion.tr>
+                  )}
                 </AnimatePresence>
               </TableBody>
             </Table>
