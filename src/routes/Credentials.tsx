@@ -47,6 +47,7 @@ import { Credential } from "@/types/types";
 import useCredentialStore from "@/store/credentialStore";
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from "@/components/ui/select";
 import useExamCenterStore from "@/store/examCenterStore";
+import TableFilterSort from "@/components/ui/TableFilterSort";
 
 type SortConfig = {
   key: keyof Credential;
@@ -95,34 +96,32 @@ export default function Credentials() {
     }));
   };
 
-  const filteredAndSortedCredentials = useMemo(() => {
-    return credentials
-      .filter(
-        (cred) =>
-          Object.entries(filters).every(([key, value]) =>
-            cred[key as keyof Credential]
-              ?.toString()
-              .toLowerCase()
-              .includes(value.toLowerCase())
-          ) &&
-          Object.values(cred).some((val) =>
-            val.toString().toLowerCase().includes(searchTerm.toLowerCase())
-          )
+
+  const useFilteredAndSorted = <Type,>(
+    items: Type[],
+    filters: Partial<Record<keyof Type, string>>,
+    searchTerm: string,
+    sortConfig: { key: keyof Type; direction: 'asc' | 'desc' }
+  ): Type[] => useMemo(() => {
+    return items
+      .filter((item: Type) =>
+        Object.entries(filters).every(([key, value]) =>
+          item[key as keyof Type]?.toString().toLowerCase().includes((value as any).toLowerCase())
+        ) &&
+        Object.values(item as Record<string, unknown>).some(val =>
+          val?.toString().toLowerCase().includes(searchTerm.toLowerCase())
+        )
       )
-      .sort((a, b) => {
-        if (
-          (a as Credential | any)[sortConfig.key] <
-          (b as Credential | any)[sortConfig.key]
-        )
-          return sortConfig.direction === "asc" ? -1 : 1;
-        if (
-          (a as Credential | any)[sortConfig.key] >
-          (b as Credential | any)[sortConfig.key]
-        )
-          return sortConfig.direction === "asc" ? 1 : -1;
+      .sort((a: Type, b: Type) => {
+        if (a[sortConfig.key] < b[sortConfig.key]) return sortConfig.direction === "asc" ? -1 : 1;
+        if (a[sortConfig.key] > b[sortConfig.key]) return sortConfig.direction === "asc" ? 1 : -1;
         return 0;
       });
-  }, [credentials, filters, searchTerm, sortConfig]);
+  }, [items, filters, searchTerm, sortConfig]);
+
+  const filteredAndSortedCredentials = useFilteredAndSorted<Credential>(
+    credentials, filters, searchTerm, sortConfig
+  );
 
   return (
     <>
@@ -219,42 +218,24 @@ export default function Credentials() {
         <Card className="bg-gradient-to-br from-background to-secondary">
           <CardContent>
             <Table>
-              <TableHeader><TableRow>
-                {['username', 'examCenter'].map((key) => (
-                  <TableHead key={key}>
-                    <div className="flex items-center justify-between">
-                      {key.charAt(0).toUpperCase() + key.slice(1)}
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm" className="ml-2 hover:bg-primary/10 transition-colors duration-300">
-                            <Filter className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="bg-background/95 backdrop-blur-sm border-primary/20">
-                          <DropdownMenuItem onClick={() => handleSort(key as keyof Credential, "asc")} className="flex items-center">
-                            <SortAsc className="mr-2 h-4 w-4" /> Sort Ascending
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleSort(key as keyof Credential, "desc")} className="flex items-center">
-                            <SortDesc className="mr-2 h-4 w-4" /> Sort Descending
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                            <div className="relative w-full">
-                              <Input
-                                placeholder={`Filter ${key}...`}
-                                value={filters[key as keyof Credential] || ''}
-                                onChange={(e) => handleFilter(key as keyof Credential, e.target.value)}
-                                className="mt-2 w-full pl-8 pr-4 py-1 bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-                              />
-                              <Search className="absolute left-2 top-1/2 transform -translate-y-1/4 text-primary/60" size={16} />
-                            </div>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </TableHead>
-                ))}
-                <TableHead>Actions</TableHead>
-              </TableRow>
+              <TableHeader>
+                <TableRow>
+                  {['userName', 'examCenter'].map((key) => (
+                    <TableHead key={key}>
+                      <div className="flex items-center justify-between">
+                        {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                        <TableFilterSort
+                          filters={filters}
+                          handleFilter={handleFilter}
+                          sortConfig={sortConfig}
+                          handleSort={handleSort}
+                          keyLabel={key as keyof Credential}
+                        />
+                      </div>
+                    </TableHead>
+                  ))}
+                  <TableHead>Actions</TableHead>
+                </TableRow>
               </TableHeader>
               <TableBody>
                 <AnimatePresence>
@@ -313,14 +294,14 @@ export default function Credentials() {
                     </motion.tr>
                   )}
                   {credentials.length > 0 &&
-
-                    filteredAndSortedCredentials.map((cred) => (
+                    filteredAndSortedCredentials.length !== 0 &&
+                    filteredAndSortedCredentials.map((cred, index) => (
                       <motion.tr
                         key={cred._id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
                         className="hover:bg-primary/5 transition-colors duration-300"
                         layout
                       >
@@ -354,6 +335,23 @@ export default function Credentials() {
                         </TableCell>
                       </motion.tr>
                     ))}
+
+                  {credentials.length > 0 &&
+                    filteredAndSortedCredentials.length === 0 && (
+                      <motion.tr
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="hover:bg-primary/5 transition-colors duration-300"
+                      >
+                        <TableCell colSpan={9} className="text-center py-4">
+                          <span className="text-sm text-primary">
+                            Clear the filters to see applicants
+                          </span>
+                        </TableCell>
+                      </motion.tr>
+                    )}
                 </AnimatePresence>
               </TableBody>
             </Table>
