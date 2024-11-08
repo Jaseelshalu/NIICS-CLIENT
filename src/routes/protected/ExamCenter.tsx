@@ -1,7 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import { Navigate, Outlet } from "react-router-dom";
 
-export default function BloggerProtected() {
+export default function ExamCenterProtected() {
     const token = localStorage.getItem("token");
 
     // Check if token exists
@@ -15,8 +15,8 @@ export default function BloggerProtected() {
         const user: any = jwtDecode(token);
 
         // Check if the user is a blogger
-        if (user.role !== "examCenter" && user.role !== "admin") {
-            return <Navigate to="/exam-center" />;
+        if (user.role !== "examCenter") {
+            return <Navigate to="/login" />;
         }
 
         // If the user is a blogger, allow access
