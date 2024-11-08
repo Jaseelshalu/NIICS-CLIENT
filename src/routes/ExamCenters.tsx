@@ -232,6 +232,7 @@ export default function ExamCenters() {
                               handleFilter={handleFilter}
                               sortConfig={sortConfig}
                               handleSort={handleSort}
+                              haveFilter={false}
                               keyLabel={key as keyof ExamCenter}
                             />
                           </div>
