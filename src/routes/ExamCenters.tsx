@@ -222,11 +222,11 @@ export default function ExamCenters() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    {["code", "name", "address", "contact", "status"].map(
+                    {["code", "name", "address", "contact", "active"].map(
                       (key) => (
                         <TableHead key={key}>
                           <div className="flex items-center justify-between">
-                            {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                            {key === 'active' ? "Status" : key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
                             <TableFilterSort
                               filters={filters}
                               handleFilter={handleFilter}
