@@ -251,87 +251,104 @@ export default function ApplicantApprovalPage() {
               </TableHeader>
               <TableBody>
                 <AnimatePresence>
-                  {filteredAndSortedApplicants.map((data, index) => (
+                  {filteredAndSortedApplicants.length !== 0 &&
+                    filteredAndSortedApplicants.map((data, index) => (
+                      <motion.tr
+                        key={data.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                        className="hover:bg-primary/5 transition-colors duration-300"
+                        layout
+                      >
+                        <TableCell className="font-medium">{data.name}</TableCell>
+                        <TableCell>{data.applicationNumber}</TableCell>
+                        <TableCell>{data.dob.toLocaleDateString()}</TableCell>
+                        <TableCell>{data.email}</TableCell>
+                        <TableCell>{data.examCenter}</TableCell>
+                        <TableCell>
+                          <img src={data.imageURL} alt={data.name} className="w-10 h-10 rounded-full object-cover" />
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex space-x-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm">Aadhar</Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Aadhar Document</DialogTitle>
+                                </DialogHeader>
+                                <img src={data.aadharDocument} alt="Aadhar Document" className="w-full h-auto" />
+                              </DialogContent>
+                            </Dialog>
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm">Birth</Button>
+                              </DialogTrigger>
+                              <DialogContent>
+                                <DialogHeader>
+                                  <DialogTitle>Birth Certificate</DialogTitle>
+                                </DialogHeader>
+                                <img src={data.birthCertificate} alt="Birth Certificate" className="w-full h-auto" />
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center space-x-2">
+                            <Button
+                              size="sm"
+                              onClick={() => handleActionClick(data.id, 'approve')}
+                              className={`transition-colors duration-300 ${data.accepted
+                                ? 'bg-green-500 hover:bg-green-600'
+                                : 'bg-yellow-500 hover:bg-yellow-600'
+                                }`}
+                            >
+                              {data.accepted ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+                            </Button>
+                            <motion.span
+                              key={`approved-${data.id}`}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              {data.accepted ? 'Approved' : 'Not Approved'}
+                            </motion.span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleViewMore(data.id)}
+                              className="hover:bg-primary/10 transition-colors duration-300"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </motion.tr>
+                    ))}
+
+                  {filteredAndSortedApplicants.length === 0 && (
                     <motion.tr
-                      key={data.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      transition={{ duration: 0.3 }}
                       className="hover:bg-primary/5 transition-colors duration-300"
-                      layout
                     >
-                      <TableCell className="font-medium">{data.name}</TableCell>
-                      <TableCell>{data.applicationNumber}</TableCell>
-                      <TableCell>{data.dob.toLocaleDateString()}</TableCell>
-                      <TableCell>{data.email}</TableCell>
-                      <TableCell>{data.examCenter}</TableCell>
-                      <TableCell>
-                        <img src={data.imageURL} alt={data.name} className="w-10 h-10 rounded-full object-cover" />
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button variant="outline" size="sm">Aadhar</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Aadhar Document</DialogTitle>
-                              </DialogHeader>
-                              <img src={data.aadharDocument} alt="Aadhar Document" className="w-full h-auto" />
-                            </DialogContent>
-                          </Dialog>
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button variant="outline" size="sm">Birth</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Birth Certificate</DialogTitle>
-                              </DialogHeader>
-                              <img src={data.birthCertificate} alt="Birth Certificate" className="w-full h-auto" />
-                            </DialogContent>
-                          </Dialog>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            size="sm"
-                            onClick={() => handleActionClick(data.id, 'approve')}
-                            className={`transition-colors duration-300 ${data.accepted
-                              ? 'bg-green-500 hover:bg-green-600'
-                              : 'bg-yellow-500 hover:bg-yellow-600'
-                              }`}
-                          >
-                            {data.accepted ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
-                          </Button>
-                          <motion.span
-                            key={`approved-${data.id}`}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                          >
-                            {data.accepted ? 'Approved' : 'Not Approved'}
-                          </motion.span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleViewMore(data.id)}
-                            className="hover:bg-primary/10 transition-colors duration-300"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </div>
+                      <TableCell colSpan={9 } className="text-center py-4">
+                        <span className="text-sm text-primary">
+                          Clear the filters to see applicants
+                        </span>
                       </TableCell>
                     </motion.tr>
-                  ))}
+                  )}
                 </AnimatePresence>
               </TableBody>
             </Table>
