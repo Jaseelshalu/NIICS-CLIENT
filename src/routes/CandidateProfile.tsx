@@ -26,13 +26,19 @@ export default function CandidateProfile() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const applicant = JSON.parse(localStorage.getItem("applicant") as string);
+    if (!applicant) {
+      navigate("/check-status");
+    }else{
+      initialApplicantLoad(applicant as Applicant);
+    }
     const fetchApplicant = async () => {
       document.title = "Candidate Profile";
   
       // Get applicant data from local storage
-      const applicant = JSON.parse(localStorage.getItem("applicant") as string);
+      
       if (applicant) {
-        initialApplicantLoad(applicant as Applicant);
+        
         const gotApplicant = await getApplicant(applicant._id);
         
         if (!gotApplicant) {

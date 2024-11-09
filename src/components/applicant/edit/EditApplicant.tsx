@@ -3,7 +3,7 @@
 import SuccessMessage from '@/components/applicant/edit/ApplicationSuccess'
 import { useEffect, useState } from 'react'
 import { LoadingAnimation } from '../../../components/ApplicationLoading'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useNavigate } from 'react-router-dom'
 import useApplicantStore from '@/store/applicantStore'
 import ErrorMessage from '@/components/applicant/edit/ApplicationError'
 
@@ -16,7 +16,8 @@ export default function EditApplicant() {
     examCenter: {}
   })
 
-  const {getNewApplicant} = useApplicantStore()
+  const {applicant , setApplicant} = useApplicantStore()
+  const navigate = useNavigate()
 
 
   const handleNext = async (data: any) => {
@@ -29,7 +30,14 @@ export default function EditApplicant() {
   }
 
   useEffect(() => {
-    getNewApplicant()
+    // take the applicant data from local storage and set it to the store
+    const applicant = JSON.parse(localStorage.getItem("applicant") as string);
+    if (!applicant) {
+      // navigate to the check status page if there is no applicant data
+      navigate("/check-status");
+    }
+    // set the applicant data to the store
+    setApplicant(applicant)
   }, [])
 
   const handleDoLater = () => {

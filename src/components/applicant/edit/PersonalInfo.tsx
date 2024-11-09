@@ -223,7 +223,7 @@ export default function PersonalInfo() {
                 type="date"
                 // change Date to string
                 // defaultValue={applicant?.dob.toString()}
-                value={applicant?.dob?.getDate()}
+                value={applicant?.dob.toString().slice(0, 10)}
                 onChange={handleChange}
                 required
               />

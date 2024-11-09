@@ -256,7 +256,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   },
   getApplicant: async (_id) => {
     let done = false;
-    set({ applicant: null });
+    // set({ applicant: null });
     set({ isNull: false });
     set({ errorMessage: "" });
     try {
@@ -271,6 +271,8 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
           if (response.status === 201) {
             set({ applicant: response.data });
             set({ isNull: false });
+            // set to local storage
+            localStorage.setItem("applicant", JSON.stringify(response.data));
             done = true;
           } else if (response.status === 200) {
             set({
