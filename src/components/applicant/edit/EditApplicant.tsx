@@ -2,7 +2,7 @@
 
 import { SuccessMessage } from '@/components/applicant/edit/ApplicationSuccess'
 import { useEffect, useState } from 'react'
-import { LoadingAnimation } from '../components/ApplicationLoading'
+import { LoadingAnimation } from '../../../components/ApplicationLoading'
 import { Navigate, Outlet } from 'react-router-dom'
 import useApplicantStore from '@/store/applicantStore'
 import ErrorMessage from '@/components/applicant/edit/ApplicationError'
