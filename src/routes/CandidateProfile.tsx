@@ -1,43 +1,73 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
-import { CheckCircle2, Circle, Edit, MoreHorizontal, Download } from "lucide-react"
-import { motion } from "framer-motion"
-import useApplicantStore from '@/store/applicantStore'
-import { Applicant } from '@/types/types'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import {
+  CheckCircle2,
+  Circle,
+  Edit,
+  MoreHorizontal,
+  Download,
+  Eye,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import useApplicantStore from "@/store/applicantStore";
+import { Applicant } from "@/types/types";
+import { useNavigate } from "react-router-dom";
 
 export default function CandidateProfile() {
-
- 
-
-  const {applicant , initialApplicantLoad} = useApplicantStore()
-  const navigate = useNavigate()
+  const { applicant, initialApplicantLoad } = useApplicantStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = "Candidate Profile"
+    document.title = "Candidate Profile";
     // take applicant data from local storage
-    const applicant = JSON.parse(localStorage.getItem('applicant') as string)
+    const applicant = JSON.parse(localStorage.getItem("applicant") as string);
     if (applicant) {
-      initialApplicantLoad(applicant as Applicant)
-    }else{
-      navigate('/check-status')
+      initialApplicantLoad(applicant as Applicant);
+    } else {
+      navigate("/check-status");
     }
-  }, [])
+  }, []);
 
-  const profileUrl = "https://e7.pngegg.com/pngimages/84/165/png-clipart-united-states-avatar-organization-information-user-avatar-service-computer-wallpaper-thumbnail.png"
+  const profileUrl =
+    "https://e7.pngegg.com/pngimages/84/165/png-clipart-united-states-avatar-organization-information-user-avatar-service-computer-wallpaper-thumbnail.png";
 
   const timelineSteps = [
-    { label: "Applied", completed: applicant?.applied, date: applicant?.appliedAt },
-    { label: "Accepted", completed: applicant?.accepted, date: applicant?.acceptedAt },
-    { label: "Hall Ticket Downloaded", completed: applicant?.hallticketDownloaded, date: applicant?.hallticketDownloadedAt },
+    {
+      label: "Applied",
+      completed: applicant?.applied,
+      date: applicant?.appliedAt,
+    },
+    {
+      label: "Accepted",
+      completed: applicant?.accepted,
+      date: applicant?.acceptedAt,
+    },
+    {
+      label: "Hall Ticket Downloaded",
+      completed: applicant?.hallticketDownloaded,
+      date: applicant?.hallticketDownloadedAt,
+    },
     { label: "Payment", completed: applicant?.paid, date: applicant?.paidAt },
-    { label: "Verification", completed: applicant?.verified, date: applicant?.verifiedAt },
+    {
+      label: "Verification",
+      completed: applicant?.verified,
+      date: applicant?.verifiedAt,
+    },
     { label: "Result Published", completed: false, date: "2023-06-15" },
-    { label: "Admit Card Downloaded", completed: applicant?.admitCardDownloaded, date: applicant?.admitCardDownloadedAt },
-  ]
+    {
+      label: "Admit Card Downloaded",
+      completed: applicant?.admitCardDownloaded,
+      date: applicant?.admitCardDownloadedAt,
+    },
+  ];
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
@@ -48,8 +78,9 @@ export default function CandidateProfile() {
       >
         <Card className="mb-8 overflow-hidden bg-gradient-to-br from-background to-secondary">
           <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0 bg-background/50 ">
-            <h2 className="text-2xl font-bold text-primary">Candidate Profile</h2>
-  
+            <h2 className="text-2xl font-bold text-primary">
+              Candidate Profile
+            </h2>
           </CardHeader>
           <CardContent className="flex flex-col sm:flex-row gap-6 p-6">
             <div className="flex flex-shrink-0 w-full h-full sm:w-auto items-center justify-center">
@@ -62,24 +93,52 @@ export default function CandidateProfile() {
               />
             </div>
             <div className="flex-grow space-y-2 text-sm sm:text-base">
-              <p><strong className="font-medium">Name:</strong> {applicant?.name}</p>
-              <p><strong className="font-medium">Phone:</strong> {applicant?.whatsapp}</p>
-              <p><strong className="font-medium">Aadhar Number:</strong> {applicant?.aadharNumber}</p>
-              <p><strong className="font-medium">Date of Birth:</strong> {applicant?.dob.toString()}</p>
-              <p><strong className="font-medium">Guardian Name:</strong> {applicant?.guardiansName}</p>
-              <p><strong className="font-medium">Email:</strong> {applicant?.email}</p>
+              <p>
+                <strong className="font-medium">Name:</strong> {applicant?.name}
+              </p>
+              <p>
+                <strong className="font-medium">Phone:</strong>{" "}
+                {applicant?.whatsapp}
+              </p>
+              <p>
+                <strong className="font-medium">Aadhar Number:</strong>{" "}
+                {applicant?.aadharNumber}
+              </p>
+              <p>
+                <strong className="font-medium">Date of Birth:</strong>{" "}
+                {applicant?.dob.toString()}
+              </p>
+              <p>
+                <strong className="font-medium">Guardian Name:</strong>{" "}
+                {applicant?.guardiansName}
+              </p>
+              <p>
+                <strong className="font-medium">Email:</strong>{" "}
+                {applicant?.email}
+              </p>
             </div>
           </CardContent>
           <CardFooter className="bg-background/50  flex flex-wrap gap-2 justify-center sm:justify-start">
-            <Button variant="default">
-              <Edit className="mr-2 h-4 w-4" /> Edit Application
+            {!applicant?.accepted && (
+              <Button variant="default">
+                <Edit className="mr-2 h-4 w-4" /> Edit Application
+              </Button>
+            )}
+            <Button variant="secondary"
+            onClick={() => navigate("/view-detailed-applicant")}
+            >
+              <Eye className="mr-2 h-4 w-4" /> View Application
             </Button>
-            <Button variant="secondary">
-              <Download className="mr-2 h-4 w-4" /> Download Hall Ticket
-            </Button>
-            <Button variant="secondary">
-              <Download className="mr-2 h-4 w-4" /> Download Admit Card
-            </Button>
+            {applicant?.accepted && (
+              <Button variant="default">
+                <Download className="mr-2 h-4 w-4" /> Download Hall Ticket
+              </Button>
+            )}
+            {applicant?.institution && (
+              <Button variant="secondary">
+                <Download className="mr-2 h-4 w-4" /> Download Admit Card
+              </Button>
+            )}
           </CardFooter>
         </Card>
       </motion.div>
@@ -91,7 +150,9 @@ export default function CandidateProfile() {
       >
         <Card className="bg-gradient-to-br from-background to-secondary">
           <CardHeader className="bg-background/50 ">
-            <h3 className="text-xl font-semibold text-primary">Admission Timeline</h3>
+            <h3 className="text-xl font-semibold text-primary">
+              Admission Timeline
+            </h3>
           </CardHeader>
           <CardContent className="p-6">
             <ol className="relative border-l-2 border-primary/20 ml-3 space-y-6 py-2">
@@ -112,9 +173,14 @@ export default function CandidateProfile() {
                   </span>
                   <div
                     className={`p-4 bg-card backdrop-blur-sm rounded-lg shadow-sm border border-primary/10 `}
-              
                   >
-                    <h3 className={`text-sm sm:text-base font-medium leading-tight ${step.completed ? 'text-primary' : 'text-muted-foreground'}`}>
+                    <h3
+                      className={`text-sm sm:text-base font-medium leading-tight ${
+                        step.completed
+                          ? "text-primary"
+                          : "text-muted-foreground"
+                      }`}
+                    >
                       {step.label}
                       <span>
                         {step.date && (
@@ -124,9 +190,9 @@ export default function CandidateProfile() {
                         )}
                       </span>
                     </h3>
-                    <time className="block mb-2 text-xs font-normal leading-none text-muted-foreground">{
-                      }</time>
-
+                    <time className="block mb-2 text-xs font-normal leading-none text-muted-foreground">
+                      {}
+                    </time>
                   </div>
                 </motion.li>
               ))}
@@ -135,5 +201,5 @@ export default function CandidateProfile() {
         </Card>
       </motion.div>
     </div>
-  )
+  );
 }

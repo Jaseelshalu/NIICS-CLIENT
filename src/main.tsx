@@ -27,6 +27,7 @@ import Approve from './routes/Approve.tsx';
 import Institutions from './routes/Institutions.tsx';
 import ExamCenterProtected from './routes/protected/ExamCenter.tsx';
 import AdminProtected from './routes/protected/Admin.tsx';
+import ViewDetailedApplicant from './components/applicant/ViewDetailedApplicant.tsx';
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,11 @@ const router = createBrowserRouter([
   {
     path: "/my-profile",
     element: <CandidateProfile />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/view-detailed-applicant",
+    element: <ViewDetailedApplicant />,
     errorElement: <Error />,
   },
   {
