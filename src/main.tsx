@@ -17,7 +17,7 @@ import AdminSettings from './routes/Settings.tsx';
 import ExamCenters from './routes/ExamCenters.tsx';
 import MarksEntryPage from './routes/MarkEntry.tsx';
 import Admin from './components/Admin.tsx';
-import MarkListPage from './routes/MarkLists.tsx';
+import MarkColumns from './routes/MarkColumns.tsx';
 import ExamCenterDashboard from './routes/ExamCenterDashboard.tsx';
 import PreviewApplicationDetails from './components/apply/Preview.tsx';
 import CredentialManagementPage from './routes/Credentials.tsx';
@@ -128,8 +128,8 @@ const router = createBrowserRouter([
             errorElement: <Error />,
           },
           {
-            path: "marks-list",
-            element: <MarkListPage />,
+            path: "marks-columns",
+            element: <MarkColumns />,
             errorElement: <Error />,
           },
           {
@@ -138,7 +138,7 @@ const router = createBrowserRouter([
             errorElement: <Error />,
           },
           {
-            path: "institution-lists",
+            path: "institutions",
             element: <Institutions />,
             errorElement: <Error />,
           },
@@ -173,7 +173,7 @@ const router = createBrowserRouter([
   //     },
   //     {
   //       path: "marks-list",
-  //       element: <MarkListPage />,
+  //       element: <MarkColumns />,
   //       errorElement: <Error />,
   //     },
   //     {
