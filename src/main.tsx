@@ -109,22 +109,22 @@ const router = createBrowserRouter([
     children: [
       {
         path: "personal-details",
-        element: <PersonalInfo />,
+        element: <PersonalInfoEdit />,
         errorElement: <Error />,
       },
       {
         path: "contact-details",
-        element: <ContactDetails />,
+        element: <ContactDetailsEdit />,
         errorElement: <Error />,
       },
       {
         path: "exam-center",
-        element: <ExamCenter />,
+        element: <ExamCenterEdit />,
         errorElement: <Error />,
       },
       {
         path: "upload-documents",
-        element: <UploadDocuments />,
+        element: <UploadDocumentsEdit />,
         errorElement: <Error />,
       },
       {
