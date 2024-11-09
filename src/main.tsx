@@ -122,7 +122,7 @@ const router = createBrowserRouter([
             errorElement: <Error />,
           },
           {
-            path: "marks-list",
+            path: "marks-columns",
             element: <MarkColumns />,
             errorElement: <Error />,
           },
@@ -132,7 +132,7 @@ const router = createBrowserRouter([
             errorElement: <Error />,
           },
           {
-            path: "institution-lists",
+            path: "institutions",
             element: <Institutions />,
             errorElement: <Error />,
           },

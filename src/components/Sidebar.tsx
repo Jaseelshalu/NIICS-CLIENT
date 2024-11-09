@@ -8,11 +8,11 @@ import { Link } from 'react-router-dom'
 
 const sidebarItems = [
   { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-  { name: 'Institutions', href: '/admin/institution-lists', icon: Building2 },
+  { name: 'Institutions', href: '/admin/institutions', icon: Building2 },
   { name: 'Exam Centres', href: '/admin/exam-centers', icon: BuildingIcon },
   { name: 'Approval', href: '/admin/approval', icon: CheckCircle },
   { name: 'Result Generation', href: '/admin/result-generation', icon: FileText },
-  { name: 'Marks List', href: '/admin/marks-list', icon: ClipboardList },
+  { name: 'Marks Columns', href: '/admin/marks-columns', icon: ClipboardList },
   { name: 'Settings', href: '/admin/settings', icon: Settings },
   { name: 'Credentials', href: '/admin/credentials', icon: KeyRound },
 ]
