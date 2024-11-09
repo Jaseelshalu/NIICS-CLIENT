@@ -260,13 +260,8 @@ export default function Credentials() {
                           transition={{ duration: 0.3 }}
                           className="transition-colors duration-300 w-full"
                         >
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                          <TableCell colSpan={9} className="animate-pulse bg-primary/15 h-12">
+                          </TableCell>
                         </motion.tr>
                       ))
                     )}

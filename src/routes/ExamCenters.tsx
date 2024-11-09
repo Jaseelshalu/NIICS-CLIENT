@@ -257,13 +257,8 @@ export default function ExamCenters() {
                             transition={{ duration: 0.3 }}
                             className="hover:bg-primary/5 transition-colors duration-300"
                           >
-                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                            <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                            <TableCell colSpan={9} className="animate-pulse bg-primary/15 h-12">
+                            </TableCell>
                           </motion.tr>
                         ))
                       )}

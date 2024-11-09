@@ -229,7 +229,9 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
           console.log(response.data);
           if (response.status === 201) {
             set({ applicants: response.data });
-            set({ isNull: false });
+            if (response.data.length === 0) {
+              set({ isNull: true });
+            }
           } else if (response.status === 200) {
             set({
               errorMessage:
@@ -345,12 +347,23 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
         })
         .then((response) => {
           console.log(response.data);
-          if (response.status === 200) {
+          if (response.status === 201) {
             toast.success("Applicant deleted successfully", {
               id: loadingToast,
               duration: 3000,
             });
-          } else if (response.status === 404) {
+            set({
+              applicants: useApplicantStore
+                .getState()
+                .applicants.filter((applicant) => applicant._id !== _id),
+            });
+            set({
+              isDeleteOpen: false,
+            });
+            if (useApplicantStore.getState().applicants.length === 0) {
+              set({ isNull: true });
+            }
+          } else if (response.status === 200) {
             toast.error(response?.data?.message || `Applicant not found`, {
               id: loadingToast,
               duration: 3000,

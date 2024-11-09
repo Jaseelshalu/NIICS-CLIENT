@@ -272,15 +272,8 @@ export default function Approvals() {
                           transition={{ duration: 0.3 }}
                           className="transition-colors duration-300 w-full"
                         >
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                          <TableCell colSpan={9} className="animate-pulse bg-primary/15 h-12">
+                          </TableCell>
                         </motion.tr>
                       ))
                     )}
@@ -292,7 +285,7 @@ export default function Approvals() {
                       transition={{ duration: 0.3 }}
                       className="hover:bg-primary/5 transition-colors duration-300"
                     >
-                      <TableCell colSpan={6} className="text-center">
+                      <TableCell colSpan={9} className="text-center">
                         <span className="text-sm text-primary">
                           No Approvals found
                         </span>
