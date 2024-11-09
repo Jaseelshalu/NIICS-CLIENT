@@ -14,7 +14,7 @@ import useExamCenterStore from '@/store/examCenterStore'
 import { ExamCenter as ExamCenterType } from '@/types/types'
 import useInstitutionStore from '@/store/institutionStore'
 
-export function ExamCenter() {
+export default function ExamCenter() {
   const { newApplicant, setNewApplicant } = useApplicantStore()
   const { examCenters , setExamCenters ,getExamCenters} = useExamCenterStore();
   const { institutions , getInstitutions } = useInstitutionStore()

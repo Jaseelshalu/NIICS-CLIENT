@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LoadingAnimation } from "@/components/ApplicationLoading";
-import { SuccessMessage } from "@/components/applicant/edit/ApplicationSuccess";
+import  SuccessMessage  from "@/components/applicant/edit/ApplicationSuccess";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import useApplicantStore from "@/store/applicantStore";
 import { Applicant } from "@/types/types";
 import { uploadImageToCloudinary } from "@/lib/utils";
 
-export function PersonalInfo() {
+export default function PersonalInfo() {
   const [image, setImage] = useState<File | null>(null);
 
   const { newApplicant, setNewApplicant } = useApplicantStore();

@@ -1,13 +1,13 @@
 'use client'
 
-import { SuccessMessage } from '@/components/applicant/edit/ApplicationSuccess'
+import SuccessMessage from '@/components/applicant/edit/ApplicationSuccess'
 import { useEffect, useState } from 'react'
 import { LoadingAnimation } from '../../../components/ApplicationLoading'
 import { Navigate, Outlet } from 'react-router-dom'
 import useApplicantStore from '@/store/applicantStore'
 import ErrorMessage from '@/components/applicant/edit/ApplicationError'
 
-export default function Apply() {
+export default function EditApplicant() {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({

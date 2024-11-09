@@ -53,7 +53,7 @@ const indianStates = [
 ];
 
 
-export function ContactDetails() {
+export default function ContactDetails() {
   const [availableDistricts, setAvailableDistricts] = useState<string[]>([])
 
   const navigate = useNavigate()

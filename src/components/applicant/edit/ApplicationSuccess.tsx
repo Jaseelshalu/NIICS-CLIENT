@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Navigate } from 'react-router-dom'
 
-export function SuccessMessage() {
+export default function SuccessMessage() {
   const [showMessage, setShowMessage] = useState(false)
   const [afterShow, setAfterShow] = useState(false)
 
