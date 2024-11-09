@@ -55,26 +55,26 @@ const sampleData: ApplicationDetails = {
   birthCertificate: "https://example.com/birth-certificate.jpg"
 };
 
-export default function Component() {
+export default function EditPreview() {
   const [details, setDetails] = useState<ApplicationDetails>(sampleData);
   const {
-    newApplicant,
-    setNewApplicant,
+    applicant,
+    setApplicant,
     createApplicant
   } = useApplicantStore()
 
   const navigate = useNavigate()
 
   const handleClickSubmit = async () => {
-    // setNewApplicant(details)
+    // setApplicant(details)
     // navigate('/apply/upload-documents')
-    const created = await createApplicant(newApplicant as any)
+    const created = await createApplicant(applicant as any)
       console.log(created);
       
       if (created) {
-        navigate('/apply/success-message')
+        navigate('/edit-application/success-message')
       }else{
-        navigate('/apply/error-message')
+        navigate('/edit-application/error-message')
       }
 
   }
@@ -85,30 +85,30 @@ export default function Component() {
 
       <h1 className="text-2xl font-semibold text-center mb-6">Full Application Preview</h1>
       <div className="flex flex-col items-center mb-6">
-        <img src={newApplicant?.imageURL} alt="Applicant" className="w-32 h-32 rounded-full object-cover mb-4" />
-        <h2 className="text-xl font-semibold">{newApplicant?.name}</h2>
+        <img src={applicant?.imageURL} alt="Applicant" className="w-32 h-32 rounded-full object-cover mb-4" />
+        <h2 className="text-xl font-semibold">{applicant?.name}</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
-          <DetailItem icon={<Calendar />} label="Date of Birth" value={newApplicant?.dob as any} />
-          <DetailItem icon={<Users />} label="Father's Name" value={newApplicant?.fathersName as string} />
-          <DetailItem icon={<Users />} label="Guardian's Name" value={newApplicant?.guardiansName as string} />
-          <DetailItem icon={<CreditCard />} label="Aadhar Number" value={newApplicant?.aadharNumber as string} />
-          <DetailItem icon={<MapPin />} label="State" value={newApplicant?.state as string} />
-          <DetailItem icon={<MapPin />} label="District" value={newApplicant?.district as string} />
-          <DetailItem icon={<MapPin />} label="Village" value={newApplicant?.village as string} />
-          <DetailItem icon={<MapPin />} label="Post Office" value={newApplicant?.postOffice as string} />
+          <DetailItem icon={<Calendar />} label="Date of Birth" value={applicant?.dob as any} />
+          <DetailItem icon={<Users />} label="Father's Name" value={applicant?.fathersName as string} />
+          <DetailItem icon={<Users />} label="Guardian's Name" value={applicant?.guardiansName as string} />
+          <DetailItem icon={<CreditCard />} label="Aadhar Number" value={applicant?.aadharNumber as string} />
+          <DetailItem icon={<MapPin />} label="State" value={applicant?.state as string} />
+          <DetailItem icon={<MapPin />} label="District" value={applicant?.district as string} />
+          <DetailItem icon={<MapPin />} label="Village" value={applicant?.village as string} />
+          <DetailItem icon={<MapPin />} label="Post Office" value={applicant?.postOffice as string} />
         </div>
         <div className="space-y-4">
-          <DetailItem icon={<MapPin />} label="Police Station" value={newApplicant?.policeStation as string} />
-          <DetailItem icon={<MapPin />} label="Pin Code" value={newApplicant?.pinCode as string} />
-          <DetailItem icon={<Phone />} label="WhatsApp" value={newApplicant?.whatsapp as string} />
-          <DetailItem icon={<Phone />} label="Alternative Number" value={newApplicant?.alternativeNumber as string} />
-          <DetailItem icon={<Mail />} label="Email" value={newApplicant?.email as string} />
-          <DetailItem icon={<Building />} label="Exam Center" value={newApplicant?.examCenter as any} />
+          <DetailItem icon={<MapPin />} label="Police Station" value={applicant?.policeStation as string} />
+          <DetailItem icon={<MapPin />} label="Pin Code" value={applicant?.pinCode as string} />
+          <DetailItem icon={<Phone />} label="WhatsApp" value={applicant?.whatsapp as string} />
+          <DetailItem icon={<Phone />} label="Alternative Number" value={applicant?.alternativeNumber as string} />
+          <DetailItem icon={<Mail />} label="Email" value={applicant?.email as string} />
+          <DetailItem icon={<Building />} label="Exam Center" value={applicant?.examCenter as any} />
           <div className="space-y-2">
             <h3 className="font-semibold flex items-center"><Building className="mr-2" /> Institution Options</h3>
-            {newApplicant?.options.map((option, index) => (
+            {applicant?.options.map((option, index) => (
               <div key={index} className="ml-6">{option.name}</div>
             ))}
           </div>
@@ -120,11 +120,11 @@ export default function Component() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <p className="mb-2">Aadhar Document:</p>
-            <img src={newApplicant?.aadharDocument} alt="Aadhar Document" className="w-full h-auto object-cover rounded-lg" />
+            <img src={applicant?.aadharDocument} alt="Aadhar Document" className="w-full h-auto object-cover rounded-lg" />
           </div>
           <div>
             <p className="mb-2">Birth Certificate:</p>
-            <img src={newApplicant?.birthCertificate} alt="Birth Certificate" className="w-full h-auto object-cover rounded-lg" />
+            <img src={applicant?.birthCertificate} alt="Birth Certificate" className="w-full h-auto object-cover rounded-lg" />
           </div>
         </div>
       </div>
@@ -132,7 +132,7 @@ export default function Component() {
       <div className="flex justify-between mt-6">
         <Button onClick={
           () => {
-            navigate('/apply/personal-details')
+            navigate('/edit-application/personal-details')
           }
         } variant="outline" className="flex items-center">
           <Edit className="w-4 h-4 mr-2" />

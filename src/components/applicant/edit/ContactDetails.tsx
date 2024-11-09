@@ -58,35 +58,35 @@ export default function ContactDetails() {
 
   const navigate = useNavigate()
 
-  const {newApplicant , setNewApplicant} = useApplicantStore()
+  const {applicant , setApplicant} = useApplicantStore()
 
   useEffect(() => {
-    if (newApplicant?.state) {
-      const selectedState = indianStates.find(s => s.name === newApplicant?.state)
+    if (applicant?.state) {
+      const selectedState = indianStates.find(s => s.name === applicant?.state)
       setAvailableDistricts(selectedState ? selectedState.districts : [])
-      // setNewApplicant({ ...newApplicant, district: '' } as Applicant)
+      // setApplicant({ ...applicant, district: '' } as Applicant)
     }
-  }, [newApplicant?.state])
+  }, [applicant?.state])
 
   // Separate handlers for input and select changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewApplicant({ ...newApplicant, [e.target.name]: e.target.value } as Applicant)
-    console.log(newApplicant)
+    setApplicant({ ...applicant, [e.target.name]: e.target.value } as Applicant)
+    console.log(applicant)
   }
 
   const handleSelectChange = (name: string) => (value: string) => {
-    setNewApplicant({ ...newApplicant, [name]: value } as Applicant)
-    console.log(newApplicant)
+    setApplicant({ ...applicant, [name]: value } as Applicant)
+    console.log(applicant)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    navigate('/apply/exam-center')
+    navigate('/edit-application/exam-center')
   }
 
   const isFormValid = () => {
-    return newApplicant?.state && newApplicant?.district && newApplicant?.village &&
-      newApplicant?.postOffice && newApplicant?.pinCode && newApplicant?.whatsapp
+    return applicant?.state && applicant?.district && applicant?.village &&
+      applicant?.postOffice && applicant?.pinCode && applicant?.whatsapp
   }
 
   return (
@@ -100,7 +100,7 @@ export default function ContactDetails() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="state">State</Label>
-              <Select defaultValue={newApplicant?.state} onValueChange={handleSelectChange('state')}>
+              <Select defaultValue={applicant?.state} onValueChange={handleSelectChange('state')}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select State" />
                 </SelectTrigger>
@@ -113,7 +113,7 @@ export default function ContactDetails() {
             </div>
             <div>
               <Label htmlFor="district">District</Label>
-              <Select defaultValue={newApplicant?.district} onValueChange={handleSelectChange('district')} disabled={!newApplicant?.state}>
+              <Select defaultValue={applicant?.district} onValueChange={handleSelectChange('district')} disabled={!applicant?.state}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select District" />
                 </SelectTrigger>
@@ -129,7 +129,7 @@ export default function ContactDetails() {
               <Input
                 id="village"
                 name="village"
-                value={newApplicant?.village}
+                value={applicant?.village}
                 onChange={handleChange}
                 required
               />
@@ -139,7 +139,7 @@ export default function ContactDetails() {
               <Input
                 id="postOffice"
                 name="postOffice"
-                value={newApplicant?.postOffice}
+                value={applicant?.postOffice}
                 onChange={handleChange}
                 required
               />
@@ -150,7 +150,7 @@ export default function ContactDetails() {
               <Input
                 id="policeStation"
                 name="policeStation"
-                value={newApplicant?.policeStation}
+                value={applicant?.policeStation}
                 onChange={handleChange}
                 required
               />
@@ -160,7 +160,7 @@ export default function ContactDetails() {
               <Input
                 id="pinCode"
                 name="pinCode"
-                value={newApplicant?.pinCode}
+                value={applicant?.pinCode}
                 onChange={handleChange}
                 required
                 maxLength={6}
@@ -173,7 +173,7 @@ export default function ContactDetails() {
               <Input
                 id="whatsapp"
                 name="whatsapp"
-                value={newApplicant?.whatsapp}
+                value={applicant?.whatsapp}
                 onChange={handleChange}
                 required
                 maxLength={10}
@@ -182,7 +182,7 @@ export default function ContactDetails() {
               />
             </div>
             <div className="flex justify-between">
-              <Button type="button" onClick={()=>{navigate('/apply/personal-details')}}>Previous</Button>
+              <Button type="button" onClick={()=>{navigate('/edit-application/personal-details')}}>Previous</Button>
               <Button type="submit" disabled={!isFormValid()}>Next</Button>
             </div>
 

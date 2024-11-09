@@ -61,7 +61,7 @@ export default function CandidateProfile() {
       completed: applicant?.verified,
       date: applicant?.verifiedAt,
     },
-    { label: "Result Published", completed: false, date: "2023-06-15" },
+    { label: "Result Published", completed: true, date: "" },
     {
       label: "Admit Card Downloaded",
       completed: applicant?.admitCardDownloaded,
@@ -130,7 +130,9 @@ export default function CandidateProfile() {
           </CardContent>
           <CardFooter className="bg-background/50  flex flex-wrap gap-2 justify-center sm:justify-start">
             {!applicant?.accepted && (
-              <Button variant="default">
+              <Button onClick={
+                () => navigate('/edit-application/personal-details/')
+              } variant="default">
                 <Edit className="mr-2 h-4 w-4" /> Edit Application
               </Button>
             )}
