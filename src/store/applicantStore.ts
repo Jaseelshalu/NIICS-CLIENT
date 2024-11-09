@@ -14,7 +14,7 @@ interface ApplicantStoreState {
   authApplicant: (number: string, dob: Date) => Promise<Boolean>;
   createApplicant: (applicant: Partial<Applicant>) => Promise<Boolean>;
   getApplicants: () => void;
-  getApplicant: (_id: string) => void;
+  getApplicant: (_id: string) => Promise<Boolean>;
   updateApplicant: (applicant: Partial<Applicant>) => void;
   deleteApplicant: (_id: string) => void;
   isNull: boolean;
@@ -200,6 +200,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     }
   },
   getApplicant: async (_id) => {
+    let done = false;
     set({ applicant: null });
     set({ isNull: false });
     set({ errorMessage: "" });
@@ -215,26 +216,32 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
           if (response.status === 201) {
             set({ applicant: response.data });
             set({ isNull: false });
+            done = true;
           } else if (response.status === 200) {
             set({
               errorMessage: response?.data?.message || `Applicant not found`,
             });
+            done = false;
           } else {
             set({
               errorMessage: `Failed to fetch applicant`,
             });
+            done = false;
           }
         })
         .catch((error) => {
           set({
             errorMessage: `Failed to fetch applicant`,
           });
+          done = false;
         });
     } catch (error) {
       set({
         errorMessage: `Failed to fetch applicant`,
       });
+      done = false;
     }
+    return done;
   },
   updateApplicant: async (applicant) => {
     const loadingToast = toast.loading("Updating applicant...");

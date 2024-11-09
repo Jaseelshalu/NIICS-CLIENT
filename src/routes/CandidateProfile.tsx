@@ -22,19 +22,30 @@ import { Applicant } from "@/types/types";
 import { useNavigate } from "react-router-dom";
 
 export default function CandidateProfile() {
-  const { applicant, initialApplicantLoad } = useApplicantStore();
+  const { applicant, initialApplicantLoad , getApplicant } = useApplicantStore();
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = "Candidate Profile";
-    // take applicant data from local storage
-    const applicant = JSON.parse(localStorage.getItem("applicant") as string);
-    if (applicant) {
-      initialApplicantLoad(applicant as Applicant);
-    } else {
-      navigate("/check-status");
-    }
+    const fetchApplicant = async () => {
+      document.title = "Candidate Profile";
+  
+      // Get applicant data from local storage
+      const applicant = JSON.parse(localStorage.getItem("applicant") as string);
+      if (applicant) {
+        initialApplicantLoad(applicant as Applicant);
+        const gotApplicant = await getApplicant(applicant._id);
+        
+        if (!gotApplicant) {
+          navigate("/check-status");
+        }
+      } else {
+        navigate("/check-status");
+      }
+    };
+  
+    fetchApplicant();
   }, []);
+  
 
   const profileUrl =
     "https://e7.pngegg.com/pngimages/84/165/png-clipart-united-states-avatar-organization-information-user-avatar-service-computer-wallpaper-thumbnail.png";
