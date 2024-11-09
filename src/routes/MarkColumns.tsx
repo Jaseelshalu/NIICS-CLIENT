@@ -1,72 +1,98 @@
-'use client'
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useEffect, useMemo, useState } from 'react'
-import TableFilterSort from '@/components/ui/TableFilterSort'
-import { AnimatePresence, motion } from "framer-motion"
-import { Edit, Plus, Search, Trash2 } from "lucide-react"
-
-type MarksList = {
-    _id: string
-    name: string
-    maxMarks: number
-    description: string
-}
+import { useState, useMemo, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import {
+    Dialog,
+    DialogContent,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+// import { toast, Toaster } from "@/components/ui/use-toast"
+import {
+    Plus,
+    Edit,
+    Trash2,
+    ChevronDown,
+    ChevronUp,
+    Search,
+    SortAsc,
+    SortDesc,
+    Filter,
+    CircleX,
+    Trash,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MarkColumn } from "@/types/types";
+import useMarkColumnStore from "@/store/markColumnStore";
+import TableFilterSort from "@/components/ui/TableFilterSort";
 
 type SortConfig = {
-    key: keyof MarksList
-    direction: 'asc' | 'desc'
-}
+    key: keyof MarkColumn;
+    direction: "asc" | "desc";
+};
 
-const sampleMarks: MarksList[] = [
-    { _id: '1', name: 'City Central', maxMarks: 100, description: 'This is the best institute' },
-    { _id: '2', name: 'Suburban Institute', maxMarks: 100, description: 'This is the best institute in the city' },
-    { _id: '3', name: 'Rural College', maxMarks: 100, description: 'This is the best institute in the city' },
-]
+export default function MarkColumns() {
+    const {
+        markColumns,
+        markColumn,
+        setMarkColumn,
+        getMarkColumns,
+        deleteMarkColumn,
+        isCreateOpen,
+        isUpdateOpen,
+        isDeleteOpen,
+        setIsCreateOpen,
+        setIsUpdateOpen,
+        setIsDeleteOpen,
+        isNull,
+        errorMessage,
+    } = useMarkColumnStore();
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortConfig, setSortConfig] = useState<SortConfig>({
+        key: "name",
+        direction: "asc",
+    });
+    const [filters, setFilters] = useState<
+        Partial<Record<keyof MarkColumn, string>>
+    >({});
 
-export default function MarkListPage() {
-    const [marks, setMarks] = useState<MarksList[]>(sampleMarks)
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
-    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-    const [currentMark, setCurrentMark] = useState<MarksList | null>(null)
-    const [searchTerm, setSearchTerm] = useState('')
-    const [sortConfig, setSortConfig] = useState<SortConfig>({ key: 'name', direction: 'asc' })
-    const [filters, setFilters] = useState<Partial<Record<keyof MarksList, string>>>({})
 
-    const handleCreateMark = (center: Omit<MarksList, '_id'>) => {
-        const newMark = { ...center, _id: Date.now().toString() }
-        setMarks([...marks, newMark])
-        setIsCreateModalOpen(false)
 
-    }
+    useEffect(() => {
+        getMarkColumns()
+    }, [])
 
-    const handleEditMark = (center: MarksList) => {
-        setMarks(marks.map(c => c._id === center._id ? center : c))
-        setIsEditModalOpen(false)
-        setCurrentMark(null)
+    const handleSort = (key: keyof MarkColumn, direction: "asc" | "desc") => {
+        setSortConfig({ key, direction });
+    };
 
-    }
-
-    const handleDeleteMark = (_id: string) => {
-        setMarks(marks.filter(c => c._id !== _id))
-
-    }
-
-    const handleSort = (key: keyof MarksList, direction: 'asc' | 'desc') => {
-        setSortConfig({ key, direction })
-    }
-
-    const handleFilter = (key: keyof MarksList, value: string) => {
-        setFilters(prevFilters => ({
+    const handleFilter = (key: keyof MarkColumn, value: string) => {
+        setFilters((prevFilters) => ({
             ...prevFilters,
-            [key]: value
-        }))
-    }
+            [key]: value,
+        }));
+    };
 
 
     const useFilteredAndSorted = <Type,>(
@@ -91,122 +117,218 @@ export default function MarkListPage() {
             });
     }, [items, filters, searchTerm, sortConfig]);
 
-    const filteredAndSortedMarks = useFilteredAndSorted<MarksList>(
-        marks,
+    const filteredAndSortedMarkColumns = useFilteredAndSorted<MarkColumn>(
+        markColumns,
         filters,
         searchTerm,
         sortConfig
     );
 
     useEffect(() => {
-        console.log(filteredAndSortedMarks)
-    }, [filteredAndSortedMarks])
-
+        console.log(filters);
+    }, [filters]);
 
     return (
-        <div className="container mx-auto p-4 space-y-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <h1 className="text-3xl font-bold text-primary">Marks List</h1>
-                <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-                    <div className="relative w-full sm:w-64">
-                        <Input
-                            placeholder="Search Marks..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-10 pr-4 py-2 w-full bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
-                        />
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60" size={18} />
-                    </div>
-                    <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-                        <DialogTrigger asChild>
-                            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300 w-full sm:w-auto">
-                                <Plus className="mr-2 h-4 w-4" /> Create New
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                            <DialogHeader>
-                                <DialogTitle>Create New Mark</DialogTitle>
-                            </DialogHeader>
-                            <MarkForm onSubmit={handleCreateMark} />
-                        </DialogContent>
-                    </Dialog>
-                </div>
-            </div>
+        <>
+            {isCreateOpen && (
+                <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Create New Mark Column</DialogTitle>
+                        </DialogHeader>
+                        <CreateForm />
+                    </DialogContent>
+                </Dialog>
+            )}
 
-            <Card className="bg-gradient-to-br from-background to-secondary overflow-hidden">
-                <CardContent>
-                    <div className="overflow-x-auto">
+            {isUpdateOpen && (
+                <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle>Edit Mark Column</DialogTitle>
+                        </DialogHeader>
+                        <UpdateForm initialData={markColumn as MarkColumn} />
+                    </DialogContent>
+                </Dialog>
+            )}
+
+            {isDeleteOpen && (
+                <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+                    <DialogContent className="w-full lg:w-full rounded-lg">
+                        <DialogHeader className="sm:text-center">
+                            <DialogTitle>Delete {markColumn?.name}</DialogTitle>
+                        </DialogHeader>
+                        {markColumn && (
+                            <div>
+                                <Label className="block text-sm font-medium text-primary mb-4 sm:text-center">
+                                    Are you sure you want to delete {markColumn?.name}?
+                                </Label>
+                                <DialogFooter className="flex flex-row sm:justify-center gap-2">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        className="flex items-center gap-2"
+                                        onClick={() => {
+                                            setIsDeleteOpen(false);
+                                        }}
+                                    >
+                                        <CircleX className="h-4 w-4" />
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        className={`flex items-center gap-2 `}
+                                        onClick={() => {
+                                            deleteMarkColumn(markColumn._id);
+                                        }}
+                                    >
+                                        <Trash className="h-4 w-4" />
+                                        Delete
+                                    </Button>
+                                </DialogFooter>
+                            </div>
+                        )}
+                    </DialogContent>
+                </Dialog>
+            )}
+            <div className="container mx-auto p-4 space-y-8">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <h1 className="text-3xl font-bold text-primary">Mark Columns List</h1>
+                    <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+                        <div className="relative w-full sm:w-64">
+                            <Input
+                                placeholder="Search centers..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="pl-10 pr-4 py-2 w-full bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+                            />
+                            <Search
+                                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary/60"
+                                size={18}
+                            />
+                        </div>
+                        <Button
+                            className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300 w-full sm:w-auto"
+                            onClick={() => {
+                                setIsCreateOpen(true);
+                            }}
+                        >
+                            <Plus className="mr-2 h-4 w-4" /> Create New
+                        </Button>
+                    </div>
+                </div>
+
+                <Card className="bg-gradient-to-br from-background to-secondary">
+                    <CardContent>
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    {['name', 'maxMarks', 'description'].map((key) => (
-                                        <TableHead key={key}>
-                                            <div className="flex items-center justify-between">
-                                                {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
-                                                <TableFilterSort
-                                                    filters={filters}
-                                                    handleFilter={handleFilter}
-                                                    sortConfig={sortConfig}
-                                                    handleSort={handleSort}
-                                                    keyLabel={key as keyof MarksList}
-                                                />
-                                            </div>
-                                        </TableHead>
+                                    {['name', 'maxMarks', 'description'].map((key) => (<TableHead key={key}>
+                                        <div className="flex items-center justify-between">
+                                            {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                                            <TableFilterSort
+                                                filters={filters}
+                                                handleFilter={handleFilter}
+                                                sortConfig={sortConfig}
+                                                handleSort={handleSort}
+                                                keyLabel={key as keyof MarkColumn}
+                                            />
+                                        </div>
+                                    </TableHead>
                                     ))}
                                     <TableHead>Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 <AnimatePresence>
-                                    {filteredAndSortedMarks.length !== 0 &&
-                                        filteredAndSortedMarks.map((mark, index) => (
+                                    {markColumns.length === 0 &&
+                                        errorMessage === "" &&
+                                        isNull === false &&
+                                        Array.from({ length: 1 }).map((_, index) =>
+                                            Array.from({ length: 1 }).map((_, index) => (
+                                                <motion.tr
+                                                    key={index}
+                                                    initial={{ opacity: 0, y: 20 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    exit={{ opacity: 0, y: -20 }}
+                                                    transition={{ duration: 0.3 }}
+                                                    className="transition-colors duration-300 w-full"
+                                                >
+                                                    <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                                                    <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                                                    <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                                                    <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                                                    <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                                                </motion.tr>
+                                            ))
+                                        )}
+                                    {isNull && (
+                                        <motion.tr
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -20 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="hover:bg-primary/5 transition-colors duration-300"
+                                        >
+                                            <TableCell colSpan={6} className="text-center">
+                                                <span className="text-sm text-primary">
+                                                    No Mark Columns found
+                                                </span>
+                                            </TableCell>
+                                        </motion.tr>
+                                    )}
+
+                                    {errorMessage && (
+                                        <motion.tr
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -20 }}
+                                            transition={{ duration: 0.3 }}
+                                            className="hover:bg-primary/5 transition-colors duration-300"
+                                        >
+                                            <TableCell colSpan={6} className="text-center">
+                                                <span className="text-sm text-red-600">
+                                                    {errorMessage}
+                                                </span>
+                                            </TableCell>
+                                        </motion.tr>
+                                    )}
+                                    {markColumns.length > 0 &&
+                                        filteredAndSortedMarkColumns.length !== 0 &&
+                                        filteredAndSortedMarkColumns.map((markCol, index) => (
                                             <motion.tr
-                                                key={mark._id}
+                                                key={markCol?._id}
                                                 initial={{ opacity: 0, y: 20 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 exit={{ opacity: 0, y: -20 }}
                                                 transition={{ duration: 0.3, delay: index * 0.05 }}
                                                 className="hover:bg-primary/5 transition-colors duration-300"
-                                                layout
-                                            >
-                                                <TableCell className="font-medium">{mark.name}</TableCell>
-                                                <TableCell>{mark.maxMarks}</TableCell>
-                                                <TableCell className="font-medium" > {mark.description} </TableCell>
+                                                layout>
+                                                <TableCell className="font-medium">{markCol.name}</TableCell>
+                                                <TableCell>{markCol.maxMark}</TableCell>
+                                                <TableCell className="font-medium" > {markCol.description} </TableCell>
                                                 <TableCell>
                                                     <div className="flex space-x-2">
-                                                        <Dialog open={isEditModalOpen && currentMark?._id === mark._id} onOpenChange={(open) => {
-                                                            setIsEditModalOpen(open)
-                                                            if (!open) setCurrentMark(null)
-                                                        }}>
-                                                            <DialogTrigger asChild>
-                                                                <Button
-                                                                    variant="outline"
-                                                                    size="sm"
-                                                                    onClick={() => {
-                                                                        setCurrentMark(mark)
-                                                                        setIsEditModalOpen(true)
-                                                                    }}
-                                                                    className="hover:bg-primary/10 transition-colors duration-300"
-                                                                >
-                                                                    <Edit className="h-4 w-4" />
-                                                                </Button>
-                                                            </DialogTrigger>
-                                                            <DialogContent className="sm:max-w-[425px]">
-                                                                <DialogHeader>
-                                                                    <DialogTitle>Edit Mark</DialogTitle>
-                                                                </DialogHeader>
-                                                                {currentMark && (
-                                                                    <MarkForm
-                                                                        onSubmit={handleEditMark}
-                                                                        initialData={currentMark}
-                                                                    />
-                                                                )}
-                                                            </DialogContent>
-                                                        </Dialog>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => {
+                                                                setMarkColumn(markCol);
+                                                                setIsUpdateOpen(true);
+                                                            }}
+                                                            className="hover:bg-primary/10 transition-colors duration-300"
+                                                        >
+                                                            <Edit className="h-4 w-4" />
+                                                        </Button>
                                                         <Button
                                                             variant="destructive"
                                                             size="sm"
-                                                            onClick={() => handleDeleteMark(mark._id)}
+                                                            onClick={() => {
+                                                                setMarkColumn(markCol);
+                                                                setIsDeleteOpen(true);
+                                                            }}
                                                             className="hover:bg-red-600 transition-colors duration-300"
                                                         >
                                                             <Trash2 className="h-4 w-4" />
@@ -215,49 +337,53 @@ export default function MarkListPage() {
                                                 </TableCell>
                                             </motion.tr>
                                         ))}
-                                    {filteredAndSortedMarks.length === 0 && (
-                                        <motion.tr
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -20 }}
-                                            transition={{ duration: 0.3 }}
-                                            className="hover:bg-primary/5 transition-colors duration-300"
-                                        >
-                                            <TableCell colSpan={9} className="text-center py-4">
-                                                <span className="text-sm text-primary">
-                                                    Clear the filters to see marks
-                                                </span>
-                                            </TableCell>
-                                        </motion.tr>
-                                    )}
+
+                                    {markColumns.length > 0 &&
+                                        filteredAndSortedMarkColumns.length === 0 && (
+                                            <motion.tr
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -20 }}
+                                                transition={{ duration: 0.3 }}
+                                                className="hover:bg-primary/5 transition-colors duration-300"
+                                            >
+                                                <TableCell colSpan={9} className="text-center py-4">
+                                                    <span className="text-sm text-primary">
+                                                        Clear the filters to see mark columns
+                                                    </span>
+                                                </TableCell>
+                                            </motion.tr>
+                                        )}
                                 </AnimatePresence>
                             </TableBody>
                         </Table>
-                    </div>
-                </CardContent>
-            </Card>
-            {/* <Toaster /> */}
-        </div>
-    )
+                    </CardContent>
+                </Card>
+            </div>
+        </>
+    );
 }
 
-function MarkForm({ onSubmit, initialData }: {
-    onSubmit: (center: MarksList) => void
-    initialData?: MarksList
-}) {
-    const [formData, setFormData] = useState<MarksList>(
-        initialData || { _id: '', name: '', maxMarks: 0, description: 'oral' }
-    )
+function CreateForm() {
+    const [formData, setFormData] = useState({
+        name: "",
+        maxMark: 0,
+        description: "",
+    });
+
+    const { createMarkColumn } = useMarkColumnStore();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
-        setFormData(prev => ({ ...prev, [name]: value }))
-    }
+        setFormData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
+    };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        onSubmit(formData)
-    }
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        createMarkColumn(formData);
+    };
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -273,19 +399,19 @@ function MarkForm({ onSubmit, initialData }: {
                 />
             </div>
             <div className="space-y-2">
-                <Label htmlFor="maxMarks">Maximum Marks</Label>
+                <Label htmlFor="maxMark">Name</Label>
                 <Input
-                    id="maxMarks"
-                    name="maxMarks"
-                    value={formData.maxMarks}
+                    id="maxMark"
+                    name="maxMark"
+                    value={formData.maxMark}
                     onChange={handleChange}
+                    type="number"
                     required
-                    type='number'
                     className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
                 />
             </div>
             <div className="space-y-2">
-                <Label>Description</Label>
+                <Label htmlFor="description">Description</Label>
                 <Input
                     id="description"
                     name="description"
@@ -295,9 +421,75 @@ function MarkForm({ onSubmit, initialData }: {
                     className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
                 />
             </div>
-            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300">
-                {initialData ? 'Update' : 'Create'} Exam Center
+            <Button
+                type="submit"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300"
+            >
+                Create Mark Column
             </Button>
         </form>
-    )
+    );
+}
+
+function UpdateForm({ initialData }: { initialData: MarkColumn }) {
+    const [formData, setFormData] = useState(initialData);
+
+    const { updateMarkColumn } = useMarkColumnStore();
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
+    };
+
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        updateMarkColumn(formData);
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                    id="name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    required
+                    className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+                />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="maxMark">Name</Label>
+                <Input
+                    id="maxMark"
+                    name="maxMark"
+                    value={formData.maxMark}
+                    onChange={handleChange}
+                    type="number"
+                    required
+                    className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+                />
+            </div>
+            <div className="space-y-2">
+                <Label htmlFor="description">Description</Label>
+                <Input
+                    id="description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    required
+                    className="bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
+                />
+            </div>
+            <Button
+                type="submit"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-300"
+            >
+                Update Mark Column
+            </Button>
+        </form>
+    );
 }
