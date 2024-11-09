@@ -86,12 +86,10 @@ export interface Credential {
 export interface Applicant {
   _id: string;
   name: string;
-  refNumber: string;
   rollNumber?: string;
   imageURL: string;
   dob: Date;
   refNumber: string;
-  
   fathersName: string;
   guardiansName: string;
   aadharNumber: string;
