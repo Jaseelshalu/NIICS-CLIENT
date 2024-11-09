@@ -23,7 +23,7 @@ import PreviewApplicationDetails from './components/apply/Preview.tsx';
 import CredentialManagementPage from './routes/Credentials.tsx';
 import { SuccessMessage } from './components/ApplicationSuccess.tsx';
 import ErrorMessage from './components/ApplicationError.tsx';
-import ApplicantApprovalPage from './routes/Approval.tsx';
+import Approve from './routes/Approve.tsx';
 import Institutions from './routes/Institutions.tsx';
 import ExamCenterProtected from './routes/protected/ExamCenter.tsx';
 import AdminProtected from './routes/protected/Admin.tsx';
@@ -148,7 +148,7 @@ const router = createBrowserRouter([
           },
           {
             path: "approval",
-            element: <ApplicantApprovalPage />,
+            element: <Approve />,
             errorElement: <Error />,
           },
         ]
@@ -192,7 +192,7 @@ const router = createBrowserRouter([
   //     },
   //     {
   //       path: "approval",
-  //       element: <ApplicantApprovalPage />,
+  //       element: <Approve />,
   //       errorElement: <Error />,
   //     },
   //   ]
