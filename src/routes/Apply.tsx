@@ -1,6 +1,6 @@
 'use client'
 
-import { SuccessMessage } from '@/components/applicant/edit/ApplicationSuccess'
+import  SuccessMessage  from '@/components/applicant/edit/ApplicationSuccess'
 import { useEffect, useState } from 'react'
 import { LoadingAnimation } from '../components/ApplicationLoading'
 import { Navigate, Outlet } from 'react-router-dom'
