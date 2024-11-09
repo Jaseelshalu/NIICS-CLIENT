@@ -107,25 +107,19 @@ export interface Applicant {
   aadharDocument: string;
   birthCertificate: string;
   institution?: string;
-
-  // Status flags and timestamps
   applied: boolean;
-  appliedAt?: Date;
+  appliedAt?: Date | null;
   accepted: boolean;
-  acceptedAt?: Date;
+  acceptedAt?: Date | null;
   hallticketDownloaded: boolean;
-  hallticketDownloadedAt?: Date;
+  hallticketDownloadedAt?: Date | null;
   paid: boolean;
-  paidAt?: Date;
+  paidAt?: Date | null;
   verified: boolean;
-  verifiedAt?: Date;
+  verifiedAt?: Date | null;
   admitCardDownloaded: boolean;
-  admitCardDownloadedAt?: Date;
-
-  // Relationships
+  admitCardDownloadedAt?: Date | null;
   marks?: Mark[]; // Array of Mark ObjectIds as strings
-
-  // Timestamps from mongoose
   createdAt: Date;
   updatedAt: Date;
 }

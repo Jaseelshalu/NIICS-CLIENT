@@ -257,13 +257,8 @@ export default function Institutions() {
                           transition={{ duration: 0.3 }}
                           className="transition-colors duration-300 w-full"
                         >
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                          <TableCell colSpan={9} className="animate-pulse bg-primary/15 h-12">
+                          </TableCell>
                         </motion.tr>
                       ))
                     )}
@@ -346,21 +341,21 @@ export default function Institutions() {
                     ))}
 
                   {institutions.length > 0 &&
-                  filteredAndSortedInstitutions.length === 0 && (
-                    <motion.tr
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                      className="hover:bg-primary/5 transition-colors duration-300"
-                    >
-                      <TableCell colSpan={9} className="text-center py-4">
-                        <span className="text-sm text-primary">
-                          Clear the filters to see institutions
-                        </span>
-                      </TableCell>
-                    </motion.tr>
-                  )}
+                    filteredAndSortedInstitutions.length === 0 && (
+                      <motion.tr
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="hover:bg-primary/5 transition-colors duration-300"
+                      >
+                        <TableCell colSpan={9} className="text-center py-4">
+                          <span className="text-sm text-primary">
+                            Clear the filters to see institutions
+                          </span>
+                        </TableCell>
+                      </motion.tr>
+                    )}
                 </AnimatePresence>
               </TableBody>
             </Table>

@@ -41,11 +41,14 @@ import {
   Filter,
   CircleX,
   Trash,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Applicant } from "@/types/types";
 import useApplicantStore from "@/store/applicantStore";
 import TableFilterSort from "@/components/ui/TableFilterSort";
+import { useNavigate } from "react-router-dom";
 
 type SortConfig = {
   key: keyof Applicant;
@@ -53,6 +56,7 @@ type SortConfig = {
 };
 
 export default function Approvals() {
+  const redirect = useNavigate()
   const {
     applicants,
     applicant,
@@ -67,6 +71,7 @@ export default function Approvals() {
     setIsDeleteOpen,
     isNull,
     errorMessage,
+    updateStatus
   } = useApplicantStore();
   const [searchTerm, setSearchTerm] = useState("");
   const [sortConfig, setSortConfig] = useState<SortConfig>({
@@ -130,47 +135,71 @@ export default function Approvals() {
 
   return (
     <>
-      {isDeleteOpen && (
-        <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-          <DialogContent className="w-full lg:w-full rounded-lg">
-            <DialogHeader className="sm:text-center">
-              <DialogTitle>Delete {applicant?.name}</DialogTitle>
-            </DialogHeader>
-            {applicant && (
-              <div>
-                <Label className="block text-sm font-medium text-primary mb-4 sm:text-center">
-                  Are you sure you want to delete {applicant?.name}?
-                </Label>
-                <DialogFooter className="flex flex-row sm:justify-center gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="flex items-center gap-2"
-                    onClick={() => {
-                      setIsDeleteOpen(false);
-                    }}
-                  >
-                    <CircleX className="h-4 w-4" />
-                    Cancel
-                  </Button>
-                  <Button
-                    type="button"
-                    size="sm"
-                    className={`flex items-center gap-2 `}
-                    onClick={() => {
-                      deleteApplicant(applicant._id);
-                    }}
-                  >
-                    <Trash className="h-4 w-4" />
-                    Delete
-                  </Button>
-                </DialogFooter>
-              </div>
-            )}
-          </DialogContent>
-        </Dialog>
-      )}
+      {
+        isUpdateOpen && (
+          <Dialog open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{applicant?.accepted ? `Reject` : `Accept`} application</DialogTitle>
+              </DialogHeader>
+              <p>
+                Are you sure you want to {applicant?.accepted ? `reject` : `accept`} the application?
+              </p>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => {
+                  setIsUpdateOpen(false)
+                }}>Cancel</Button>
+                <Button onClick={() => {
+                  updateStatus(applicant?._id as string, 'accepted', !applicant?.accepted as boolean)
+                }}>{applicant?.accepted ? `Reject` : `Accept`}</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog >
+        )
+      }
+      {
+        isDeleteOpen && (
+          <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+            <DialogContent className="w-full lg:w-full rounded-lg">
+              <DialogHeader className="sm:text-center">
+                <DialogTitle>Delete {applicant?.name}</DialogTitle>
+              </DialogHeader>
+              {applicant && (
+                <div>
+                  <Label className="block text-sm font-medium text-primary mb-4 sm:text-center">
+                    Are you sure you want to delete {applicant?.name}?
+                  </Label>
+                  <DialogFooter className="flex flex-row sm:justify-center gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-2"
+                      onClick={() => {
+                        setIsDeleteOpen(false);
+                      }}
+                    >
+                      <CircleX className="h-4 w-4" />
+                      Cancel
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className={`flex items-center gap-2 `}
+                      onClick={() => {
+                        deleteApplicant(applicant._id);
+                      }}
+                    >
+                      <Trash className="h-4 w-4" />
+                      Delete
+                    </Button>
+                  </DialogFooter>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
+        )
+      }
       <div className="container mx-auto p-4 space-y-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <h1 className="text-3xl font-bold text-primary">Approvals List</h1>
@@ -243,13 +272,8 @@ export default function Approvals() {
                           transition={{ duration: 0.3 }}
                           className="transition-colors duration-300 w-full"
                         >
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
-                          <td className="animate-pulse bg-primary/15 h-12 w-auto" />
+                          <TableCell colSpan={9} className="animate-pulse bg-primary/15 h-12">
+                          </TableCell>
                         </motion.tr>
                       ))
                     )}
@@ -261,7 +285,7 @@ export default function Approvals() {
                       transition={{ duration: 0.3 }}
                       className="hover:bg-primary/5 transition-colors duration-300"
                     >
-                      <TableCell colSpan={6} className="text-center">
+                      <TableCell colSpan={9} className="text-center">
                         <span className="text-sm text-primary">
                           No Approvals found
                         </span>
@@ -330,11 +354,14 @@ export default function Approvals() {
                             </Dialog>
                           </div>
                         </TableCell>
-                        {/* <TableCell>
+                        <TableCell>
                           <div className="flex items-center space-x-2">
                             <Button
                               size="sm"
-                              onClick={() => handleActionClick(applcnt?.id, 'approve')}
+                              onClick={() => {
+                                setApplicant(applcnt)
+                                setIsUpdateOpen(true)
+                              }}
                               className={`transition-colors duration-300 ${applcnt?.accepted
                                 ? 'bg-green-500 hover:bg-green-600'
                                 : 'bg-yellow-500 hover:bg-yellow-600'
@@ -343,7 +370,7 @@ export default function Approvals() {
                               {applcnt?.accepted ? <CheckCircle className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
                             </Button>
                             <motion.span
-                              key={`approved-${applcnt?.id}`}
+                              key={`approved-${applcnt?._id}`}
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               exit={{ opacity: 0 }}
@@ -352,19 +379,33 @@ export default function Approvals() {
                               {applcnt?.accepted ? 'Approved' : 'Not Approved'}
                             </motion.span>
                           </div>
-                        </TableCell> */}
-                        {/* <TableCell>
+                        </TableCell>
+                        <TableCell>
                           <div className="flex space-x-2">
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => handleViewMore(applcnt?.id)}
+                              onClick={() => {
+                                setApplicant(applcnt)
+                                redirect('/edit-application/personal-details')
+                              }}
                               className="hover:bg-primary/10 transition-colors duration-300"
                             >
-                              <Eye className="h-4 w-4" />
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              onClick={() => {
+                                setApplicant(applcnt)
+                                setIsDeleteOpen(true);
+                              }}
+                              className="hover:bg-red-600 transition-colors duration-300"
+                            >
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
-                        </TableCell> */}
+                        </TableCell>
                       </motion.tr>
                     ))}
 
