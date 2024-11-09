@@ -48,6 +48,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Applicant } from "@/types/types";
 import useApplicantStore from "@/store/applicantStore";
 import TableFilterSort from "@/components/ui/TableFilterSort";
+import { useNavigate } from "react-router-dom";
 
 type SortConfig = {
   key: keyof Applicant;
@@ -55,6 +56,7 @@ type SortConfig = {
 };
 
 export default function Approvals() {
+  const redirect = useNavigate()
   const {
     applicants,
     applicant,
@@ -391,8 +393,8 @@ export default function Approvals() {
                               variant="outline"
                               size="sm"
                               onClick={() => {
-                                // setIsUpdateOpen(true);
-                                console.log('Edit')
+                                setApplicant(applcnt)
+                                redirect('/edit-application/personal-details')
                               }}
                               className="hover:bg-primary/10 transition-colors duration-300"
                             >
