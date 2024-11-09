@@ -98,7 +98,7 @@ export interface Applicant {
   village: string;
   postOffice: string;
   policeStation: string;
-  pinCode: number;
+  pinCode: string;
   whatsapp: string;
   alternativeNumber: string;
   email: string;

@@ -93,9 +93,16 @@ export default function CandidateProfile() {
               />
             </div>
             <div className="flex-grow space-y-2 text-sm sm:text-base">
-            <p>
-                <strong className="font-medium">Ref No:</strong> {applicant?.refNumber}
+              <p>
+                <strong className="font-medium">Ref No:</strong>{" "}
+                {applicant?.refNumber}
               </p>
+              {applicant?.rollNumber && applicant.accepted && (
+                <p>
+                  <strong className="font-medium">Roll Number:</strong>{" "}
+                  {applicant?.rollNumber}
+                </p>
+              )}
               <p>
                 <strong className="font-medium">Name:</strong> {applicant?.name}
               </p>
@@ -127,8 +134,9 @@ export default function CandidateProfile() {
                 <Edit className="mr-2 h-4 w-4" /> Edit Application
               </Button>
             )}
-            <Button variant="secondary"
-            onClick={() => navigate("/view-detailed-applicant")}
+            <Button
+              variant="secondary"
+              onClick={() => navigate("/view-detailed-applicant")}
             >
               <Eye className="mr-2 h-4 w-4" /> View Application
             </Button>
