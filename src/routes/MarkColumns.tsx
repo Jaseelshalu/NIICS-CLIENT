@@ -1,18 +1,15 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-// import { toast, Toaster } from "@/components/ui/use-toast"
-import { Plus, Edit, Trash2, ChevronDown, Search, SortAsc, SortDesc, Filter } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useEffect, useMemo, useState } from 'react'
 import TableFilterSort from '@/components/ui/TableFilterSort'
+import { AnimatePresence, motion } from "framer-motion"
+import { Edit, Plus, Search, Trash2 } from "lucide-react"
 
 type MarksList = {
     _id: string
@@ -45,19 +42,19 @@ export default function MarkListPage() {
         const newMark = { ...center, _id: Date.now().toString() }
         setMarks([...marks, newMark])
         setIsCreateModalOpen(false)
-        // toast({ title: "Exam Mark Created", description: "The new exam center has been added successfully." })
+
     }
 
     const handleEditMark = (center: MarksList) => {
         setMarks(marks.map(c => c._id === center._id ? center : c))
         setIsEditModalOpen(false)
         setCurrentMark(null)
-        // toast({ title: "Exam Mark Updated", description: "The exam center has been updated successfully." })
+
     }
 
     const handleDeleteMark = (_id: string) => {
         setMarks(marks.filter(c => c._id !== _id))
-        // toast({ title: "Exam Mark Deleted", description: "The exam center has been removed successfully." })
+
     }
 
     const handleSort = (key: keyof MarksList, direction: 'asc' | 'desc') => {

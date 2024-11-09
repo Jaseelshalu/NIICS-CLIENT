@@ -10,17 +10,22 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
+import useApplicantStore from '@/store/applicantStore'
+import { useNavigate } from 'react-router-dom'
 
 export default function CandidateLogin() {
   const [identifier, setIdentifier] = useState('')
-  const [dateOfBirth, setDateOfBirth] = useState<Date>()
+  const [dateOfBirth, setDateOfBirth] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const {authApplicant}= useApplicantStore()
+  const navigate = useNavigate()
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log('Checking status for:', { identifier, dateOfBirth })
-    // For demo purposes, we'll just log the data
-    alert('Status check initiated. Check console for details.')
+    const auth  =await authApplicant(identifier, new Date(dateOfBirth))
+    if (auth) {
+      navigate('/my-profile')
+    }
   }
 
   return (
@@ -44,7 +49,7 @@ export default function CandidateLogin() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="dob">Date of Birth</Label>
-              <Popover>
+              {/* <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant={"outline"}
@@ -65,7 +70,23 @@ export default function CandidateLogin() {
                     initialFocus
                   />
                 </PopoverContent>
-              </Popover>
+              </Popover> */}
+              {/* <Input
+                id="dob"
+                type="date"
+                value={format(dateOfBirth!, 'yyyy-mm-dd')}
+                onChange={(e) => setDateOfBirth(new Date(e.target.value))}
+                required
+              /> */}
+              <Input
+                      id="admissionStartsAt"
+                      name="admissionStartsAt"
+                      type="date"
+                      value={dateOfBirth as any}
+                      onChange={(e) => setDateOfBirth(e.target.value)}
+                      className="bg-background/50 backdrop-blur-sm"
+                      required
+                    />
             </div>
             <Button type="submit" className="w-full">Login</Button>
           </form>

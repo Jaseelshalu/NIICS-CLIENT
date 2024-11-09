@@ -11,7 +11,7 @@ interface ApplicantStoreState {
   getNewApplicant: () => void;
   applicant: Applicant | null;
   setApplicant: (applicant: Applicant) => void;
-  authApplicant: (number: string, dob: Date) => void;
+  authApplicant: (number: string, dob: Date) => Promise<Boolean>;
   createApplicant: (applicant: Partial<Applicant>) => Promise<Boolean>;
   getApplicants: () => void;
   getApplicant: (_id: string) => void;
@@ -27,6 +27,7 @@ interface ApplicantStoreState {
   setIsDeleteOpen: (isDeleteOpen: boolean) => void;
   errorMessage: string;
   setErrorMessage: (errorMessage: string) => void;
+  initialApplicantLoad: (data:Applicant) => void;
 }
 
 const useApplicantStore = create<ApplicantStoreState>((set) => ({
@@ -59,7 +60,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   setApplicant: (applicant) => set({ applicant }),
   authApplicant: async (number, dob) => {
     const loadingToast = toast.loading("Logging In applicant...");
-
+    let auth = false;
     try {
       await axios
         .post(`https://niics-server.vercel.app/api/applicant/auth`, {
@@ -74,6 +75,10 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
               duration: 3000,
             });
             set({ applicant: response.data });
+            // set to local storage
+            localStorage.setItem("applicant", JSON.stringify(response.data));
+            auth = true;
+            return true;
           } else if (response.status === 200) {
             toast.error(
               response?.data?.message || `Failed to log in applicant`,
@@ -82,19 +87,23 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
                 duration: 3000,
               }
             );
+            return false;
           } else {
             toast.error(`Failed to log in applicant`, {
               id: loadingToast,
               duration: 3000,
             });
           }
+          return false;
         });
     } catch (error) {
       toast.error(`Failed to log in applicant`, {
         id: loadingToast,
         duration: 3000,
       });
+      return false;
     }
+    return auth;
   },
   createApplicant: async (applicant) => {
     const loadingToast = toast.loading("Creating applicant...");
@@ -114,6 +123,9 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
               id: loadingToast,
               duration: 3000,
             });
+            set({ applicant: response.data });
+            // set to local storage
+            localStorage.setItem("applicant", JSON.stringify(response.data));
             created = true;
             return true;
           } else if (response.status === 200) {
@@ -310,6 +322,9 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
       });
     }
   },
+  initialApplicantLoad : (data) => {
+    set({applicant:data})
+  }
 }));
 
 export default useApplicantStore;

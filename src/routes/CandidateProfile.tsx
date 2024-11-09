@@ -1,35 +1,42 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { CheckCircle2, Circle, Edit, MoreHorizontal, Download } from "lucide-react"
 import { motion } from "framer-motion"
 import useApplicantStore from '@/store/applicantStore'
+import { Applicant } from '@/types/types'
+import { useNavigate } from 'react-router-dom'
 
 export default function CandidateProfile() {
 
-  const candidate = {
-    name: "John Doe",
-    phone: "+91 9876543210",
-    aadhar: "1234 5678 9012",
-    dob: "1990-01-01",
-    guardianName: "Jane Doe",
-    guardianAadhar: "9876 5432 1098",
-  }
+ 
 
-  const {applicant} = useApplicantStore()
+  const {applicant , initialApplicantLoad} = useApplicantStore()
+  const navigate = useNavigate()
 
-  const profileUrl = "/placeholder.svg?height=200&width=200"
+  useEffect(() => {
+    document.title = "Candidate Profile"
+    // take applicant data from local storage
+    const applicant = JSON.parse(localStorage.getItem('applicant') as string)
+    if (applicant) {
+      initialApplicantLoad(applicant as Applicant)
+    }else{
+      navigate('/check-status')
+    }
+  }, [])
+
+  const profileUrl = "https://e7.pngegg.com/pngimages/84/165/png-clipart-united-states-avatar-organization-information-user-avatar-service-computer-wallpaper-thumbnail.png"
 
   const timelineSteps = [
-    { label: "Applied", completed: true, date: "2023-05-15" },
-    { label: "Accepted", completed: true, date: "2023-05-20" },
-    { label: "Hall Ticket Downloaded", completed: true, date: "2023-05-25" },
-    { label: "Payment", completed: true, date: "2023-05-30" },
-    { label: "Verification", completed: false, date: "2023-06-05" },
+    { label: "Applied", completed: applicant?.applied, date: applicant?.appliedAt },
+    { label: "Accepted", completed: applicant?.accepted, date: applicant?.acceptedAt },
+    { label: "Hall Ticket Downloaded", completed: applicant?.hallticketDownloaded, date: applicant?.hallticketDownloadedAt },
+    { label: "Payment", completed: applicant?.paid, date: applicant?.paidAt },
+    { label: "Verification", completed: applicant?.verified, date: applicant?.verifiedAt },
     { label: "Result Published", completed: false, date: "2023-06-15" },
-    { label: "Admit Card Downloaded", completed: false, date: "2023-06-20" },
+    { label: "Admit Card Downloaded", completed: applicant?.admitCardDownloaded, date: applicant?.admitCardDownloadedAt },
   ]
 
   return (
@@ -45,22 +52,22 @@ export default function CandidateProfile() {
   
           </CardHeader>
           <CardContent className="flex flex-col sm:flex-row gap-6 p-6">
-            <div className="flex-shrink-0 w-full sm:w-auto">
+            <div className="flex flex-shrink-0 w-full h-full sm:w-auto items-center justify-center">
               <img
-                src={profileUrl}
+                src={applicant?.imageURL || profileUrl}
                 alt="Candidate"
                 width={200}
                 height={200}
-                className="rounded-lg object-cover w-full sm:w-[200px] h-[200px] ring-2 ring-primary/20"
+                className="rounded-lg   w-[200px] h-[200px] ring-2 ring-primary/20"
               />
             </div>
             <div className="flex-grow space-y-2 text-sm sm:text-base">
-              <p><strong className="font-medium">Name:</strong> {candidate.name}</p>
-              <p><strong className="font-medium">Phone:</strong> {candidate.phone}</p>
-              <p><strong className="font-medium">Aadhar Number:</strong> {candidate.aadhar}</p>
-              <p><strong className="font-medium">Date of Birth:</strong> {candidate.dob}</p>
-              <p><strong className="font-medium">Guardian Name:</strong> {candidate.guardianName}</p>
-              <p><strong className="font-medium">Guardian Aadhar:</strong> {candidate.guardianAadhar}</p>
+              <p><strong className="font-medium">Name:</strong> {applicant?.name}</p>
+              <p><strong className="font-medium">Phone:</strong> {applicant?.whatsapp}</p>
+              <p><strong className="font-medium">Aadhar Number:</strong> {applicant?.aadharNumber}</p>
+              <p><strong className="font-medium">Date of Birth:</strong> {applicant?.dob.toString()}</p>
+              <p><strong className="font-medium">Guardian Name:</strong> {applicant?.guardiansName}</p>
+              <p><strong className="font-medium">Email:</strong> {applicant?.email}</p>
             </div>
           </CardContent>
           <CardFooter className="bg-background/50  flex flex-wrap gap-2 justify-center sm:justify-start">
@@ -109,8 +116,16 @@ export default function CandidateProfile() {
                   >
                     <h3 className={`text-sm sm:text-base font-medium leading-tight ${step.completed ? 'text-primary' : 'text-muted-foreground'}`}>
                       {step.label}
+                      <span>
+                        {step.date && (
+                          <time className="block mt-2 text-xs font-normal leading-none text-muted-foreground">
+                            {new Date(step.date).toLocaleDateString()}
+                          </time>
+                        )}
+                      </span>
                     </h3>
-                    <time className="block mb-2 text-xs font-normal leading-none text-muted-foreground">{step.date}</time>
+                    <time className="block mb-2 text-xs font-normal leading-none text-muted-foreground">{
+                      }</time>
 
                   </div>
                 </motion.li>
