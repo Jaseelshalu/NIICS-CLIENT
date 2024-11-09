@@ -12,6 +12,7 @@ interface ApplicantStoreState {
   applicant: Applicant | null;
   setApplicant: (applicant: Applicant) => void;
   authApplicant: (number: string, dob: Date) => Promise<Boolean>;
+  updateStatus: (_id: string, key: string, value: boolean) => void;
   createApplicant: (applicant: Partial<Applicant>) => Promise<Boolean>;
   getApplicants: () => void;
   getApplicant: (_id: string) => void;
@@ -27,7 +28,7 @@ interface ApplicantStoreState {
   setIsDeleteOpen: (isDeleteOpen: boolean) => void;
   errorMessage: string;
   setErrorMessage: (errorMessage: string) => void;
-  initialApplicantLoad: (data:Applicant) => void;
+  initialApplicantLoad: (data: Applicant) => void;
 }
 
 const useApplicantStore = create<ApplicantStoreState>((set) => ({
@@ -104,6 +105,58 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
       return false;
     }
     return auth;
+  },
+  updateStatus: async (_id, key, value) => {
+    const loadingToast = toast.loading("Updating status...");
+    try {
+      await axios
+        .put(
+          `https://niics-server.vercel.app/api/applicant/update-status/${_id}`,
+          { key, value },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response.data);
+          if (response.status === 201) {
+            toast.success("Status updated successfully", {
+              id: loadingToast,
+              duration: 3000,
+            });
+            set({
+              applicants: useApplicantStore
+                .getState()
+                .applicants.map((applicant) => {
+                  if (applicant._id === _id) {
+                    return { ...applicant, [key]: value };
+                  }
+                  return applicant;
+                }),
+            });
+            set({
+              isUpdateOpen: false,
+            });
+          } else if (response.status === 200) {
+            toast.error(response?.data?.message || `Failed to update status`, {
+              id: loadingToast,
+              duration: 3000,
+            });
+          } else {
+            toast.error(`Failed to update status`, {
+              id: loadingToast,
+              duration: 3000,
+            });
+          }
+        });
+    } catch (error) {
+      toast.error(`Failed to update status`, {
+        id: loadingToast,
+        duration: 3000,
+      });
+    }
   },
   createApplicant: async (applicant) => {
     const loadingToast = toast.loading("Creating applicant...");
@@ -251,12 +304,12 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
         )
         .then((response) => {
           console.log(response.data);
-          if (response.status === 200) {
+          if (response.status === 201) {
             toast.success("Applicant updated successfully", {
               id: loadingToast,
               duration: 3000,
             });
-          } else if (response.status === 404) {
+          } else if (response.status === 200) {
             toast.error(response?.data?.message || `Applicant not found`, {
               id: loadingToast,
               duration: 3000,
@@ -322,9 +375,9 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
       });
     }
   },
-  initialApplicantLoad : (data) => {
-    set({applicant:data})
-  }
+  initialApplicantLoad: (data) => {
+    set({ applicant: data });
+  },
 }));
 
 export default useApplicantStore;
