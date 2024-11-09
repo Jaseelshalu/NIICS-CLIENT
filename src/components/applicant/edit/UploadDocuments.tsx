@@ -7,14 +7,14 @@ import { Label } from "@/components/ui/label"
 import { AlertCircle } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { SuccessMessage } from './ApplicationSuccess'
+import SuccessMessage  from './ApplicationSuccess'
 import useApplicantStore from "@/store/applicantStore"
 import { Applicant } from "@/types/types"
 import { uploadImageToCloudinary } from "@/lib/utils"
 
 
 
-export function UploadDocuments() {
+export default function UploadDocuments() {
   const [aadharDocument, setAadharDocument] = useState<File | null>(null);
   const [birthCertificate , setBirthCertificate] = useState<File | null>(null);
   const [showAadharUploadButton, setShowAadharUploadButton] = useState(false);
