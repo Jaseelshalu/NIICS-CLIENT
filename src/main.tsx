@@ -13,6 +13,10 @@ import { PersonalInfo } from './components/PersonalInfo.tsx';
 import { ContactDetails } from './components/ContactDetails.tsx';
 import { ExamCenter } from './components/ExamCenter.tsx';
 import { UploadDocuments } from './components/UploadDocuments.tsx';
+import  PersonalInfoEdit  from './components/applicant/edit/PersonalInfo.tsx';
+import  ContactDetailsEdit  from './components/applicant/edit/ContactDetails.tsx';
+import  ExamCenterEdit  from './components/applicant/edit/ExamCenter.tsx';
+import  UploadDocumentsEdit  from './components/applicant/edit/UploadDocuments.tsx';
 import AdminSettings from './routes/Settings.tsx';
 import ExamCenters from './routes/ExamCenters.tsx';
 import MarksEntryPage from './routes/MarkEntry.tsx';
@@ -21,13 +25,14 @@ import MarkColumns from './routes/MarkColumns.tsx';
 import ExamCenterDashboard from './routes/ExamCenterDashboard.tsx';
 import PreviewApplicationDetails from './components/apply/Preview.tsx';
 import CredentialManagementPage from './routes/Credentials.tsx';
-import { SuccessMessage } from './components/ApplicationSuccess.tsx';
-import ErrorMessage from './components/ApplicationError.tsx';
+import  SuccessMessage  from './components/applicant/edit/ApplicationSuccess.tsx';
+import ErrorMessage from './components/applicant/edit/ApplicationError.tsx';
 import Approval from './routes/Approval.tsx';
 import Institutions from './routes/Institutions.tsx';
 import ExamCenterProtected from './routes/protected/ExamCenter.tsx';
 import AdminProtected from './routes/protected/Admin.tsx';
 import ViewDetailedApplicant from './components/applicant/ViewDetailedApplicant.tsx';
+import EditApplicant from './components/applicant/edit/EditApplicant.tsx';
 
 const router = createBrowserRouter([
   {
@@ -78,6 +83,48 @@ const router = createBrowserRouter([
       {
         path: "upload-documents",
         element: <UploadDocuments />,
+        errorElement: <Error />,
+      },
+      {
+        path: "preview",
+        element: <PreviewApplicationDetails />,
+        errorElement: <Error />,
+      },
+      {
+        path: "success-message",
+        element: <SuccessMessage />,
+        errorElement: <Error />,
+      },
+      {
+        path: "error-message",
+        element: <ErrorMessage />,
+        errorElement: <Error />,
+      },
+    ]
+  },
+  {
+    path: "/edit-application",
+    element: <EditApplicant />,
+    errorElement: <Error />,
+    children: [
+      {
+        path: "personal-details",
+        element: <PersonalInfoEdit />,
+        errorElement: <Error />,
+      },
+      {
+        path: "contact-details",
+        element: <ContactDetailsEdit />,
+        errorElement: <Error />,
+      },
+      {
+        path: "exam-center",
+        element: <ExamCenterEdit />,
+        errorElement: <Error />,
+      },
+      {
+        path: "upload-documents",
+        element: <UploadDocumentsEdit />,
         errorElement: <Error />,
       },
       {

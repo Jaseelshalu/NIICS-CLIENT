@@ -93,6 +93,9 @@ export default function CandidateProfile() {
               />
             </div>
             <div className="flex-grow space-y-2 text-sm sm:text-base">
+            <p>
+                <strong className="font-medium">Ref No:</strong> {applicant?.refNumber}
+              </p>
               <p>
                 <strong className="font-medium">Name:</strong> {applicant?.name}
               </p>

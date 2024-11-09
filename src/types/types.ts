@@ -90,6 +90,8 @@ export interface Applicant {
   rollNumber?: string;
   imageURL: string;
   dob: Date;
+  refNumber: string;
+  
   fathersName: string;
   guardiansName: string;
   aadharNumber: string;
