@@ -33,6 +33,7 @@ import ExamCenterProtected from './routes/protected/ExamCenter.tsx';
 import AdminProtected from './routes/protected/Admin.tsx';
 import ViewDetailedApplicant from './components/applicant/ViewDetailedApplicant.tsx';
 import EditApplicant from './components/applicant/edit/EditApplicant.tsx';
+import EditPreview from './components/applicant/edit/Preview.tsx';
 
 const router = createBrowserRouter([
   {
@@ -129,7 +130,7 @@ const router = createBrowserRouter([
       },
       {
         path: "preview",
-        element: <PreviewApplicationDetails />,
+        element: <EditPreview />,
         errorElement: <Error />,
       },
       {

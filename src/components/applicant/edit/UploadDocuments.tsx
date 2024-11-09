@@ -19,7 +19,7 @@ export default function UploadDocuments() {
   const [birthCertificate , setBirthCertificate] = useState<File | null>(null);
   const [showAadharUploadButton, setShowAadharUploadButton] = useState(false);
   const [showBirthCertificateUploadButton, setShowBirthCertificateUploadButton] = useState(false);
-  const {newApplicant , setNewApplicant} = useApplicantStore()
+  const {applicant , setApplicant} = useApplicantStore()
   const [fileErrors, setFileErrors] = useState({
     aadharDocument: '',
     birthCertificate: ''
@@ -42,17 +42,17 @@ export default function UploadDocuments() {
       const reader = new FileReader()
       reader.onload = (e) => {
         if (e.target) {
-          // setnewApplicant?(prev => ({ ...prev, [fieldName]: e.target!.result as string }))
-          // setNewApplicant({ ...newApplicant, [fieldName]: e.target!.result as string } as any)
+          // setapplicant?(prev => ({ ...prev, [fieldName]: e.target!.result as string }))
+          // setApplicant({ ...applicant, [fieldName]: e.target!.result as string } as any)
           if(fieldName === 'aadharDocument') {
             setAadharDocument(file)
             setShowAadharUploadButton(true)
-            setNewApplicant({ ...newApplicant, aadharDocument: "" as string } as Applicant)
+            setApplicant({ ...applicant, aadharDocument: "" as string } as Applicant)
           }
           if(fieldName === 'birthCertificate') {
             setBirthCertificate(file)
             setShowBirthCertificateUploadButton(true)
-            setNewApplicant({ ...newApplicant, birthCertificate: "" as string } as Applicant)
+            setApplicant({ ...applicant, birthCertificate: "" as string } as Applicant)
           }
           setFileErrors(prev => ({ ...prev, [fieldName]: '' }))
         }
@@ -63,18 +63,18 @@ export default function UploadDocuments() {
 
   const handleAadharUpload = async () => {
     if (aadharDocument) {
-      setNewApplicant({
-        ...newApplicant,
+      setApplicant({
+        ...applicant,
         aadharDocument: "uploading" as string,
       } as Applicant);
       try {
         const url = await uploadImageToCloudinary(aadharDocument);
-        setNewApplicant({ ...newApplicant, aadharDocument: url } as Applicant);
+        setApplicant({ ...applicant, aadharDocument: url } as Applicant);
       } catch (error) {
         console.error("Failed to upload image", error);
         setFileErrors(prev => ({ ...prev, aadharDocument: 'Failed to upload image' }))
-        setNewApplicant({
-          ...newApplicant,
+        setApplicant({
+          ...applicant,
           aadharDocument: "" as string,
         } as Applicant);
       }
@@ -84,18 +84,18 @@ export default function UploadDocuments() {
 
   const handleBirthCertificateUpload = async () => {
     if (birthCertificate) {
-      setNewApplicant({
-        ...newApplicant,
+      setApplicant({
+        ...applicant,
         birthCertificate: "uploading" as string,
       } as Applicant);
       try {
         const url = await uploadImageToCloudinary(birthCertificate);
-        setNewApplicant({ ...newApplicant, birthCertificate: url } as Applicant);
+        setApplicant({ ...applicant, birthCertificate: url } as Applicant);
       } catch (error) {
         console.error("Failed to upload image", error);
         setFileErrors(prev => ({ ...prev, birthCertificate: 'Failed to upload image' }))
-        setNewApplicant({
-          ...newApplicant,
+        setApplicant({
+          ...applicant,
           birthCertificate: "" as string,
         } as Applicant);
         setShowBirthCertificateUploadButton(false)
@@ -105,12 +105,12 @@ export default function UploadDocuments() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    navigate('/apply/preview')
-    // onNext({ examCenter: newApplicant? })
+    navigate('/edit-application/preview')
+    // onNext({ examCenter: applicant? })
   }
 
   const isFormValid = () => {
-    return newApplicant?.aadharDocument && newApplicant?.birthCertificate
+    return applicant?.aadharDocument && applicant?.birthCertificate
   }
 
   return (
@@ -146,20 +146,20 @@ export default function UploadDocuments() {
                   </p>
                 )}
                 <p className="text-sm text-gray-500 mt-1">Upload a JPG or JPEG image, max 1MB</p>
-                {(newApplicant?.aadharDocument || aadharDocument) && (
+                {(applicant?.aadharDocument || aadharDocument) && (
                   <div className="mt-2 relative">
                     <img src={aadharDocument
                             ? URL.createObjectURL(aadharDocument)
-                            : newApplicant?.aadharDocument
-                            ? newApplicant.aadharDocument
+                            : applicant?.aadharDocument
+                            ? applicant.aadharDocument
                             : ""} alt="Aadhar Document" className="max-w-[100px] h-auto" />
                      <div className="absolute top-[40%] left-4 flex items-center justify-center">
                         <span className="text-white text-sm bg-black bg-opacity-50 rounded-lg p-1">
-                          {!newApplicant?.aadharDocument
+                          {!applicant?.aadharDocument
                             ? "Not Uploaded"
-                            : newApplicant?.aadharDocument === "uploading"
+                            : applicant?.aadharDocument === "uploading"
                             ? "Uploading..."
-                            : newApplicant?.aadharDocument === ""
+                            : applicant?.aadharDocument === ""
                             ? "Can't Upload"
                             : "Uploaded"}
                         </span>
@@ -170,7 +170,7 @@ export default function UploadDocuments() {
                         type="button"
                         onClick={handleAadharUpload}
                         className="mt-2"
-                        disabled={newApplicant?.imageURL === "uploading"}
+                        disabled={applicant?.imageURL === "uploading"}
                       >
                         Upload Image
                       </Button>
@@ -193,22 +193,22 @@ export default function UploadDocuments() {
                   </p>
                 )}
                 <p className="text-sm text-gray-500 mt-1">Upload a JPG or JPEG image, max 1MB</p>
-                {(newApplicant?.birthCertificate || birthCertificate) && (
+                {(applicant?.birthCertificate || birthCertificate) && (
                   <div className="mt-2 relative mb-2">
                     <img src={
                       birthCertificate
                             ? URL.createObjectURL(birthCertificate)
-                            : newApplicant?.birthCertificate
-                            ? newApplicant.birthCertificate
+                            : applicant?.birthCertificate
+                            ? applicant.birthCertificate
                             : ""
                     } alt="Birth Certificate" className="max-w-[100px] h-auto" />
                      <div className="absolute top-[40%] left-4 flex items-center justify-center">
                         <span className="text-white text-sm bg-black bg-opacity-50 rounded-lg p-1">
-                          {!newApplicant?.birthCertificate
+                          {!applicant?.birthCertificate
                             ? "Not Uploaded"
-                            : newApplicant?.birthCertificate === "uploading"
+                            : applicant?.birthCertificate === "uploading"
                             ? "Uploading..."
-                            : newApplicant?.birthCertificate === ""
+                            : applicant?.birthCertificate === ""
                             ? "Can't Upload"
                             : "Uploaded"}
                         </span>
@@ -218,7 +218,7 @@ export default function UploadDocuments() {
                         type="button"
                         onClick={handleBirthCertificateUpload}
                         className="mt-2"
-                        disabled={newApplicant?.imageURL === "uploading"}
+                        disabled={applicant?.imageURL === "uploading"}
                       >
                         Upload Image
                       </Button>
@@ -227,7 +227,7 @@ export default function UploadDocuments() {
                 )}
               </div>
               <div className="flex justify-between">
-              <Button type="button" onClick={()=>{navigate('/apply/exam-center')}}>Previous</Button>
+              <Button type="button" onClick={()=>{navigate('/edit-application/exam-center')}}>Previous</Button>
                 {/* <Button type="submit" disabled={!isFormValid()}>Submit Application</Button> */}
                 <Button type="submit" variant="outline" disabled={!isFormValid()}>Preview</Button>
               </div>

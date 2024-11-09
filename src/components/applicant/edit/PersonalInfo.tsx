@@ -16,7 +16,7 @@ import { uploadImageToCloudinary } from "@/lib/utils";
 export default function PersonalInfo() {
   const [image, setImage] = useState<File | null>(null);
 
-  const { newApplicant, setNewApplicant } = useApplicantStore();
+  const { applicant, setApplicant } = useApplicantStore();
   const [imageError, setImageError] = useState("");
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -31,19 +31,19 @@ export default function PersonalInfo() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // setFormData({ ...formData, [e.target.name]: e.target.value })
-    setNewApplicant({
-      ...newApplicant,
+    setApplicant({
+      ...applicant,
       [e.target.name]: e.target.value,
     } as Applicant);
-    console.log(newApplicant);
+    console.log(applicant);
   };
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     setShowImageUploadButton(true);
-    // set newApplicant image to null to reset the image
-    setNewApplicant({
-      ...newApplicant,
+    // set applicant image to null to reset the image
+    setApplicant({
+      ...applicant,
       imageURL: "" as string,
     } as Applicant);
     if (file) {
@@ -68,19 +68,19 @@ export default function PersonalInfo() {
 
   const handleImageUpload = async () => {
     if (image) {
-      setNewApplicant({
-        ...newApplicant,
+      setApplicant({
+        ...applicant,
         imageURL: "uploading" as string,
       } as Applicant);
       try {
         const url = await uploadImageToCloudinary(image);
-        setNewApplicant({ ...newApplicant, imageURL: url } as Applicant);
+        setApplicant({ ...applicant, imageURL: url } as Applicant);
         setShowImageUploadButton(false);
       } catch (error) {
         console.error("Failed to upload image", error);
         setImageError("Failed to upload image");
-        setNewApplicant({
-          ...newApplicant,
+        setApplicant({
+          ...applicant,
           imageURL: "" as string,
         } as Applicant);
       }
@@ -89,19 +89,19 @@ export default function PersonalInfo() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/apply/contact-details");
+    navigate("/edit-application/contact-details");
   };
 
   const isFormValid = () => {
     return (
-      newApplicant?.imageURL &&
-      newApplicant?.name &&
-      newApplicant?.alternativeNumber &&
-      newApplicant?.aadharNumber &&
-      newApplicant?.dob &&
-      newApplicant?.guardiansName &&
-      newApplicant?.fathersName &&
-      newApplicant?.email
+      applicant?.imageURL &&
+      applicant?.name &&
+      applicant?.alternativeNumber &&
+      applicant?.aadharNumber &&
+      applicant?.dob &&
+      applicant?.guardiansName &&
+      applicant?.fathersName &&
+      applicant?.email
     );
   };
 
@@ -121,14 +121,14 @@ export default function PersonalInfo() {
               <Label htmlFor="image">Candidate's Image</Label>
               <div className="mt-2 flex items-center space-x-4">
                 <div className="relative w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden">
-                  {image || newApplicant?.imageURL ? (
+                  {image || applicant?.imageURL ? (
                     <div className="w-full h-full object-cover">
                       <img
                         src={
                           image
                             ? URL.createObjectURL(image)
-                            : newApplicant?.imageURL
-                            ? newApplicant.imageURL
+                            : applicant?.imageURL
+                            ? applicant.imageURL
                             : ""
                         }
                         alt="Candidate"
@@ -137,11 +137,11 @@ export default function PersonalInfo() {
 
                       <div className="absolute top-[40%] left-6 flex items-center justify-center">
                         <span className="text-white text-sm bg-black bg-opacity-50 rounded-lg p-1">
-                          {!newApplicant?.imageURL
+                          {!applicant?.imageURL
                             ? "Not Uploaded"
-                            : newApplicant?.imageURL === "uploading"
+                            : applicant?.imageURL === "uploading"
                             ? "Uploading..."
-                            : newApplicant?.imageURL === ""
+                            : applicant?.imageURL === ""
                             ? "Can't Upload"
                             : "Uploaded"}
                         </span>
@@ -177,7 +177,7 @@ export default function PersonalInfo() {
                         type="button"
                         onClick={handleImageUpload}
                         className="mt-2"
-                        disabled={newApplicant?.imageURL === "uploading"}
+                        disabled={applicant?.imageURL === "uploading"}
                       >
                         Upload Image
                       </Button>
@@ -190,7 +190,7 @@ export default function PersonalInfo() {
               <Input
                 id="name"
                 name="name"
-                value={newApplicant?.name}
+                value={applicant?.name}
                 onChange={handleChange}
                 required
               />
@@ -200,7 +200,7 @@ export default function PersonalInfo() {
               <Input
                 id="alternativeNumber"
                 name="alternativeNumber"
-                value={newApplicant?.alternativeNumber}
+                value={applicant?.alternativeNumber}
                 onChange={handleChange}
                 required
               />
@@ -210,7 +210,7 @@ export default function PersonalInfo() {
               <Input
                 id="aadharNumber"
                 name="aadharNumber"
-                value={newApplicant?.aadharNumber}
+                value={applicant?.aadharNumber}
                 onChange={handleChange}
                 required
               />
@@ -221,7 +221,9 @@ export default function PersonalInfo() {
                 id="dob"
                 name="dob"
                 type="date"
-                value={newApplicant?.dob as unknown as string}
+                // change Date to string
+                // defaultValue={applicant?.dob.toString()}
+                value={applicant?.dob?.getDate()}
                 onChange={handleChange}
                 required
               />
@@ -231,7 +233,7 @@ export default function PersonalInfo() {
               <Input
                 id="guardiansName"
                 name="guardiansName"
-                value={newApplicant?.guardiansName}
+                value={applicant?.guardiansName}
                 onChange={handleChange}
                 required
               />
@@ -241,7 +243,7 @@ export default function PersonalInfo() {
               <Input
                 id="fathersName"
                 name="fathersName"
-                value={newApplicant?.fathersName}
+                value={applicant?.fathersName}
                 onChange={handleChange}
                 required
               />
@@ -252,7 +254,7 @@ export default function PersonalInfo() {
                 id="email"
                 name="email"
                 type="email"
-                value={newApplicant?.email}
+                value={applicant?.email}
                 onChange={handleChange}
                 required
               />
