@@ -225,7 +225,7 @@ export default function MarkColumns() {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    {['name', 'maxMarks', 'description'].map((key) => (<TableHead key={key}>
+                                    {['name', 'maxMark', 'description'].map((key) => (<TableHead key={key}>
                                         <div className="flex items-center justify-between">
                                             {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
                                             <TableFilterSort
