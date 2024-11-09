@@ -86,7 +86,8 @@ export interface Credential {
 export interface Applicant {
   _id: string;
   name: string;
-  applicationNumber: string;
+  refNumber: string;
+  rollNumber?: string;
   imageURL: string;
   dob: Date;
   fathersName: string;
@@ -97,15 +98,17 @@ export interface Applicant {
   village: string;
   postOffice: string;
   policeStation: string;
-  pinCode: string;
+  pinCode: number;
   whatsapp: string;
   alternativeNumber: string;
   email: string;
-  examCenter: ExamCenter; // ObjectId as a string reference
-  options: Institution[]; // Array of ObjectId references to institutions
+  examCenter: ExamCenter; // ObjectId as string
+  options: Institution[]; // Array of Institution ObjectIds as strings
   aadharDocument: string;
   birthCertificate: string;
-  institution: string;
+  institution?: string;
+
+  // Status flags and timestamps
   applied: boolean;
   appliedAt?: Date;
   accepted: boolean;
@@ -118,7 +121,11 @@ export interface Applicant {
   verifiedAt?: Date;
   admitCardDownloaded: boolean;
   admitCardDownloadedAt?: Date;
-  marks?: Mark[]; // Array of ObjectId references to marks
-  createdAt?: Date; // Optional, auto-generated
-  updatedAt?: Date; // Optional, auto-generated
+
+  // Relationships
+  marks?: Mark[]; // Array of Mark ObjectIds as strings
+
+  // Timestamps from mongoose
+  createdAt: Date;
+  updatedAt: Date;
 }
