@@ -16,7 +16,7 @@ export default function EditApplicant() {
     examCenter: {}
   })
 
-  const {applicant , setApplicant} = useApplicantStore()
+  const {setEditingApplicant} = useApplicantStore()
   const navigate = useNavigate()
 
 
@@ -37,7 +37,13 @@ export default function EditApplicant() {
       navigate("/check-status");
     }
     // set the applicant data to the store
-    setApplicant(applicant)
+    // make the applicant.examCenter.name to applicant.examCenter
+    applicant.examCenter = applicant.examCenter.name
+    // make the applicant.options the array of institution model to array of institution._id
+    applicant.options = applicant.options.map((option: any) =>
+        option._id
+        );
+    setEditingApplicant(applicant)
   }, [])
 
   const handleDoLater = () => {

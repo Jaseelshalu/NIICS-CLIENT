@@ -29,6 +29,8 @@ interface ApplicantStoreState {
   errorMessage: string;
   setErrorMessage: (errorMessage: string) => void;
   initialApplicantLoad: (data: Applicant) => void;
+  editingApplicant: Applicant | null;
+  setEditingApplicant: (applicant: Applicant) => void;
 }
 
 const useApplicantStore = create<ApplicantStoreState>((set) => ({
@@ -43,6 +45,10 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   errorMessage: "",
   setErrorMessage: (errorMessage) => set({ errorMessage }),
   applicants: [],
+  editingApplicant: null,
+  setEditingApplicant: (applicant) => {
+    set({ editingApplicant: applicant });
+  },
   newApplicant: null,
   setNewApplicant: (applicant) => {
     // set new applicant to the store and to the local storage

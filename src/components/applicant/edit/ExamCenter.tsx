@@ -15,7 +15,7 @@ import { ExamCenter as ExamCenterType } from '@/types/types'
 import useInstitutionStore from '@/store/institutionStore'
 
 export default function ExamCenter() {
-  const { applicant, setApplicant } = useApplicantStore()
+  const { editingApplicant, setEditingApplicant } = useApplicantStore()
   const { examCenters , setExamCenters ,getExamCenters} = useExamCenterStore();
   const { institutions , getInstitutions } = useInstitutionStore()
 
@@ -32,34 +32,34 @@ export default function ExamCenter() {
 
   // Set the selected exam center
   const handleChange = (value: string) => {
-    setApplicant({ ...applicant, examCenter: value } as any)
+    setEditingApplicant({ ...editingApplicant, examCenter: value } as any)
   }
 
   // Add an institution to the options if not already included
   const handleInstitutionChange = (value: string) => {
-    const updatedInstitutions = applicant?.options ? [...applicant?.options] : []
+    const updatedInstitutions = editingApplicant?.options ? [...editingApplicant?.options] : []
     if (!updatedInstitutions.includes(value as any)) {
       updatedInstitutions.push(value as any)
-      setApplicant({ ...applicant, options: updatedInstitutions }as any)
+      setEditingApplicant({ ...editingApplicant, options: updatedInstitutions }as any)
     }
   }
 
   // Remove an institution from the options
   const removeInstitution = (institution: string) => {
-    if (applicant?.options) {
-      const updatedInstitutions = applicant?.options.filter(i => i !== (institution as any))
-      setApplicant({ ...applicant, options: updatedInstitutions })
+    if (editingApplicant?.options) {
+      const updatedInstitutions = editingApplicant?.options.filter(i => i !== (institution as any))
+      setEditingApplicant({ ...editingApplicant, options: updatedInstitutions })
     }
   }
 
   // Move an institution up or down in the order
   const moveInstitution = (index: number, direction: 'up' | 'down') => {
     const newIndex = direction === 'up' ? index - 1 : index + 1
-    if (applicant?.options && newIndex >= 0 && newIndex < applicant?.options.length) {
-      const updatedInstitutions = [...applicant?.options]
+    if (editingApplicant?.options && newIndex >= 0 && newIndex < editingApplicant?.options.length) {
+      const updatedInstitutions = [...editingApplicant?.options]
       const [movedInstitution] = updatedInstitutions.splice(index, 1)
       updatedInstitutions.splice(newIndex, 0, movedInstitution)
-      setApplicant({ ...applicant, options: updatedInstitutions })
+      setEditingApplicant({ ...editingApplicant, options: updatedInstitutions })
     }
   }
 
@@ -71,7 +71,7 @@ export default function ExamCenter() {
 
   // Check if form is valid before submitting
   const isFormValid = () => {
-    return !!applicant?.examCenter && applicant?.options?.length > 0
+    return !!editingApplicant?.examCenter && editingApplicant?.options?.length > 0
   }
 
   return (
@@ -84,7 +84,7 @@ export default function ExamCenter() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="examCenter">Exam Center</Label>
-              <Select defaultValue={applicant?.examCenter as any} onValueChange={handleChange}>
+              <Select defaultValue={editingApplicant?.examCenter as any} onValueChange={handleChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select Exam Center" />
                 </SelectTrigger>
@@ -110,7 +110,7 @@ export default function ExamCenter() {
                 </SelectContent>
               </Select>
               <div className="mt-2 space-y-2">
-                {applicant?.options?.map((institution : any, index) => (
+                {editingApplicant?.options?.map((institution : any, index) => (
                   <div key={institution} className="flex items-center justify-between bg-gray-100 p-2 rounded">
                     <Badge variant="secondary" className="mr-2">{index + 1}</Badge>
                     <span className="flex-grow">
@@ -134,7 +134,7 @@ export default function ExamCenter() {
                         variant="ghost"
                         size="sm"
                         onClick={() => moveInstitution(index, 'down')}
-                        disabled={index === applicant?.options.length - 1}
+                        disabled={index === editingApplicant?.options.length - 1}
                       >
                         <ChevronDown className="h-4 w-4" />
                       </Button>
