@@ -226,7 +226,8 @@ export default function Approvals() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  {['name', 'applicationNumber', 'dob', 'email', 'examCenter'].map((key) => (
+                <TableHead>SL</TableHead>
+                  {['name', 'refNumber', 'dob', 'email', 'examCenter'].map((key) => (
                     <TableHead key={key}>
                       <div className="flex items-center justify-between">
                         {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
@@ -322,6 +323,7 @@ export default function Approvals() {
                         className="hover:bg-primary/5 transition-colors duration-300"
                         layout
                       >
+                        <TableCell className="font-medium">{index+1}</TableCell>
                         <TableCell className="font-medium">{applcnt?.name}</TableCell>
                         <TableCell>{applcnt?.refNumber}</TableCell>
                         <TableCell>{(applcnt?.dob as unknown as string).slice(0, 10)}</TableCell>

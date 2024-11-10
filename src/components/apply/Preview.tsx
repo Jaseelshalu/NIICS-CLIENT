@@ -72,6 +72,8 @@ export default function Component() {
       console.log(created);
       
       if (created) {
+        // clear local storage
+        localStorage.removeItem('newApplicant')
         navigate('/apply/success-message')
       }else{
         navigate('/apply/error-message')

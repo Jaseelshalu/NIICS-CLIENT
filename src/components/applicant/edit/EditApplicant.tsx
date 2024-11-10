@@ -58,7 +58,7 @@ export default function EditApplicant() {
   return (
     <div className="container mx-auto p-4">
       {/* <Navigate to="/apply/personal-details" /> */}
-      <h1 className="text-2xl font-bold mb-4 text-center">Admission Application</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">Edit Admission Application</h1>
 
       {/* {step === 1 && <PersonalInfo onNext={handleNext} />} */}
       {/* {step === 2 && <ContactDetails onNext={handleNext} onDoLater={handleDoLater} />} */}
