@@ -19,7 +19,7 @@ export default function UploadDocuments() {
   const [birthCertificate , setBirthCertificate] = useState<File | null>(null);
   const [showAadharUploadButton, setShowAadharUploadButton] = useState(false);
   const [showBirthCertificateUploadButton, setShowBirthCertificateUploadButton] = useState(false);
-  const {applicant , setApplicant} = useApplicantStore()
+  const {applicant , setEditingApplicant} = useApplicantStore()
   const [fileErrors, setFileErrors] = useState({
     aadharDocument: '',
     birthCertificate: ''
@@ -43,16 +43,16 @@ export default function UploadDocuments() {
       reader.onload = (e) => {
         if (e.target) {
           // setapplicant?(prev => ({ ...prev, [fieldName]: e.target!.result as string }))
-          // setApplicant({ ...applicant, [fieldName]: e.target!.result as string } as any)
+          // setEditingApplicant({ ...applicant, [fieldName]: e.target!.result as string } as any)
           if(fieldName === 'aadharDocument') {
             setAadharDocument(file)
             setShowAadharUploadButton(true)
-            setApplicant({ ...applicant, aadharDocument: "" as string } as Applicant)
+            setEditingApplicant({ ...applicant, aadharDocument: "" as string } as Applicant)
           }
           if(fieldName === 'birthCertificate') {
             setBirthCertificate(file)
             setShowBirthCertificateUploadButton(true)
-            setApplicant({ ...applicant, birthCertificate: "" as string } as Applicant)
+            setEditingApplicant({ ...applicant, birthCertificate: "" as string } as Applicant)
           }
           setFileErrors(prev => ({ ...prev, [fieldName]: '' }))
         }
@@ -63,17 +63,17 @@ export default function UploadDocuments() {
 
   const handleAadharUpload = async () => {
     if (aadharDocument) {
-      setApplicant({
+      setEditingApplicant({
         ...applicant,
         aadharDocument: "uploading" as string,
       } as Applicant);
       try {
         const url = await uploadImageToCloudinary(aadharDocument);
-        setApplicant({ ...applicant, aadharDocument: url } as Applicant);
+        setEditingApplicant({ ...applicant, aadharDocument: url } as Applicant);
       } catch (error) {
         console.error("Failed to upload image", error);
         setFileErrors(prev => ({ ...prev, aadharDocument: 'Failed to upload image' }))
-        setApplicant({
+        setEditingApplicant({
           ...applicant,
           aadharDocument: "" as string,
         } as Applicant);
@@ -84,17 +84,17 @@ export default function UploadDocuments() {
 
   const handleBirthCertificateUpload = async () => {
     if (birthCertificate) {
-      setApplicant({
+      setEditingApplicant({
         ...applicant,
         birthCertificate: "uploading" as string,
       } as Applicant);
       try {
         const url = await uploadImageToCloudinary(birthCertificate);
-        setApplicant({ ...applicant, birthCertificate: url } as Applicant);
+        setEditingApplicant({ ...applicant, birthCertificate: url } as Applicant);
       } catch (error) {
         console.error("Failed to upload image", error);
         setFileErrors(prev => ({ ...prev, birthCertificate: 'Failed to upload image' }))
-        setApplicant({
+        setEditingApplicant({
           ...applicant,
           birthCertificate: "" as string,
         } as Applicant);

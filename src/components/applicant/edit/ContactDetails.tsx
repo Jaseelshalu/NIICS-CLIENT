@@ -58,25 +58,25 @@ export default function ContactDetails() {
 
   const navigate = useNavigate()
 
-  const {applicant , setApplicant} = useApplicantStore()
+  const {editingApplicant , setEditingApplicant} = useApplicantStore()
 
   useEffect(() => {
-    if (applicant?.state) {
-      const selectedState = indianStates.find(s => s.name === applicant?.state)
+    if (editingApplicant?.state) {
+      const selectedState = indianStates.find(s => s.name === editingApplicant?.state)
       setAvailableDistricts(selectedState ? selectedState.districts : [])
-      // setApplicant({ ...applicant, district: '' } as Applicant)
+      // setEditingApplicant({ ...editingApplicant, district: '' } as Applicant)
     }
-  }, [applicant?.state])
+  }, [editingApplicant?.state])
 
   // Separate handlers for input and select changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setApplicant({ ...applicant, [e.target.name]: e.target.value } as Applicant)
-    console.log(applicant)
+    setEditingApplicant({ ...editingApplicant, [e.target.name]: e.target.value } as Applicant)
+    console.log(editingApplicant)
   }
 
   const handleSelectChange = (name: string) => (value: string) => {
-    setApplicant({ ...applicant, [name]: value } as Applicant)
-    console.log(applicant)
+    setEditingApplicant({ ...editingApplicant, [name]: value } as Applicant)
+    console.log(editingApplicant)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -85,8 +85,8 @@ export default function ContactDetails() {
   }
 
   const isFormValid = () => {
-    return applicant?.state && applicant?.district && applicant?.village &&
-      applicant?.postOffice && applicant?.pinCode && applicant?.whatsapp
+    return editingApplicant?.state && editingApplicant?.district && editingApplicant?.village &&
+      editingApplicant?.postOffice && editingApplicant?.pinCode && editingApplicant?.whatsapp
   }
 
   return (
@@ -100,7 +100,7 @@ export default function ContactDetails() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="state">State</Label>
-              <Select defaultValue={applicant?.state} onValueChange={handleSelectChange('state')}>
+              <Select defaultValue={editingApplicant?.state} onValueChange={handleSelectChange('state')}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select State" />
                 </SelectTrigger>
@@ -113,7 +113,7 @@ export default function ContactDetails() {
             </div>
             <div>
               <Label htmlFor="district">District</Label>
-              <Select defaultValue={applicant?.district} onValueChange={handleSelectChange('district')} disabled={!applicant?.state}>
+              <Select defaultValue={editingApplicant?.district} onValueChange={handleSelectChange('district')} disabled={!editingApplicant?.state}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select District" />
                 </SelectTrigger>
@@ -129,7 +129,7 @@ export default function ContactDetails() {
               <Input
                 id="village"
                 name="village"
-                value={applicant?.village}
+                value={editingApplicant?.village}
                 onChange={handleChange}
                 required
               />
@@ -139,7 +139,7 @@ export default function ContactDetails() {
               <Input
                 id="postOffice"
                 name="postOffice"
-                value={applicant?.postOffice}
+                value={editingApplicant?.postOffice}
                 onChange={handleChange}
                 required
               />
@@ -150,7 +150,7 @@ export default function ContactDetails() {
               <Input
                 id="policeStation"
                 name="policeStation"
-                value={applicant?.policeStation}
+                value={editingApplicant?.policeStation}
                 onChange={handleChange}
                 required
               />
@@ -160,7 +160,7 @@ export default function ContactDetails() {
               <Input
                 id="pinCode"
                 name="pinCode"
-                value={applicant?.pinCode}
+                value={editingApplicant?.pinCode}
                 onChange={handleChange}
                 required
                 maxLength={6}
@@ -173,7 +173,7 @@ export default function ContactDetails() {
               <Input
                 id="whatsapp"
                 name="whatsapp"
-                value={applicant?.whatsapp}
+                value={editingApplicant?.whatsapp}
                 onChange={handleChange}
                 required
                 maxLength={10}

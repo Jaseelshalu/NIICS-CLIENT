@@ -36,7 +36,7 @@ interface ApplicationDetails {
 const sampleData: ApplicationDetails = {
   name: "John Doe",
   dob: new Date("1990-01-01"),
-  imageURL: "https://example.com/applicant-image.jpg",
+  imageURL: "https://example.com/editingApplicant-image.jpg",
   fathersName: "James Doe",
   guardiansName: "Jane Doe",
   aadharNumber: "1234 5678 9012",
@@ -58,17 +58,17 @@ const sampleData: ApplicationDetails = {
 export default function EditPreview() {
   const [details, setDetails] = useState<ApplicationDetails>(sampleData);
   const {
-    applicant,
-    setApplicant,
+    editingApplicant,
+    setEditingApplicant,
     createApplicant
   } = useApplicantStore()
 
   const navigate = useNavigate()
 
   const handleClickSubmit = async () => {
-    // setApplicant(details)
+    // setEditingApplicant(details)
     // navigate('/apply/upload-documents')
-    const created = await createApplicant(applicant as any)
+    const created = await createApplicant(editingApplicant as any)
       console.log(created);
       
       if (created) {
@@ -85,30 +85,30 @@ export default function EditPreview() {
 
       <h1 className="text-2xl font-semibold text-center mb-6">Full Application Preview</h1>
       <div className="flex flex-col items-center mb-6">
-        <img src={applicant?.imageURL} alt="Applicant" className="w-32 h-32 rounded-full object-cover mb-4" />
-        <h2 className="text-xl font-semibold">{applicant?.name}</h2>
+        <img src={editingApplicant?.imageURL} alt="Applicant" className="w-32 h-32 rounded-full object-cover mb-4" />
+        <h2 className="text-xl font-semibold">{editingApplicant?.name}</h2>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
-          <DetailItem icon={<Calendar />} label="Date of Birth" value={applicant?.dob as any} />
-          <DetailItem icon={<Users />} label="Father's Name" value={applicant?.fathersName as string} />
-          <DetailItem icon={<Users />} label="Guardian's Name" value={applicant?.guardiansName as string} />
-          <DetailItem icon={<CreditCard />} label="Aadhar Number" value={applicant?.aadharNumber as string} />
-          <DetailItem icon={<MapPin />} label="State" value={applicant?.state as string} />
-          <DetailItem icon={<MapPin />} label="District" value={applicant?.district as string} />
-          <DetailItem icon={<MapPin />} label="Village" value={applicant?.village as string} />
-          <DetailItem icon={<MapPin />} label="Post Office" value={applicant?.postOffice as string} />
+          <DetailItem icon={<Calendar />} label="Date of Birth" value={editingApplicant?.dob as any} />
+          <DetailItem icon={<Users />} label="Father's Name" value={editingApplicant?.fathersName as string} />
+          <DetailItem icon={<Users />} label="Guardian's Name" value={editingApplicant?.guardiansName as string} />
+          <DetailItem icon={<CreditCard />} label="Aadhar Number" value={editingApplicant?.aadharNumber as string} />
+          <DetailItem icon={<MapPin />} label="State" value={editingApplicant?.state as string} />
+          <DetailItem icon={<MapPin />} label="District" value={editingApplicant?.district as string} />
+          <DetailItem icon={<MapPin />} label="Village" value={editingApplicant?.village as string} />
+          <DetailItem icon={<MapPin />} label="Post Office" value={editingApplicant?.postOffice as string} />
         </div>
         <div className="space-y-4">
-          <DetailItem icon={<MapPin />} label="Police Station" value={applicant?.policeStation as string} />
-          <DetailItem icon={<MapPin />} label="Pin Code" value={applicant?.pinCode as string} />
-          <DetailItem icon={<Phone />} label="WhatsApp" value={applicant?.whatsapp as string} />
-          <DetailItem icon={<Phone />} label="Alternative Number" value={applicant?.alternativeNumber as string} />
-          <DetailItem icon={<Mail />} label="Email" value={applicant?.email as string} />
-          <DetailItem icon={<Building />} label="Exam Center" value={applicant?.examCenter as any} />
+          <DetailItem icon={<MapPin />} label="Police Station" value={editingApplicant?.policeStation as string} />
+          <DetailItem icon={<MapPin />} label="Pin Code" value={editingApplicant?.pinCode as string} />
+          <DetailItem icon={<Phone />} label="WhatsApp" value={editingApplicant?.whatsapp as string} />
+          <DetailItem icon={<Phone />} label="Alternative Number" value={editingApplicant?.alternativeNumber as string} />
+          <DetailItem icon={<Mail />} label="Email" value={editingApplicant?.email as string} />
+          <DetailItem icon={<Building />} label="Exam Center" value={editingApplicant?.examCenter as any} />
           <div className="space-y-2">
             <h3 className="font-semibold flex items-center"><Building className="mr-2" /> Institution Options</h3>
-            {applicant?.options.map((option, index) => (
+            {editingApplicant?.options.map((option, index) => (
               <div key={index} className="ml-6">{option.name}</div>
             ))}
           </div>
@@ -120,11 +120,11 @@ export default function EditPreview() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <p className="mb-2">Aadhar Document:</p>
-            <img src={applicant?.aadharDocument} alt="Aadhar Document" className="w-full h-auto object-cover rounded-lg" />
+            <img src={editingApplicant?.aadharDocument} alt="Aadhar Document" className="w-full h-auto object-cover rounded-lg" />
           </div>
           <div>
             <p className="mb-2">Birth Certificate:</p>
-            <img src={applicant?.birthCertificate} alt="Birth Certificate" className="w-full h-auto object-cover rounded-lg" />
+            <img src={editingApplicant?.birthCertificate} alt="Birth Certificate" className="w-full h-auto object-cover rounded-lg" />
           </div>
         </div>
       </div>

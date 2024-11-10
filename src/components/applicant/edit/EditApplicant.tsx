@@ -30,20 +30,20 @@ export default function EditApplicant() {
   }
 
   useEffect(() => {
-    // take the applicant data from local storage and set it to the store
-    const applicant = JSON.parse(localStorage.getItem("applicant") as string);
-    if (!applicant) {
-      // navigate to the check status page if there is no applicant data
+    // take the editingApplicant data from local storage and set it to the store
+    const editingApplicant = JSON.parse(localStorage.getItem("applicant") as string);
+    if (!editingApplicant) {
+      // navigate to the check status page if there is no editingApplicant data
       navigate("/check-status");
     }
-    // set the applicant data to the store
-    // make the applicant.examCenter.name to applicant.examCenter
-    applicant.examCenter = applicant.examCenter.name
-    // make the applicant.options the array of institution model to array of institution._id
-    applicant.options = applicant.options.map((option: any) =>
+    // set the editingApplicant data to the store
+    // make the editingApplicant.examCenter.name to editingApplicant.examCenter
+    editingApplicant.examCenter = editingApplicant.examCenter._id
+    // make the editingApplicant.options the array of institution model to array of institution._id
+    editingApplicant.options = editingApplicant.options.map((option: any) =>
         option._id
         );
-    setEditingApplicant(applicant)
+    setEditingApplicant(editingApplicant)
   }, [])
 
   const handleDoLater = () => {
