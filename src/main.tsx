@@ -1,40 +1,39 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { Toaster } from 'react-hot-toast';
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
-import { Toaster } from 'react-hot-toast'
+import App from './App.tsx';
+import Admin from './components/Admin.tsx';
+import { ContactDetails } from './components/ContactDetails.tsx';
 import Error from './components/Error.tsx';
-import LoginPage from './routes/Login.tsx';
+import { ExamCenter } from './components/ExamCenter.tsx';
+import { PersonalInfo } from './components/PersonalInfo.tsx';
+import { UploadDocuments } from './components/UploadDocuments.tsx';
+import ViewDetailedApplicant from './components/applicant/ViewDetailedApplicant.tsx';
+import { default as ErrorMessage, default as ErrorMessageEdit } from './components/applicant/edit/ApplicationError.tsx';
+import SuccessMessage from './components/applicant/edit/ApplicationSuccess.tsx';
+import ContactDetailsEdit from './components/applicant/edit/ContactDetails.tsx';
+import EditApplicant from './components/applicant/edit/EditApplicant.tsx';
+import ExamCenterEdit from './components/applicant/edit/ExamCenter.tsx';
+import PersonalInfoEdit from './components/applicant/edit/PersonalInfo.tsx';
+import EditPreview from './components/applicant/edit/Preview.tsx';
+import UploadDocumentsEdit from './components/applicant/edit/UploadDocuments.tsx';
+import PreviewApplicationDetails from './components/apply/Preview.tsx';
+import './index.css';
+import Apply from './routes/Apply.tsx';
+import Approval from './routes/Approval.tsx';
 import CandidateLogin from './routes/CandidateLogin.tsx';
 import CandidateProfile from './routes/CandidateProfile.tsx';
-import Apply from './routes/Apply.tsx';
-import { PersonalInfo } from './components/PersonalInfo.tsx';
-import { ContactDetails } from './components/ContactDetails.tsx';
-import { ExamCenter } from './components/ExamCenter.tsx';
-import { UploadDocuments } from './components/UploadDocuments.tsx';
-import  PersonalInfoEdit  from './components/applicant/edit/PersonalInfo.tsx';
-import  ContactDetailsEdit  from './components/applicant/edit/ContactDetails.tsx';
-import  ExamCenterEdit  from './components/applicant/edit/ExamCenter.tsx';
-import  UploadDocumentsEdit  from './components/applicant/edit/UploadDocuments.tsx';
-import AdminSettings from './routes/Settings.tsx';
-import ExamCenters from './routes/ExamCenters.tsx';
-import MarksEntryPage from './routes/MarkEntry.tsx';
-import Admin from './components/Admin.tsx';
-import MarkColumns from './routes/MarkColumns.tsx';
-import ExamCenterDashboard from './routes/ExamCenterDashboard.tsx';
-import PreviewApplicationDetails from './components/apply/Preview.tsx';
 import CredentialManagementPage from './routes/Credentials.tsx';
-import  SuccessMessage  from './components/applicant/edit/ApplicationSuccess.tsx';
-import ErrorMessage from './components/applicant/edit/ApplicationError.tsx';
-import Approval from './routes/Approval.tsx';
+import ApplicationVerificationPage from './routes/ExamCenterDashboard.tsx';
+import ExamCenters from './routes/ExamCenters.tsx';
 import Institutions from './routes/Institutions.tsx';
-import ExamCenterProtected from './routes/protected/ExamCenter.tsx';
+import LoginPage from './routes/Login.tsx';
+import MarkColumns from './routes/MarkColumns.tsx';
+import MarksEntryPage from './routes/MarkEntry.tsx';
+import AdminSettings from './routes/Settings.tsx';
 import AdminProtected from './routes/protected/Admin.tsx';
-import ViewDetailedApplicant from './components/applicant/ViewDetailedApplicant.tsx';
-import EditApplicant from './components/applicant/edit/EditApplicant.tsx';
-import EditPreview from './components/applicant/edit/Preview.tsx';
-import ErrorMessageEdit from './components/applicant/edit/ApplicationError.tsx';
+import ExamCenterProtected from './routes/protected/ExamCenter.tsx';
 import PreSetting from './lib/PreSetting.tsx';
 
 const router = createBrowserRouter([
@@ -156,8 +155,13 @@ const router = createBrowserRouter([
         errorElement: <Error />,
         children: [
           {
-            path: "dashboard",
-            element: <ExamCenterDashboard />,
+            path: "verification",
+            element: <ApplicationVerificationPage />,
+            errorElement: <Error />,
+          },
+          {
+            path: "marks-entry",
+            element: <MarksEntryPage />,
             errorElement: <Error />,
           },
         ]

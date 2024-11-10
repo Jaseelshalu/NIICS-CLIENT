@@ -208,7 +208,7 @@ export default function Approvals() {
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
             <div className="relative w-full sm:w-64">
               <Input
-                placeholder="Search applicants..."
+                placeholder="Search Applicants..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 pr-4 py-2 w-full bg-background/60 backdrop-blur-sm border-primary/20 focus:border-primary transition-all duration-300"
