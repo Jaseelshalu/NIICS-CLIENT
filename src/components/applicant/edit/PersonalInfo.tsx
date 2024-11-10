@@ -12,11 +12,13 @@ import { Navigate, useNavigate } from "react-router-dom";
 import useApplicantStore from "@/store/applicantStore";
 import { Applicant } from "@/types/types";
 import { uploadImageToCloudinary } from "@/lib/utils";
+import useSettingsStore from "@/store/settingsStore";
 
 export default function PersonalInfo() {
   const [image, setImage] = useState<File | null>(null);
 
   const { editingApplicant, setEditingApplicant } = useApplicantStore();
+  const { settings} = useSettingsStore();
   const [imageError, setImageError] = useState("");
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -215,17 +217,21 @@ export default function PersonalInfo() {
                 required
               />
             </div>
+             {/* note */}
+             <p className="text-sm text-gray-500">
+              Please enter the date of birth between {settings?.applicantDOBStarting ? new Date(settings.applicantDOBStarting).toISOString().split('T')[0] : undefined} and {settings?.applicantDOBEnding ? new Date(settings.applicantDOBEnding).toISOString().split('T')[0] : undefined}
+            </p>
             <div>
               <Label htmlFor="dob">Date of Birth</Label>
               <Input
                 id="dob"
                 name="dob"
                 type="date"
-                // change Date to string
-                // defaultValue={editingApplicant?.dob.toString()}
                 value={editingApplicant?.dob.toString().slice(0, 10)}
                 onChange={handleChange}
                 required
+                min={settings?.applicantDOBStarting ? new Date(settings.applicantDOBStarting).toISOString().split('T')[0] : undefined}
+  max={settings?.applicantDOBEnding ? new Date(settings.applicantDOBEnding).toISOString().split('T')[0] : undefined}
               />
             </div>
             <div>
