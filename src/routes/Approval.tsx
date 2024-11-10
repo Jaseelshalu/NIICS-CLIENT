@@ -61,6 +61,8 @@ export default function Approvals() {
     applicants,
     applicant,
     setApplicant,
+    editingApplicant,
+    setEditingApplicant,
     getApplicants,
     deleteApplicant,
     isCreateOpen,
@@ -386,8 +388,15 @@ export default function Approvals() {
                               variant="outline"
                               size="sm"
                               onClick={() => {
+                                // set applicant to local storage
+
                                 setApplicant(applcnt)
-                                redirect('/edit-application/personal-details')
+                                setEditingApplicant(applcnt)
+                                localStorage.setItem('applicant', JSON.stringify(applcnt))
+                                localStorage.setItem('editingApplicant', JSON.stringify(applcnt))
+                                setTimeout(() => {
+                                  redirect('/edit-application/personal-details')
+                                }, 100)
                               }}
                               className="hover:bg-primary/10 transition-colors duration-300"
                             >
