@@ -72,6 +72,8 @@ export default function Component() {
       console.log(created);
       
       if (created) {
+        // clear local storage
+        localStorage.removeItem('newApplicant')
         navigate('/apply/success-message')
       }else{
         navigate('/apply/error-message')
@@ -108,7 +110,7 @@ export default function Component() {
           <DetailItem icon={<Building />} label="Exam Center" value={newApplicant?.examCenter as any} />
           <div className="space-y-2">
             <h3 className="font-semibold flex items-center"><Building className="mr-2" /> Institution Options</h3>
-            {newApplicant?.options.map((option, index) => (
+            {newApplicant?.options?.map((option, index) => (
               <div key={index} className="ml-6">{option.name}</div>
             ))}
           </div>

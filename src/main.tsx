@@ -34,6 +34,7 @@ import MarksEntryPage from './routes/MarkEntry.tsx';
 import AdminSettings from './routes/Settings.tsx';
 import AdminProtected from './routes/protected/Admin.tsx';
 import ExamCenterProtected from './routes/protected/ExamCenter.tsx';
+import PreSetting from './lib/PreSetting.tsx';
 
 const router = createBrowserRouter([
   {
@@ -273,7 +274,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {/* <InitializeUser /> */}
+    <PreSetting />
     {/* <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme"> */}
     <RouterProvider router={router} />
     {/* </ThemeProvider> */}

@@ -107,7 +107,11 @@ export default function ViewDetailedApplicant() {
       <div className="flex justify-center mt-6">
         {
             !applicant?.accepted && (
-                <Button variant="default">
+                <Button onClick={
+                  () => {
+                    navigate('/edit-application/personal-details')
+                  }
+                }  variant="default">
                 <Edit className="mr-2 h-4 w-4" /> Edit Application
                 </Button>
             )
