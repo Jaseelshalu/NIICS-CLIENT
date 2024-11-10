@@ -14,12 +14,12 @@ import { uploadImageToCloudinary } from "@/lib/utils"
 
 
 
-export default function UploadDocuments() {
+export default function UploadDocumentsEdit() {
   const [aadharDocument, setAadharDocument] = useState<File | null>(null);
   const [birthCertificate , setBirthCertificate] = useState<File | null>(null);
   const [showAadharUploadButton, setShowAadharUploadButton] = useState(false);
   const [showBirthCertificateUploadButton, setShowBirthCertificateUploadButton] = useState(false);
-  const {applicant , setEditingApplicant} = useApplicantStore()
+  const {editingApplicant , setEditingApplicant} = useApplicantStore()
   const [fileErrors, setFileErrors] = useState({
     aadharDocument: '',
     birthCertificate: ''
@@ -42,17 +42,17 @@ export default function UploadDocuments() {
       const reader = new FileReader()
       reader.onload = (e) => {
         if (e.target) {
-          // setapplicant?(prev => ({ ...prev, [fieldName]: e.target!.result as string }))
-          // setEditingApplicant({ ...applicant, [fieldName]: e.target!.result as string } as any)
+          // seteditingApplicant?(prev => ({ ...prev, [fieldName]: e.target!.result as string }))
+          // setEditingApplicant({ ...editingApplicant, [fieldName]: e.target!.result as string } as any)
           if(fieldName === 'aadharDocument') {
             setAadharDocument(file)
             setShowAadharUploadButton(true)
-            setEditingApplicant({ ...applicant, aadharDocument: "" as string } as Applicant)
+            setEditingApplicant({ ...editingApplicant, aadharDocument: "" as string } as Applicant)
           }
           if(fieldName === 'birthCertificate') {
             setBirthCertificate(file)
             setShowBirthCertificateUploadButton(true)
-            setEditingApplicant({ ...applicant, birthCertificate: "" as string } as Applicant)
+            setEditingApplicant({ ...editingApplicant, birthCertificate: "" as string } as Applicant)
           }
           setFileErrors(prev => ({ ...prev, [fieldName]: '' }))
         }
@@ -64,17 +64,17 @@ export default function UploadDocuments() {
   const handleAadharUpload = async () => {
     if (aadharDocument) {
       setEditingApplicant({
-        ...applicant,
+        ...editingApplicant,
         aadharDocument: "uploading" as string,
       } as Applicant);
       try {
         const url = await uploadImageToCloudinary(aadharDocument);
-        setEditingApplicant({ ...applicant, aadharDocument: url } as Applicant);
+        setEditingApplicant({ ...editingApplicant, aadharDocument: url } as Applicant);
       } catch (error) {
         console.error("Failed to upload image", error);
         setFileErrors(prev => ({ ...prev, aadharDocument: 'Failed to upload image' }))
         setEditingApplicant({
-          ...applicant,
+          ...editingApplicant,
           aadharDocument: "" as string,
         } as Applicant);
       }
@@ -85,17 +85,17 @@ export default function UploadDocuments() {
   const handleBirthCertificateUpload = async () => {
     if (birthCertificate) {
       setEditingApplicant({
-        ...applicant,
+        ...editingApplicant,
         birthCertificate: "uploading" as string,
       } as Applicant);
       try {
         const url = await uploadImageToCloudinary(birthCertificate);
-        setEditingApplicant({ ...applicant, birthCertificate: url } as Applicant);
+        setEditingApplicant({ ...editingApplicant, birthCertificate: url } as Applicant);
       } catch (error) {
         console.error("Failed to upload image", error);
         setFileErrors(prev => ({ ...prev, birthCertificate: 'Failed to upload image' }))
         setEditingApplicant({
-          ...applicant,
+          ...editingApplicant,
           birthCertificate: "" as string,
         } as Applicant);
         setShowBirthCertificateUploadButton(false)
@@ -106,11 +106,11 @@ export default function UploadDocuments() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     navigate('/edit-application/preview')
-    // onNext({ examCenter: applicant? })
+    // onNext({ examCenter: editingApplicant? })
   }
 
   const isFormValid = () => {
-    return applicant?.aadharDocument && applicant?.birthCertificate
+    return editingApplicant?.aadharDocument && editingApplicant?.birthCertificate
   }
 
   return (
@@ -146,20 +146,20 @@ export default function UploadDocuments() {
                   </p>
                 )}
                 <p className="text-sm text-gray-500 mt-1">Upload a JPG or JPEG image, max 1MB</p>
-                {(applicant?.aadharDocument || aadharDocument) && (
+                {(editingApplicant?.aadharDocument || aadharDocument) && (
                   <div className="mt-2 relative">
                     <img src={aadharDocument
                             ? URL.createObjectURL(aadharDocument)
-                            : applicant?.aadharDocument
-                            ? applicant.aadharDocument
+                            : editingApplicant?.aadharDocument
+                            ? editingApplicant.aadharDocument
                             : ""} alt="Aadhar Document" className="max-w-[100px] h-auto" />
                      <div className="absolute top-[40%] left-4 flex items-center justify-center">
                         <span className="text-white text-sm bg-black bg-opacity-50 rounded-lg p-1">
-                          {!applicant?.aadharDocument
+                          {!editingApplicant?.aadharDocument
                             ? "Not Uploaded"
-                            : applicant?.aadharDocument === "uploading"
+                            : editingApplicant?.aadharDocument === "uploading"
                             ? "Uploading..."
-                            : applicant?.aadharDocument === ""
+                            : editingApplicant?.aadharDocument === ""
                             ? "Can't Upload"
                             : "Uploaded"}
                         </span>
@@ -170,7 +170,7 @@ export default function UploadDocuments() {
                         type="button"
                         onClick={handleAadharUpload}
                         className="mt-2"
-                        disabled={applicant?.imageURL === "uploading"}
+                        disabled={editingApplicant?.imageURL === "uploading"}
                       >
                         Upload Image
                       </Button>
@@ -193,22 +193,22 @@ export default function UploadDocuments() {
                   </p>
                 )}
                 <p className="text-sm text-gray-500 mt-1">Upload a JPG or JPEG image, max 1MB</p>
-                {(applicant?.birthCertificate || birthCertificate) && (
+                {(editingApplicant?.birthCertificate || birthCertificate) && (
                   <div className="mt-2 relative mb-2">
                     <img src={
                       birthCertificate
                             ? URL.createObjectURL(birthCertificate)
-                            : applicant?.birthCertificate
-                            ? applicant.birthCertificate
+                            : editingApplicant?.birthCertificate
+                            ? editingApplicant.birthCertificate
                             : ""
                     } alt="Birth Certificate" className="max-w-[100px] h-auto" />
                      <div className="absolute top-[40%] left-4 flex items-center justify-center">
                         <span className="text-white text-sm bg-black bg-opacity-50 rounded-lg p-1">
-                          {!applicant?.birthCertificate
+                          {!editingApplicant?.birthCertificate
                             ? "Not Uploaded"
-                            : applicant?.birthCertificate === "uploading"
+                            : editingApplicant?.birthCertificate === "uploading"
                             ? "Uploading..."
-                            : applicant?.birthCertificate === ""
+                            : editingApplicant?.birthCertificate === ""
                             ? "Can't Upload"
                             : "Uploaded"}
                         </span>
@@ -218,7 +218,7 @@ export default function UploadDocuments() {
                         type="button"
                         onClick={handleBirthCertificateUpload}
                         className="mt-2"
-                        disabled={applicant?.imageURL === "uploading"}
+                        disabled={editingApplicant?.imageURL === "uploading"}
                       >
                         Upload Image
                       </Button>

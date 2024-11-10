@@ -6,6 +6,7 @@ import { User, Calendar, Image, Users, CreditCard, MapPin, Phone, Mail, Building
 import useApplicantStore from '@/store/applicantStore';
 import { useNavigate } from 'react-router-dom';
 import { Separator } from '../../ui/separator';
+import { Applicant } from '@/types/types';
 
 interface Institution {
   name: string;
@@ -60,7 +61,7 @@ export default function EditPreview() {
   const {
     editingApplicant,
     setEditingApplicant,
-    createApplicant
+    updateApplicant
   } = useApplicantStore()
 
   const navigate = useNavigate()
@@ -68,10 +69,10 @@ export default function EditPreview() {
   const handleClickSubmit = async () => {
     // setEditingApplicant(details)
     // navigate('/apply/upload-documents')
-    const created = await createApplicant(editingApplicant as any)
-      console.log(created);
+    const edited = await updateApplicant(editingApplicant as Applicant);
+      console.log(edited);
       
-      if (created) {
+      if (edited) {
         navigate('/edit-application/success-message')
       }else{
         navigate('/edit-application/error-message')
@@ -90,7 +91,7 @@ export default function EditPreview() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
-          <DetailItem icon={<Calendar />} label="Date of Birth" value={editingApplicant?.dob as any} />
+          <DetailItem icon={<Calendar />} label="Date of Birth" value={editingApplicant?.dob?.toString().slice(0,10) as any} />
           <DetailItem icon={<Users />} label="Father's Name" value={editingApplicant?.fathersName as string} />
           <DetailItem icon={<Users />} label="Guardian's Name" value={editingApplicant?.guardiansName as string} />
           <DetailItem icon={<CreditCard />} label="Aadhar Number" value={editingApplicant?.aadharNumber as string} />
@@ -136,7 +137,7 @@ export default function EditPreview() {
           }
         } variant="outline" className="flex items-center">
           <Edit className="w-4 h-4 mr-2" />
-          Edit
+          Edit Again
         </Button>
         <Button onClick={handleClickSubmit} className="flex items-center">
           <Send className="w-4 h-4 mr-2" />

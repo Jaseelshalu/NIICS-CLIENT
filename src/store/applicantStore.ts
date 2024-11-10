@@ -16,7 +16,7 @@ interface ApplicantStoreState {
   createApplicant: (applicant: Partial<Applicant>) => Promise<Boolean>;
   getApplicants: () => void;
   getApplicant: (_id: string) => Promise<Boolean>;
-  updateApplicant: (applicant: Partial<Applicant>) => void;
+  updateApplicant: (applicant: Partial<Applicant>) => Promise<Boolean>;
   deleteApplicant: (_id: string) => void;
   isNull: boolean;
   setIsNull: (isNull: boolean) => void;
@@ -47,6 +47,8 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   applicants: [],
   editingApplicant: null,
   setEditingApplicant: (applicant) => {
+    // set to local storage
+    localStorage.setItem("editingApplicant", JSON.stringify(applicant));
     set({ editingApplicant: applicant });
   },
   newApplicant: null,
@@ -308,6 +310,7 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   },
   updateApplicant: async (applicant) => {
     const loadingToast = toast.loading("Updating applicant...");
+    let updated = false;
     try {
       await axios
         .put(
@@ -326,16 +329,22 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
               id: loadingToast,
               duration: 3000,
             });
+            set({ applicant: response.data });
+            // set to local storage
+            localStorage.setItem("applicant", JSON.stringify(response.data));
+            updated = true;
           } else if (response.status === 200) {
             toast.error(response?.data?.message || `Applicant not found`, {
               id: loadingToast,
               duration: 3000,
             });
+            updated = false;
           } else {
             toast.error(`Failed to update applicant`, {
               id: loadingToast,
               duration: 3000,
             });
+            updated = false;
           }
         })
         .catch((error) => {
@@ -343,13 +352,16 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
             id: loadingToast,
             duration: 3000,
           });
+          updated = false;
         });
     } catch (error) {
       toast.error(`Failed to update applicant`, {
         id: loadingToast,
         duration: 3000,
       });
+      updated = false;
     }
+    return updated;
   },
   deleteApplicant: async (_id) => {
     const loadingToast = toast.loading("Deleting applicant...");

@@ -34,6 +34,7 @@ import AdminProtected from './routes/protected/Admin.tsx';
 import ViewDetailedApplicant from './components/applicant/ViewDetailedApplicant.tsx';
 import EditApplicant from './components/applicant/edit/EditApplicant.tsx';
 import EditPreview from './components/applicant/edit/Preview.tsx';
+import ErrorMessageEdit from './components/applicant/edit/ApplicationError.tsx';
 
 const router = createBrowserRouter([
   {
@@ -140,7 +141,7 @@ const router = createBrowserRouter([
       },
       {
         path: "error-message",
-        element: <ErrorMessage />,
+        element: <ErrorMessageEdit />,
         errorElement: <Error />,
       },
     ]

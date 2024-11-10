@@ -146,7 +146,7 @@ export default function CandidateProfile() {
             </div>
           </CardContent>
           <CardFooter className="bg-background/50  flex flex-wrap gap-2 justify-center sm:justify-start">
-            {!applicant?.accepted && (
+            {!applicant?.verified && (
               <Button onClick={
                 () => navigate('/edit-application/personal-details/')
               } variant="default">

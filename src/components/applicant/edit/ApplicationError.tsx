@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Navigate } from 'react-router-dom'
 
-export default function ErrorMessage() {
+export default function ErrorMessageEdit() {
   const [showMessage, setShowMessage] = useState(false)
   const [afterShow, setAfterShow] = useState(false)
 
@@ -41,7 +41,7 @@ export default function ErrorMessage() {
   return (
     <>
       {afterShow ? (
-        <Navigate to="/apply/personal-details" />
+        <Navigate to="/edit-application/personal-details" />
       ) : (
         <div className="flex flex-col items-center justify-center min-h-screen ">
           <motion.svg
