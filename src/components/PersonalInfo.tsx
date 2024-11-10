@@ -217,18 +217,23 @@ export function PersonalInfo() {
                 required
               />
             </div>
+            {/* note */}
+            <p className="text-sm text-gray-500">
+              Please enter the date of birth between {settings?.applicantDOBStarting ? new Date(settings.applicantDOBStarting).toISOString().split('T')[0] : undefined} and {settings?.applicantDOBEnding ? new Date(settings.applicantDOBEnding).toISOString().split('T')[0] : undefined}
+            </p>
             <div>
               <Label htmlFor="dob">Date of Birth</Label>
               <Input
-                id="dob"
-                name="dob"
-                type="date"
-                value={newApplicant?.dob as unknown as string}
-                onChange={handleChange}
-                required
-                min={settings?.applicantDOBStarting}
-                max={settings?.applicantDOBEnding}
-              />
+  id="dob"
+  name="dob"
+  type="date"
+  value={newApplicant?.dob as unknown as string}
+  onChange={handleChange}
+  required
+  min={settings?.applicantDOBStarting ? new Date(settings.applicantDOBStarting).toISOString().split('T')[0] : undefined}
+  max={settings?.applicantDOBEnding ? new Date(settings.applicantDOBEnding).toISOString().split('T')[0] : undefined}
+/>
+
             </div>
             <div>
               <Label htmlFor="guardiansName">Guardian Name</Label>
