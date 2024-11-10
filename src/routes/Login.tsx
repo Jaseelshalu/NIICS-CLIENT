@@ -14,6 +14,7 @@ import { AlertCircle } from "lucide-react";
 import useCredentialStore from "@/store/credentialStore";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { Role } from "@/types/types";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -43,9 +44,18 @@ export default function LoginPage() {
 
   const { authCredential, errorMessage } = useCredentialStore();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    authCredential(username, password);
+   const credential = await authCredential(username, password);
+    if (!credential) {
+      return;
+    }else{
+      if(credential.role === Role.ADMIN){
+        navigate("/admin");
+      }else if(credential.role === Role.EXAM_CENTER){
+        navigate("/exam-center");
+      }
+    }
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">

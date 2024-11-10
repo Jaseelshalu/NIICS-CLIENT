@@ -8,7 +8,7 @@ interface CredentialStoreState {
   setCredentials: (credentials: [Credential]) => void;
   credential: Credential | null;
   setCredential: (credential: Credential) => void;
-  authCredential: (username: string, password: string) => void;
+  authCredential: (username: string, password: string) => Promise<Credential|null>;
   createCredential: (credential: Omit<Credential, "_id">) => void;
   getCredentials: () => void;
   getCredential: (_id: string) => void;
@@ -43,6 +43,7 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
   setCredential: (credential) => set({ credential }),
   authCredential: async (userName, password) => {
     const loadingToast = toast.loading("Logging in...");
+    let data = null;
     try {
       await axios
         .post(
@@ -65,16 +66,19 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
               id: loadingToast,
               duration: 3000,
             });
+            data = response.data;
           } else if (response.status === 200) {
             toast.error(response?.data?.message || `Failed to login`, {
               id: loadingToast,
               duration: 3000,
             });
+            data = null;
           } else {
             toast.error(`Failed to login`, {
               id: loadingToast,
               duration: 3000,
             });
+            data = null;
           }
         })
         .catch((error) => {
@@ -82,13 +86,16 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
             id: loadingToast,
             duration: 3000,
           });
+          data = null;
         });
     } catch (error) {
       toast.error(`Failed to login`, {
         id: loadingToast,
         duration: 3000,
       });
+      data = null;
     }
+    return data;
   },
   createCredential: async (credential) => {
     const loadingToast = toast.loading("Creating credential...");
