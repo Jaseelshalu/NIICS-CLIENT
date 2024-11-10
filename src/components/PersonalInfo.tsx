@@ -12,11 +12,13 @@ import { Navigate, useNavigate } from "react-router-dom";
 import useApplicantStore from "@/store/applicantStore";
 import { Applicant } from "@/types/types";
 import { uploadImageToCloudinary } from "@/lib/utils";
+import useSettingsStore from "@/store/settingsStore";
 
 export function PersonalInfo() {
   const [image, setImage] = useState<File | null>(null);
 
   const { newApplicant, setNewApplicant } = useApplicantStore();
+  const {settings} = useSettingsStore();
   const [imageError, setImageError] = useState("");
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -224,6 +226,8 @@ export function PersonalInfo() {
                 value={newApplicant?.dob as unknown as string}
                 onChange={handleChange}
                 required
+                min={settings?.applicantDOBStarting}
+                max={settings?.applicantDOBEnding}
               />
             </div>
             <div>

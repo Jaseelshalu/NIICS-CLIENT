@@ -35,6 +35,7 @@ import ViewDetailedApplicant from './components/applicant/ViewDetailedApplicant.
 import EditApplicant from './components/applicant/edit/EditApplicant.tsx';
 import EditPreview from './components/applicant/edit/Preview.tsx';
 import ErrorMessageEdit from './components/applicant/edit/ApplicationError.tsx';
+import PreSetting from './lib/PreSetting.tsx';
 
 const router = createBrowserRouter([
   {
@@ -269,7 +270,7 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {/* <InitializeUser /> */}
+    <PreSetting />
     {/* <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme"> */}
     <RouterProvider router={router} />
     {/* </ThemeProvider> */}
