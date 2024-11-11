@@ -306,7 +306,7 @@ export default function AdminSettings() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full mt-6">
+              <Button type="submit" className="w-full my-6">
                 Save Changes
               </Button>
             </form>

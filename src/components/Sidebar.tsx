@@ -7,7 +7,7 @@ import { Building2, Settings, LayoutDashboard, CheckCircle, FileText, Menu, Buil
 import { Link } from 'react-router-dom'
 
 const sidebarItems = [
-  { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Institutions', href: '/admin/institutions', icon: Building2 },
   { name: 'Exam Centres', href: '/admin/exam-centers', icon: BuildingIcon },
   { name: 'Approval', href: '/admin/approval', icon: CheckCircle },
@@ -35,7 +35,7 @@ export function Sidebar() {
         </SheetContent> */}
       </Sheet>
 
-      <div className="hidden md:flex md:w-44  lg:w-48 xl:w-56 h-full">
+      <div className="hidden md:flex md:w-44  lg:w-48 xl:w-52 h-full">
         <SidebarContent pathname={pathname} setOpen={setOpen} />
       </div>
     </>

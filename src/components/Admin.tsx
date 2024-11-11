@@ -4,7 +4,7 @@ import { Sidebar } from './Sidebar'
 
 const Admin = () => {
   return (
-    <div className='w-screen h-screen flex'>
+    <div  className='grid h-screen w-screen lg:grid-cols-[200px_1fr] xl:grid-cols-[200px_1fr]'>
         <Sidebar/>
         <Outlet />
     </div>

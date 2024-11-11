@@ -193,7 +193,7 @@ export default function Institutions() {
           </DialogContent>
         </Dialog>
       )}
-      <div className="container mx-auto p-4 space-y-8">
+      <div className="container mx-auto p-4 space-y-8 flex flex-col overflow-hidden h-screen">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <h1 className="text-3xl font-bold text-primary">Institutions List</h1>
           <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
