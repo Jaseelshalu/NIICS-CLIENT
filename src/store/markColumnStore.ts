@@ -2,6 +2,7 @@ import { MarkColumn } from "@/types/types";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import axios from "axios";
+import api from "@/config/axios";
 
 interface MarkColumnStoreState {
   markColumns: MarkColumn[];
@@ -43,8 +44,8 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
   createMarkColumn: async (markColumn) => {
     const loadingToast = toast.loading("Creating markColumn...");
     try {
-      await axios
-        .post(`https://niics-server.vercel.app/api/markColumn`, markColumn, {
+      await api
+        .post(`/api/markColumn`, markColumn, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -98,8 +99,8 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
     set({ isNull: false });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/markColumn`)
+      await api
+        .get(`/api/markColumn`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -133,8 +134,8 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
     set({ markColumn: null });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/markColumn/${_id}`)
+      await api
+        .get(`/api/markColumn/${_id}`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -163,9 +164,9 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
   updateMarkColumn: async (markColumn) => {
     const loadingToast = toast.loading("Updating markColumn...");
     try {
-      await axios
+      await api
         .put(
-          `https://niics-server.vercel.app/api/markColumn/${markColumn._id}`,
+          `/api/markColumn/${markColumn._id}`,
           markColumn,
           {
             headers: {
@@ -219,8 +220,8 @@ const useMarkColumnStore = create<MarkColumnStoreState>((set) => ({
   deleteMarkColumn: async (_id) => {
     const loadingToast = toast.loading("Deleting markColumn...");
     try {
-      await axios
-        .delete(`https://niics-server.vercel.app/api/markColumn/${_id}`, {
+      await api
+        .delete(`/api/markColumn/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

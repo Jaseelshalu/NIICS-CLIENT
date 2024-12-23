@@ -2,6 +2,7 @@ import { Settings } from "@/types/types";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 import axios from "axios";
+import api from "@/config/axios";
 
 interface SettingsStoreState {
   settings: Settings | null;
@@ -25,8 +26,8 @@ const useSettingsStore = create<SettingsStoreState>((set) => ({
     set({ settings: null });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/settings/`, {})
+      await api
+        .get(`/api/settings/`, {})
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -55,8 +56,8 @@ const useSettingsStore = create<SettingsStoreState>((set) => ({
   updateSettings: async (settings) => {
     const loadingToast = toast.loading("Updating settings...");
     try {
-      await axios
-        .put(`https://niics-server.vercel.app/api/settings/`, settings, {
+      await api
+        .put(`/api/settings/`, settings, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

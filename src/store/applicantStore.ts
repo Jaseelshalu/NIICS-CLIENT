@@ -1,7 +1,7 @@
 import { Applicant } from "@/types/types";
 import toast from "react-hot-toast";
 import { create } from "zustand";
-import axios from "axios";
+import api from "@/config/axios";
 
 interface ApplicantStoreState {
   applicants: Applicant[];
@@ -71,8 +71,8 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     const loadingToast = toast.loading("Logging In applicant...");
     let auth = false;
     try {
-      await axios
-        .post(`https://niics-server.vercel.app/api/applicant/auth`, {
+      await api
+        .post(`/api/applicant/auth`, {
           number,
           dob,
         })
@@ -117,9 +117,9 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   updateStatus: async (_id, key, value) => {
     const loadingToast = toast.loading("Updating status...");
     try {
-      await axios
+      await api
         .put(
-          `https://niics-server.vercel.app/api/applicant/update-status/${_id}`,
+          `/applicant/update-status/${_id}`,
           { key, value },
           {
             headers: {
@@ -171,8 +171,8 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     let created = false;
 
     try {
-      await axios
-        .post(`https://niics-server.vercel.app/api/applicant`, applicant, {
+      await api
+        .post(`/api/applicant`, applicant, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -227,8 +227,8 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     set({ isNull: false });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/applicant`, {
+      await api
+        .get(`/api/applicant`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -268,8 +268,8 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     set({ isNull: false });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/applicant/${_id}`, {
+      await api
+        .get(`/api/applicant/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -312,9 +312,9 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
     const loadingToast = toast.loading("Updating applicant...");
     let updated = false;
     try {
-      await axios
+      await api
         .put(
-          `https://niics-server.vercel.app/api/applicant/${applicant._id}`,
+          `/api/applicant/${applicant._id}`,
           applicant,
           {
             headers: {
@@ -366,8 +366,8 @@ const useApplicantStore = create<ApplicantStoreState>((set) => ({
   deleteApplicant: async (_id) => {
     const loadingToast = toast.loading("Deleting applicant...");
     try {
-      await axios
-        .delete(`https://niics-server.vercel.app/api/applicant/${_id}`, {
+      await api
+        .delete(`/api/applicant/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

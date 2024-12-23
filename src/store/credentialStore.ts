@@ -1,7 +1,7 @@
 import { Credential } from "@/types/types";
 import toast from "react-hot-toast";
 import { create } from "zustand";
-import axios from "axios";
+import api from "@/config/axios";
 
 interface CredentialStoreState {
   credentials: Credential[];
@@ -45,9 +45,9 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     const loadingToast = toast.loading("Logging in...");
     let data = null;
     try {
-      await axios
+      await api
         .post(
-          `https://niics-server.vercel.app/api/credential/login`,
+          `/api/credential/login`,
           {
             userName,
             password,
@@ -100,8 +100,8 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
   createCredential: async (credential) => {
     const loadingToast = toast.loading("Creating credential...");
     try {
-      await axios
-        .post(`https://niics-server.vercel.app/api/credential`, credential, {
+      await api
+        .post(`/api/credential`, credential, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -155,8 +155,8 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     set({ isNull: false });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/credential`)
+      await api
+        .get(`/api/credential`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -190,8 +190,8 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
     set({ credential: null });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/credential/${_id}`)
+      await api
+        .get(`/api/credential/${_id}`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -220,9 +220,9 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
   updateCredential: async (credential) => {
     const loadingToast = toast.loading("Updating credential...");
     try {
-      await axios
+      await api
         .put(
-          `https://niics-server.vercel.app/api/credential/${credential._id}`,
+          `/api/credential/${credential._id}`,
           credential,
           {
             headers: {
@@ -276,8 +276,8 @@ const useCredentialStore = create<CredentialStoreState>((set) => ({
   deleteCredential: async (_id) => {
     const loadingToast = toast.loading("Deleting credential...");
     try {
-      await axios
-        .delete(`https://niics-server.vercel.app/api/credential/${_id}`, {
+      await api
+        .delete(`/api/credential/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

@@ -1,7 +1,7 @@
+import api from "@/config/axios";
 import { Institution } from "@/types/types";
 import toast from "react-hot-toast";
 import { create } from "zustand";
-import axios from "axios";
 
 interface InstitutionStoreState {
   institutions: Institution[];
@@ -43,8 +43,8 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
   createInstitution: async (institution) => {
     const loadingToast = toast.loading("Creating institution...");
     try {
-      await axios
-        .post(`https://niics-server.vercel.app/api/institution`, institution, {
+      await api
+        .post(`/api/institution`, institution, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -98,8 +98,8 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
     set({ isNull: false });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/institution`)
+      await api
+        .get(`/api/institution`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -133,8 +133,8 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
     set({ institution: null });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/institution/${_id}`)
+      await api
+        .get(`/api/institution/${_id}`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -163,9 +163,9 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
   updateInstitution: async (institution) => {
     const loadingToast = toast.loading("Updating institution...");
     try {
-      await axios
+      await api
         .put(
-          `https://niics-server.vercel.app/api/institution/${institution._id}`,
+          `/api/institution/${institution._id}`,
           institution,
           {
             headers: {
@@ -219,8 +219,8 @@ const useInstitutionStore = create<InstitutionStoreState>((set) => ({
   deleteInstitution: async (_id) => {
     const loadingToast = toast.loading("Deleting institution...");
     try {
-      await axios
-        .delete(`https://niics-server.vercel.app/api/institution/${_id}`, {
+      await api
+        .delete(`/api/institution/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

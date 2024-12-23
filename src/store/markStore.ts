@@ -1,7 +1,7 @@
+import api from "@/config/axios";
 import { Mark } from "@/types/types";
 import toast from "react-hot-toast";
 import { create } from "zustand";
-import axios from "axios";
 
 interface MarkStoreState {
   marks: Mark[];
@@ -42,8 +42,8 @@ setIsNull: (isNull) => set({ isNull }),
   createMark: async (mark) => {
     const loadingToast = toast.loading("Creating mark...");
     try {
-      await axios
-        .post(`https://niics-server.vercel.app/api/mark`, mark,{
+      await api
+        .post(`/api/mark`, mark,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -88,8 +88,8 @@ setIsNull: (isNull) => set({ isNull }),
     set({ isNull:false });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/mark`,{
+      await api
+        .get(`/api/mark`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -126,8 +126,8 @@ setIsNull: (isNull) => set({ isNull }),
     set({ isNull:false });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/mark/${_id}`,{
+      await api
+        .get(`/api/mark/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -161,8 +161,8 @@ setIsNull: (isNull) => set({ isNull }),
   updateMark: async (mark) => {
     const loadingToast = toast.loading("Updating mark...");
     try {
-      await axios
-        .put(`https://niics-server.vercel.app/api/mark/${mark._id}`, mark,{
+      await api
+        .put(`/api/mark/${mark._id}`, mark,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -202,8 +202,8 @@ setIsNull: (isNull) => set({ isNull }),
   deleteMark: async (_id) => {
     const loadingToast = toast.loading("Deleting mark...");
     try {
-      await axios
-        .delete(`https://niics-server.vercel.app/api/mark/${_id}`,{
+      await api
+        .delete(`/api/mark/${_id}`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

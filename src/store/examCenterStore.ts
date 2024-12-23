@@ -1,7 +1,7 @@
 import { ExamCenter } from "@/types/types";
 import toast from "react-hot-toast";
 import { create } from "zustand";
-import axios from "axios";
+import api from "@/config/axios";
 
 interface ExamCenterStoreState {
   examCenters: ExamCenter[];
@@ -43,8 +43,8 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
   createExamCenter: async (examCenter) => {
     const loadingToast = toast.loading("Creating exam center...");
     try {
-      await axios
-        .post(`https://niics-server.vercel.app/api/examCenter`, examCenter, {
+      await api
+        .post(`/api/examCenter`, examCenter, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -98,8 +98,8 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     set({ isNull: false });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/examCenter`)
+      await api
+        .get(`/api/examCenter`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -133,8 +133,8 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
     set({ examCenter: null });
     set({ errorMessage: "" });
     try {
-      await axios
-        .get(`https://niics-server.vercel.app/api/examCenter/${_id}`)
+      await api
+        .get(`/api/examCenter/${_id}`)
         .then((response) => {
           console.log(response.data);
           if (response.status === 201) {
@@ -163,9 +163,9 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
   updateExamCenter: async (examCenter) => {
     const loadingToast = toast.loading("Updating exam center...");
     try {
-      await axios
+      await api
         .put(
-          `https://niics-server.vercel.app/api/examCenter/${examCenter._id}`,
+          `/api/examCenter/${examCenter._id}`,
           examCenter,
           {
             headers: {
@@ -219,8 +219,8 @@ const useExamCenterStore = create<ExamCenterStoreState>((set) => ({
   deleteExamCenter: async (_id) => {
     const loadingToast = toast.loading("Deleting exam center...");
     try {
-      await axios
-        .delete(`https://niics-server.vercel.app/api/examCenter/${_id}`, {
+      await api
+        .delete(`/api/examCenter/${_id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
